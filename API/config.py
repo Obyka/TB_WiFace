@@ -1,7 +1,9 @@
 import os
 import connexion
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -24,3 +26,10 @@ db = SQLAlchemy(app)
 
 # Initialize Marshmallow
 ma = Marshmallow(app)
+
+def _fk_pragma_on_connect(dbapi_con, con_record):  # noqa
+            dbapi_con.execute('pragma foreign_keys=ON')
+
+with app.app_context():
+    from sqlalchemy import event
+    event.listen(db.engine, 'connect', _fk_pragma_on_connect)

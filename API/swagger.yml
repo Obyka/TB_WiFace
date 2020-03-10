@@ -47,7 +47,7 @@ paths:
                   type: integer
                   description: ID of the place where the probe was sniffed
                 fk_mac:
-                  type: integer
+                  type: string
                   description: ID of the MAC contained in the probe
     post:
       operationId: probes.create
@@ -73,7 +73,7 @@ paths:
                 type: integer
                 description: ID of the place where the probe was sniffed
               fk_mac:
-                type: integer
+                type: string
                 description: ID of the MAC contained in the probe
       responses:
         201:
@@ -123,3 +123,95 @@ paths:
       responses:
         200:
           description: Successfully deleted a probe
+  /macs:
+    get:
+      operationId: macs.read_all
+      tags:
+        - MAC Address
+      summary: Read the entire list of mac adresses
+      description: Read the list of adresses
+      parameters:
+        - name: length
+          in: query
+          type: integer
+          description: Number of mac adresses to get
+          required: false
+        - name: offset
+          in: query
+          type: integer
+          description: Offset from beginning of list where to start gathering mac adresses
+          required: false
+      responses:
+        200:
+          description: Successfully read mac adresses list operation
+          schema:
+            type: object
+            properties:
+              address:
+                type: integer
+              isRandom:
+                type: boolean
+              fk_vendor:
+                type: integer
+    post:
+      operationId: macs.create
+      tags:
+        - MAC Address
+      summary: Create a MAC address
+      description: Create a MAC address
+      parameters:
+        - name: mac
+          in: body
+          description: MAC address to create
+          required: True
+          schema:
+            type: object
+            properties:
+              address:
+                type: string
+              isRandom:
+                type: boolean
+              fk_vendor:
+                type: integer
+      responses:
+        201:
+          description: Successfully created MAC Adress
+
+  /macs/{address}:
+    get:
+      operationId: macs.read_one
+      tags:
+        - MAC Address
+      summary: Read one MAC Address
+      description: Read one MAC Address
+      parameters:
+        - name: address
+          in: path
+          description: MAC address to get details of
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully read one MAC Address
+          schema:
+              properties:
+                address:
+                  type: integer
+                isRandom:
+                  type: boolean
+                fk_vendor:
+                  type: integer
+    delete:
+      operationId: macs.delete
+      tags:
+        - MAC Address
+      summary: Delete a MAC Address
+      description: Delete a MAC Address
+      parameters:
+        - name: address
+          in: path
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully deleted a MAC Address

@@ -8,10 +8,11 @@ class Probes(db.Model):
     ssid = db.Column(db.String(32))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     fk_place = db.Column(db.Integer)
-    fk_mac = db.Column(db.Integer)
+    fk_mac = db.Column(db.String(18), db.ForeignKey('macAddress.address'))
 
 class ProbesSchema(ma.ModelSchema):
     class Meta:
+        include_fk = True
         model = Probes
         sqla_session = db.session
 
@@ -27,8 +28,11 @@ class VendorsSchema(ma.ModelSchema):
 
 class MacAddress(db.Model):
     __tablename__ = "macAddress"
-    address = db.Column(db.Integer, primary_key=True)
+    address = db.Column(db.String(18), primary_key=True)
     isRandom = db.Column(db.Boolean)
+    fk_vendor = db.Column(db.Integer)
+    probes = db.relationship('Probes', backref='mac')
+
 
 class MacAddressSchema(ma.ModelSchema):
     class Meta:
@@ -38,7 +42,6 @@ class MacAddressSchema(ma.ModelSchema):
 """ class GoesAlong(db.Model):
     __tablename__ = "goesAlong"
     probability = db.Column(db.Integer)
-
 class GoesAlongSchema(ma.ModelSchema):
     class Meta:
         model = GoesAlong
