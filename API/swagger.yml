@@ -1,0 +1,125 @@
+swagger: "2.0"
+info:
+  description: This is the swagger file that goes with our server code
+  version: "1.0.0"
+  title: Swagger ReST Article
+consumes:
+  - application/json
+produces:
+  - application/json
+
+basePath: /api
+
+# Paths supported by the server application
+paths:
+  /probes:
+    get:
+      operationId: probes.read_all
+      tags:
+        - probes
+      summary: Read the entire list of probes
+      description: Read the list of probes
+      parameters:
+        - name: length
+          in: query
+          type: integer
+          description: Number of probes to get
+          required: false
+        - name: offset
+          in: query
+          type: integer
+          description: Offset from beginning of list where to start gathering probes
+          required: false
+      responses:
+        200:
+          description: Successfully read probes list operation
+          schema:
+            type: array
+            items:
+              properties:
+                id:
+                  type: integer
+                timestamp:
+                  type: string
+                ssid:
+                  type: string
+                fk_place:
+                  type: integer
+                  description: ID of the place where the probe was sniffed
+                fk_mac:
+                  type: integer
+                  description: ID of the MAC contained in the probe
+    post:
+      operationId: probes.create
+      tags:
+        - probes
+      summary: Create a probe
+      description: Create a probe
+      parameters:
+        - name: probe
+          in: body
+          description: Probe to create
+          required: True
+          schema:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                description: When the probe was sniffed
+              ssid:
+                type: string
+                description: What ssid was the device searching for
+              fk_place:
+                type: integer
+                description: ID of the place where the probe was sniffed
+              fk_mac:
+                type: integer
+                description: ID of the MAC contained in the probe
+      responses:
+        201:
+          description: Successfully created probe
+
+  /probes/{id}:
+    get:
+      operationId: probes.read_one
+      tags:
+        - probes
+      summary: Read one probe
+      description: Read one probe
+      parameters:
+        - name: id
+          in: path
+          description: ID of the probe
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read one probe
+          schema:
+            properties:
+              id:
+                type: integer
+              timestamp:
+                type: string
+              ssid:
+                type: string
+              fk_place:
+                type: integer
+                description: ID of the place where the probe was sniffed
+              fk_mac:
+                type: integer
+                description: ID of the MAC contained in the prob
+    delete:
+      operationId: probes.delete
+      tags:
+        - probes
+      summary: Delete a probe
+      description: Delete a probe
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully deleted a probe
