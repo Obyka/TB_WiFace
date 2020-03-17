@@ -1,6 +1,6 @@
 import os
 from config import db
-from models import Probes, MacAddress
+from models import Probes, MacAddress, Places, Identities
 from datetime import datetime
 
 # Data to initialize database with
@@ -15,6 +15,18 @@ MACS = [
     {"address" : "FF:FF:FF:FF:FF:EF", "isRandom" : True, "fk_vendor" : 2},
     {"address" : "FF:FF:AB:FF:FF:FF", "isRandom" : False, "fk_vendor" : 3}
 ]
+
+PLACES = [
+    {"name" : "BatCave", "longitude" : 12.2, "latitude" : 13.4},
+    {"name" : "Toussaint", "longitude" : 22, "latitude" : 9},
+    {"name" : "Aperture Science", "longitude" : 42, "latitude" : 42}
+]
+
+IDENTITIES = [
+    {"firstname" : "Bruce", "lastname" : "Wayne", "mail" : "bruce.wayne@iamnotbatman.com"},
+    {"firstname" : "Geralt", "lastname" : "De Riv", "mail" : "thewhitewolf@gmail.com"},
+    {"firstname" : "Florian", "lastname" : "Polier", "mail" : "florian.polier@heig-vd.ch"}
+] 
 
 # Delete database file if it exists currently
 if os.path.exists('probes.db'):
@@ -31,5 +43,13 @@ for probe in PROBES:
 for mac in MACS:
     m = MacAddress(address=mac['address'], isRandom=mac['isRandom'], fk_vendor=mac['fk_vendor'])
     db.session.add(m)
+
+for place in PLACES:
+    p = Places(name=place['name'], latitude=place['latitude'], longitude=place['longitude'])
+    db.session.add(p)
+
+for identity in IDENTITIES:
+    i = Identities(firstname=identity['firstname'], lastname=identity['lastname'], mail=identity['mail'])
+    db.session.add(i)
 
 db.session.commit()

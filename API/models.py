@@ -39,6 +39,30 @@ class MacAddressSchema(ma.ModelSchema):
         model = MacAddress
         sqla_session = db.session
 
+class Places(db.Model):
+    __tablename__ = "places"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(32))
+    longitude = db.Column(db.Float)
+    latitude = db.Column(db.Float)
+
+class PlacesSchema(ma.ModelSchema):
+    class Meta:
+        model = Places
+        sqla_session = db.session
+
+class Identities(db.Model):
+    __tablename__ = "identities"
+    id = db.Column(db.Integer, primary_key=True)
+    firstname = db.Column(db.String(32))
+    lastname = db.Column(db.String(32))
+    mail = db.Column(db.String(64))
+
+class IdentitiesSchema(ma.ModelSchema):
+    class Meta:
+        model = Identities
+        sqla_session = db.session
+
 """ class GoesAlong(db.Model):
     __tablename__ = "goesAlong"
     probability = db.Column(db.Integer)

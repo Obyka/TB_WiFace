@@ -215,3 +215,201 @@ paths:
       responses:
         200:
           description: Successfully deleted a MAC Address
+
+  /places:
+      get:
+        operationId: places.read_all
+        tags:
+          - Places
+        summary: Read the entire list of places
+        description: Read the list of places
+        parameters:
+          - name: length
+            in: query
+            type: integer
+            description: Number of places to get
+            required: false
+          - name: offset
+            in: query
+            type: integer
+            description: Offset from beginning of list where to start gathering places
+            required: false
+        responses:
+          200:
+            description: Successfully read places list operation
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                longitude:
+                  type: number
+                latitude:
+                  type: number
+      post:
+        operationId: places.create
+        tags:
+          - Places
+        summary: Create a place
+        description: Create a place
+        parameters:
+          - name: place
+            in: body
+            description: Place to create
+            required: True
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                longitude:
+                  type: number
+                latitude:
+                  type: number
+        responses:
+          201:
+            description: Successfully created the place
+  
+  /places/{id}:
+      get:
+        operationId: places.read_one
+        tags:
+          - Places
+        summary: Read one place
+        description: Read one place
+        parameters:
+          - name: id
+            in: path
+            description: Place to get details of
+            type: integer
+            required: True
+        responses:
+          200:
+            description: Successfully read one place
+            schema:
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                longitude:
+                  type: number
+                latitude:
+                  type: number
+      delete:
+        operationId: places.delete
+        tags:
+          - Places
+        summary: Delete a place
+        description: Delete a place
+        parameters:
+          - name: id
+            in: path
+            type: integer
+            required: True
+        responses:
+          200:
+            description: Successfully deleted a place
+
+  /identities:
+        get:
+          operationId: identities.read_all
+          tags:
+            - Identities
+          summary: Read the entire list of identities
+          description: Read the list of identities
+          parameters:
+            - name: length
+              in: query
+              type: integer
+              description: Number of identities to get
+              required: false
+            - name: offset
+              in: query
+              type: integer
+              description: Offset from beginning of list where to start gathering identities
+              required: false
+          responses:
+            200:
+              description: Successfully read identities list operation
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  firstname:
+                    type: string
+                  lastname:
+                    type: string
+                  mail:
+                    type: string
+        post:
+          operationId: identities.create
+          tags:
+            - Identities
+          summary: Create an identitiy
+          description: Create an identitiy
+          parameters:
+            - name: identitiy
+              in: body
+              description: identitiy to create
+              required: True
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  firstname:
+                    type: string
+                  lastname:
+                    type: string
+                  mail:
+                    type: string
+          responses:
+            201:
+              description: Successfully created the identitiy
+  
+  /identities/{id}:
+    get:
+      operationId: identities.read_one
+      tags:
+        - Identities
+      summary: Read one identitiy
+      description: Read one identitiy
+      parameters:
+        - name: id
+          in: path
+          description: identitiy to get details of
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read one identitiy
+          schema:
+            properties:
+              id:
+                type: integer
+              firstname:
+                type: string
+              lastname:
+                type: string
+              mail:
+                type: string
+    delete:
+      operationId: identities.delete
+      tags:
+        - Identities
+      summary: Delete an identitiy
+      description: Delete an identitiy
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully deleted an identitiy
