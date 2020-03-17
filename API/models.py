@@ -26,18 +26,47 @@ class VendorsSchema(ma.ModelSchema):
         model = Vendors
         sqla_session = db.session
 
+
+class GoesAlong(db.Model):
+    __tablename__ = "goesAlong"
+    probability = db.Column(db.Integer)
+    fk_mac = db.Column(db.String(18), db.ForeignKey('macAddress.address'))
+    fk_picture = db.Column(db.Integer, db.ForeignKey('pictures.id'))
+    db.PrimaryKeyConstraint(fk_mac, fk_picture, name='goesAlong_pk')
+
+class GoesAlongSchema(ma.ModelSchema):
+    class Meta:
+        include_fk = True
+        model = GoesAlong
+        sqla_session = db.session
+
+class Represents(db.Model):
+    __tablename__ = "represents"
+    probability = db.Column(db.Integer)
+    fk_identity = db.Column(db.Integer, db.ForeignKey('identities.id'))
+    fk_picture = db.Column(db.Integer, db.ForeignKey('pictures.id'))
+    db.PrimaryKeyConstraint(fk_identity, fk_picture, name='represents_pk')
+
+class RepresentsSchema(ma.ModelSchema):
+    class Meta:
+        include_fk = True
+        model = Represents
+        sqla_session = db.session
+
 class MacAddress(db.Model):
     __tablename__ = "macAddress"
     address = db.Column(db.String(18), primary_key=True)
     isRandom = db.Column(db.Boolean)
     fk_vendor = db.Column(db.Integer)
     probes = db.relationship('Probes', backref='mac')
+    goesAlongs = db.relationship('GoesAlong', backref='mac')
 
 
 class MacAddressSchema(ma.ModelSchema):
     class Meta:
         model = MacAddress
         sqla_session = db.session
+        include_fk = True
 
 class Identities(db.Model):
     __tablename__ = "identities"
@@ -45,6 +74,7 @@ class Identities(db.Model):
     firstname = db.Column(db.String(32))
     lastname = db.Column(db.String(32))
     mail = db.Column(db.String(64))
+    represents = db.relationship('Represents', backref='identity')
 
 class IdentitiesSchema(ma.ModelSchema):
     class Meta:
@@ -57,6 +87,8 @@ class Pictures(db.Model):
     picPath = db.Column(db.String(128))
     timestamp =  db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     fk_place = db.Column(db.Integer, db.ForeignKey('places.id'))
+    GoesAlongs = db.relationship('GoesAlong', backref='picture')
+    Represents = db.relationship('Represents', backref='picture')
 
 
 class PicturesSchema(ma.ModelSchema):
@@ -77,11 +109,5 @@ class PlacesSchema(ma.ModelSchema):
     class Meta:
         model = Places
         sqla_session = db.session
+        include_fk = True
 
-""" class GoesAlong(db.Model):
-    __tablename__ = "goesAlong"
-    probability = db.Column(db.Integer)
-class GoesAlongSchema(ma.ModelSchema):
-    class Meta:
-        model = GoesAlong
-        sqla_session = db.session """
