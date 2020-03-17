@@ -1,6 +1,6 @@
 import os
 from config import db
-from models import Probes, MacAddress, Places, Identities
+from models import Probes, MacAddress, Places, Identities, Pictures
 from datetime import datetime
 
 # Data to initialize database with
@@ -26,6 +26,12 @@ IDENTITIES = [
     {"firstname" : "Bruce", "lastname" : "Wayne", "mail" : "bruce.wayne@iamnotbatman.com"},
     {"firstname" : "Geralt", "lastname" : "De Riv", "mail" : "thewhitewolf@gmail.com"},
     {"firstname" : "Florian", "lastname" : "Polier", "mail" : "florian.polier@heig-vd.ch"}
+]
+
+PICTURES = [
+    {"picPath" : "/tmp/test.png", "timestamp" : datetime.utcnow(), "fk_place" : 1},
+    {"picPath" : "/tmp/test2.png", "timestamp" : datetime.utcnow(), "fk_place" : 2},
+    {"picPath" : "/tmp/test3.png", "timestamp" : datetime.utcnow(), "fk_place" : 3},
 ] 
 
 # Delete database file if it exists currently
@@ -51,5 +57,9 @@ for place in PLACES:
 for identity in IDENTITIES:
     i = Identities(firstname=identity['firstname'], lastname=identity['lastname'], mail=identity['mail'])
     db.session.add(i)
+
+for picture in PICTURES:
+    p = Pictures(picPath=picture['picPath'], timestamp=picture['timestamp'], fk_place=picture['fk_place'])
+    db.session.add(p)
 
 db.session.commit()

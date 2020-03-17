@@ -39,18 +39,6 @@ class MacAddressSchema(ma.ModelSchema):
         model = MacAddress
         sqla_session = db.session
 
-class Places(db.Model):
-    __tablename__ = "places"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(32))
-    longitude = db.Column(db.Float)
-    latitude = db.Column(db.Float)
-
-class PlacesSchema(ma.ModelSchema):
-    class Meta:
-        model = Places
-        sqla_session = db.session
-
 class Identities(db.Model):
     __tablename__ = "identities"
     id = db.Column(db.Integer, primary_key=True)
@@ -61,6 +49,33 @@ class Identities(db.Model):
 class IdentitiesSchema(ma.ModelSchema):
     class Meta:
         model = Identities
+        sqla_session = db.session
+
+class Pictures(db.Model):
+    __tablename__ = "pictures"
+    id = db.Column(db.Integer, primary_key=True)
+    picPath = db.Column(db.String(128))
+    timestamp =  db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    fk_place = db.Column(db.Integer, db.ForeignKey('places.id'))
+
+
+class PicturesSchema(ma.ModelSchema):
+    class Meta:
+        include_fk = True
+        model = Pictures
+        sqla_session = db.session
+
+class Places(db.Model):
+    __tablename__ = "places"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(32))
+    longitude = db.Column(db.Float)
+    latitude = db.Column(db.Float)
+    pictures = db.relationship('Pictures', backref='place')
+
+class PlacesSchema(ma.ModelSchema):
+    class Meta:
+        model = Places
         sqla_session = db.session
 
 """ class GoesAlong(db.Model):

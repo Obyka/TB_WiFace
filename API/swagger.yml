@@ -413,3 +413,106 @@ paths:
       responses:
         200:
           description: Successfully deleted an identitiy
+
+  /pictures:
+    get:
+      operationId: pictures.read_all
+      tags:
+        - Pictures
+      summary: Read the entire list of pictures
+      description: Read the list of pictures
+      parameters:
+        - name: length
+          in: query
+          type: integer
+          description: Number of pictures to get
+          required: false
+        - name: offset
+          in: query
+          type: integer
+          description: Offset from beginning of list where to start gathering pictures
+          required: false
+      responses:
+        200:
+          description: Successfully read pictures list operation
+          schema:
+            type: array
+            items:
+              properties:
+                id:
+                  type: integer
+                timestamp:
+                  type: string
+                picPath:
+                  type: string
+                fk_place:
+                  type: integer
+                  description: ID of the place where the picture was sniffed
+    post:
+      operationId: pictures.create
+      tags:
+        - Pictures
+      summary: Create a picture
+      description: Create a picture
+      parameters:
+        - name: picture
+          in: body
+          description: Picture to create
+          required: True
+          schema:
+            type: object
+            properties:
+                id:
+                  type: integer
+                timestamp:
+                  type: string
+                picPath:
+                  type: string
+                fk_place:
+                  type: integer
+                  description: ID of the place where the picture was sniffed
+      responses:
+        201:
+          description: Successfully created picture
+
+  /pictures/{id}:
+    get:
+      operationId: pictures.read_one
+      tags:
+        - Pictures
+      summary: Read one picture
+      description: Read one picture
+      parameters:
+        - name: id
+          in: path
+          description: ID of the picture
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read one picture
+          schema:
+            properties:
+                id:
+                  type: integer
+                timestamp:
+                  type: string
+                picPath:
+                  type: string
+                fk_place:
+                  type: integer
+                  description: ID of the place where the picture was sniffed
+    delete:
+      operationId: pictures.delete
+      tags:
+        - Pictures
+      summary: Delete a picture
+      description: Delete a picture
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully deleted a picture
