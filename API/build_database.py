@@ -1,19 +1,25 @@
 import os
 from config import db
-from models import Probes, MacAddress, Places, Identities, Pictures, GoesAlong, Represents
+from models import Probes, MacAddress, Places, Identities, Pictures, GoesAlong, Represents, Vendors
 from datetime import datetime
 
 # Data to initialize database with
+VENDORS = [
+    {"oui":"F8-4D-33", "name" : "Macrohard"},
+    {"oui":"F9-4D-33", "name" : "Nintendor"},
+    {"oui":"F8-EE-33", "name" : "Plop"}
+]
+
 PROBES = [
-{"ssid": "probe_ssid_1", "timestamp": datetime.utcnow(), "fk_mac" : "FF:FF:FF:FF:FF:FF", "fk_place" : 1},
-{"ssid": "probe_ssid_2", "timestamp": datetime.utcnow(), "fk_mac" : "FF:FF:FF:FF:FF:EF", "fk_place" : 2},
-{"ssid": "probe_ssid_3", "timestamp": datetime.utcnow(), "fk_mac" : "FF:FF:AB:FF:FF:FF", "fk_place" : 3}
+    {"ssid": "probe_ssid_1", "timestamp": datetime.utcnow(), "fk_mac" : "FF:FF:FF:FF:FF:FF", "fk_place" : 1},
+    {"ssid": "probe_ssid_2", "timestamp": datetime.utcnow(), "fk_mac" : "FF:FF:FF:FF:FF:EF", "fk_place" : 2},
+    {"ssid": "probe_ssid_3", "timestamp": datetime.utcnow(), "fk_mac" : "FF:FF:AB:FF:FF:FF", "fk_place" : 3}
 ]
 
 MACS = [
-    {"address" : "FF:FF:FF:FF:FF:FF", "isRandom" : False, "fk_vendor" : 1},
-    {"address" : "FF:FF:FF:FF:FF:EF", "isRandom" : True, "fk_vendor" : 2},
-    {"address" : "FF:FF:AB:FF:FF:FF", "isRandom" : False, "fk_vendor" : 3}
+    {"address" : "FF:FF:FF:FF:FF:FF", "isRandom" : False, "fk_vendor" : "F8-4D-33"},
+    {"address" : "FF:FF:FF:FF:FF:EF", "isRandom" : True, "fk_vendor" : "F8-4D-33"},
+    {"address" : "FF:FF:AB:FF:FF:FF", "isRandom" : False, "fk_vendor" : "F8-4D-33"}
 ]
 
 PLACES = [
@@ -37,7 +43,8 @@ PICTURES = [
 REPRENSENTS = [
     {"probability" : 50, "fk_identity" : 1, "fk_picture" : 1},
     {"probability" : 60, "fk_identity" : 2, "fk_picture" : 2},
-    {"probability" : 10, "fk_identity" : 3, "fk_picture" : 3}
+    {"probability" : 10, "fk_identity" : 3, "fk_picture" : 3},
+    {"probability" : 100, "fk_identity" : 1, "fk_picture" : 3}
 ] 
 
 
@@ -58,6 +65,9 @@ db.create_all()
 
 # Iterate over the PEOPLE structure and populate the database
 
+for vendor in VENDORS:
+    v = Vendors(oui=vendor['oui'], name=vendor['name'])
+    db.session.add(v)
 
 for mac in MACS:
     m = MacAddress(address=mac['address'], isRandom=mac['isRandom'], fk_vendor=mac['fk_vendor'])

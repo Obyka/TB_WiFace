@@ -16,17 +16,6 @@ class ProbesSchema(ma.ModelSchema):
         model = Probes
         sqla_session = db.session
 
-class Vendors(db.Model):
-    __tablename__ = "vendors"
-    oui = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(32))
-
-class VendorsSchema(ma.ModelSchema):
-    class Meta:
-        model = Vendors
-        sqla_session = db.session
-
-
 class GoesAlong(db.Model):
     __tablename__ = "goesAlong"
     probability = db.Column(db.Integer)
@@ -57,16 +46,26 @@ class MacAddress(db.Model):
     __tablename__ = "macAddress"
     address = db.Column(db.String(18), primary_key=True)
     isRandom = db.Column(db.Boolean)
-    fk_vendor = db.Column(db.Integer)
+    fk_vendor = db.Column(db.String(8), db.ForeignKey('vendors.oui'))
     probes = db.relationship('Probes', backref='mac')
     goesAlongs = db.relationship('GoesAlong', backref='mac')
-
 
 class MacAddressSchema(ma.ModelSchema):
     class Meta:
         model = MacAddress
         sqla_session = db.session
         include_fk = True
+
+class Vendors(db.Model):
+    __tablename__ = "vendors"
+    oui = db.Column(db.String(8), primary_key=True)
+    name = db.Column(db.String(32))
+    macs = db.relationship('MacAddress', backref='vendor')
+
+class VendorsSchema(ma.ModelSchema):
+    class Meta:
+        model = Vendors
+        sqla_session = db.session
 
 class Identities(db.Model):
     __tablename__ = "identities"

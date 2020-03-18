@@ -2,8 +2,21 @@ from config import db
 from models import (
     Identities,
     IdentitiesSchema,
+    Represents,
+    RepresentsSchema
 )
 from flask import abort, make_response
+
+def read_pictures(id_identity):
+    represent = Represents.query\
+            .filter(Represents.fk_identity==id_identity).all()
+
+    if represent is not None:
+        represent_schema = RepresentsSchema(many=True)
+        return represent_schema.dump(represent)
+    else:
+        abort(404, "No pictures found for the identity {id_identity}".format(id_identity=id_identity))
+
 
 def read_all():
     identities = Identities.query.order_by(Identities.lastname).all()

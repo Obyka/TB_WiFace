@@ -12,6 +12,113 @@ basePath: /api
 
 # Paths supported by the server application
 paths:
+
+  /identities/{id_identity}/pictures:
+    get:
+      operationId: identities.read_pictures
+      tags:
+        - Identities
+      summary: Get the pictures ID and probability of relationship with this identity
+      description: Get the pictures ID and probability of relationship with this identity
+      parameters:
+      - name: id_identity
+        in: path
+        description: Identity to get details of
+        type: integer
+        required: True
+      responses:
+        200:
+          description: Successfully read pictures list 
+          schema:
+            type: array
+            items:
+              properties:
+                fk_identity:
+                  type: integer
+                fk_picture:
+                  type: integer
+                probability:
+                  type: integer
+  /represents/{id_picture}/{id_identity}:
+    delete:
+      operationId: represents.delete
+      tags:
+        - Identities - Pictures
+      summary: Delete a relationship Identities - Pictures
+      description: Delete a relationship Identities - Pictures
+      parameters:
+        - name: id_picture
+          in: path
+          type: integer
+          required: True
+        - name: id_identity
+          in: path
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully deleted the relationship
+
+    get:
+      operationId: represents.read_relationship
+      tags:
+        - Identities - Pictures
+      summary: Get the probability of relationship between this image and this identity
+      description: Get the probability of relationship between this image and this identity
+      parameters:
+        - name: id_picture
+          in: path
+          type: integer
+          required: True
+        - name: id_identity
+          in: path
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read relationship Identities - Pictures
+          schema:
+            type: object
+            properties:
+              id_picture:
+                type: integer
+              id_identity:
+                type: integer
+              probability:
+                type: integer
+  /represents:
+    post:
+      operationId: represents.create
+      tags:
+        - Identities - Pictures
+      summary: Create a relationship between an identity and a picture
+      description: Create a relationship between an identity and a picture
+      parameters:
+        - name: represent
+          in: body
+          description: Relationship to create
+          required: True
+          schema:
+            type: object
+            properties:
+              probability:
+                type: integer
+              fk_identity:
+                type: integer
+              fk_picture:
+                type: integer
+      responses:
+        200:
+          description: Successfully created the relationship
+          schema:
+            type: object
+            properties:
+              probability:
+                type: integer
+              fk_picture:
+                type: string
+              fk_identity:
+                type: integer
   /probes:
     get:
       operationId: probes.read_all
@@ -152,7 +259,7 @@ paths:
               isRandom:
                 type: boolean
               fk_vendor:
-                type: integer
+                type: string
     post:
       operationId: macs.create
       tags:
@@ -172,7 +279,7 @@ paths:
               isRandom:
                 type: boolean
               fk_vendor:
-                type: integer
+                type: string
       responses:
         201:
           description: Successfully created MAC Adress
@@ -191,7 +298,7 @@ paths:
           required: True
       responses:
         200:
-          description: Successfully read pictures list operation
+          description: Successfully read pictures list 
           schema:
             type: array
             items:
@@ -309,7 +416,7 @@ paths:
                 isRandom:
                   type: boolean
                 fk_vendor:
-                  type: integer
+                  type: string
     delete:
       operationId: macs.delete
       tags:
