@@ -2,8 +2,20 @@ from config import db
 from models import (
     MacAddress,
     MacAddressSchema,
+    GoesAlong,
+    GoesAlongSchema
 )
 from flask import abort, make_response
+
+def read_pictures(address):
+    goes_along = GoesAlong.query\
+            .filter(GoesAlong.fk_mac==address).all()
+
+    if goes_along is not None:
+        goes_along_scheme = GoesAlongSchema(many=True)
+        return goes_along_scheme.dump(goes_along)
+    else:
+        abort(404, "No pictures found for the address {address}".format(address=address))
 
 def read_all():
     macs = MacAddress.query.order_by(MacAddress.address).all()

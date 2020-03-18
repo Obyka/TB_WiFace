@@ -43,6 +43,7 @@ REPRENSENTS = [
 
 GOESALONG = [
     {"probability" : 50, "fk_mac" : "FF:FF:FF:FF:FF:FF", "fk_picture" : 1},
+    {"probability" : 50, "fk_mac" : "FF:FF:FF:FF:FF:FF", "fk_picture" : 2},
     {"probability" : 60, "fk_mac" : "FF:FF:FF:FF:FF:EF", "fk_picture" : 2},
     {"probability" : 10, "fk_mac" : "FF:FF:AB:FF:FF:FF", "fk_picture" : 3}
 ] 

@@ -176,7 +176,116 @@ paths:
       responses:
         201:
           description: Successfully created MAC Adress
+  /macs/{address}/pictures:
+    get:
+      operationId: macs.read_pictures
+      tags:
+        - MAC Address
+      summary: Get the pictures ID and probability of relationship with this MAC address
+      description: Get the pictures ID and probability of relationship with this MAC address
+      parameters:
+        - name: address
+          in: path
+          description: MAC address to get details of
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully read pictures list operation
+          schema:
+            type: array
+            items:
+              properties:
+                fk_mac:
+                  type: string
+                fk_picture:
+                  type: integer
+                probability:
+                  type: integer
+  
+  /goesalongs/{address}/{id}:
+    delete:
+      operationId: goesalongs.delete
+      tags:
+        - MAC Address - Pictures
+      summary: Delete a relationship MAC Address - Pictures
+      description: Delete a relationship MAC Address - Pictures
+      parameters:
+        - name: address
+          in: path
+          type: string
+          required: True
+        - name: id
+          in: path
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully deleted the relationship
 
+    get:
+      operationId: goesalongs.read_pictures
+      tags:
+        - MAC Address - Pictures
+      summary: Get the probability of relationship between this image and this MAC address
+      description: Get the probability of relationship between this image and this MAC address
+      parameters:
+        - name: address
+          in: path
+          description: MAC address
+          type: string
+          required: True
+        - name: id
+          in: path
+          description: id of the picture
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read pictures list operation
+          schema:
+            type: object
+            properties:
+              fk_mac:
+                type: string
+              fk_picture:
+                type: integer
+              probability:
+                type: integer
+  /goesalongs:
+    post:
+      operationId: goesalongs.create
+      tags:
+        - MAC Address - Pictures
+      summary: Create a relationship between a MAC address and a picture
+      description: Create a relationship between a MAC address and a picture
+      parameters:
+        - name: goesalong
+          in: body
+          description: Relationship to create
+          required: True
+          schema:
+            type: object
+            properties:
+              probability:
+                type: integer
+              fk_mac:
+                type: string
+              fk_picture:
+                type: integer
+      responses:
+        200:
+          description: Successfully created the relationship
+          schema:
+            type: object
+            properties:
+              probability:
+                type: integer
+              fk_mac:
+                type: string
+              fk_picture:
+                type: integer
+    
   /macs/{address}:
     get:
       operationId: macs.read_one
