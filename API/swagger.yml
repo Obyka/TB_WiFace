@@ -1,0 +1,734 @@
+swagger: "2.0"
+info:
+  description: This is the swagger file that goes with our server code
+  version: "1.0.0"
+  title: Swagger ReST Article
+consumes:
+  - application/json
+produces:
+  - application/json
+
+basePath: /api
+
+# Paths supported by the server application
+paths:
+
+  /identities/{id_identity}/pictures:
+    get:
+      operationId: identities.read_pictures
+      tags:
+        - Identities
+      summary: Get the pictures ID and probability of relationship with this identity
+      description: Get the pictures ID and probability of relationship with this identity
+      parameters:
+      - name: id_identity
+        in: path
+        description: Identity to get details of
+        type: integer
+        required: True
+      responses:
+        200:
+          description: Successfully read pictures list 
+          schema:
+            type: array
+            items:
+              properties:
+                fk_identity:
+                  type: integer
+                fk_picture:
+                  type: integer
+                probability:
+                  type: integer
+  /represents/{id_picture}/{id_identity}:
+    delete:
+      operationId: represents.delete
+      tags:
+        - Identities - Pictures
+      summary: Delete a relationship Identities - Pictures
+      description: Delete a relationship Identities - Pictures
+      parameters:
+        - name: id_picture
+          in: path
+          type: integer
+          required: True
+        - name: id_identity
+          in: path
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully deleted the relationship
+
+    get:
+      operationId: represents.read_relationship
+      tags:
+        - Identities - Pictures
+      summary: Get the probability of relationship between this image and this identity
+      description: Get the probability of relationship between this image and this identity
+      parameters:
+        - name: id_picture
+          in: path
+          type: integer
+          required: True
+        - name: id_identity
+          in: path
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read relationship Identities - Pictures
+          schema:
+            type: object
+            properties:
+              id_picture:
+                type: integer
+              id_identity:
+                type: integer
+              probability:
+                type: integer
+  /represents:
+    post:
+      operationId: represents.create
+      tags:
+        - Identities - Pictures
+      summary: Create a relationship between an identity and a picture
+      description: Create a relationship between an identity and a picture
+      parameters:
+        - name: represent
+          in: body
+          description: Relationship to create
+          required: True
+          schema:
+            type: object
+            properties:
+              probability:
+                type: integer
+              fk_identity:
+                type: integer
+              fk_picture:
+                type: integer
+      responses:
+        200:
+          description: Successfully created the relationship
+          schema:
+            type: object
+            properties:
+              probability:
+                type: integer
+              fk_picture:
+                type: string
+              fk_identity:
+                type: integer
+  /probes:
+    get:
+      operationId: probes.read_all
+      tags:
+        - probes
+      summary: Read the entire list of probes
+      description: Read the list of probes
+      parameters:
+        - name: length
+          in: query
+          type: integer
+          description: Number of probes to get
+          required: false
+        - name: offset
+          in: query
+          type: integer
+          description: Offset from beginning of list where to start gathering probes
+          required: false
+      responses:
+        200:
+          description: Successfully read probes list operation
+          schema:
+            type: array
+            items:
+              properties:
+                id:
+                  type: integer
+                timestamp:
+                  type: string
+                ssid:
+                  type: string
+                fk_place:
+                  type: integer
+                  description: ID of the place where the probe was sniffed
+                fk_mac:
+                  type: string
+                  description: ID of the MAC contained in the probe
+    post:
+      operationId: probes.create
+      tags:
+        - probes
+      summary: Create a probe
+      description: Create a probe
+      parameters:
+        - name: probe
+          in: body
+          description: Probe to create
+          required: True
+          schema:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                description: When the probe was sniffed
+              ssid:
+                type: string
+                description: What ssid was the device searching for
+              fk_place:
+                type: integer
+                description: ID of the place where the probe was sniffed
+              fk_mac:
+                type: string
+                description: ID of the MAC contained in the probe
+      responses:
+        201:
+          description: Successfully created probe
+
+  /probes/{id}:
+    get:
+      operationId: probes.read_one
+      tags:
+        - probes
+      summary: Read one probe
+      description: Read one probe
+      parameters:
+        - name: id
+          in: path
+          description: ID of the probe
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read one probe
+          schema:
+            properties:
+              id:
+                type: integer
+              timestamp:
+                type: string
+              ssid:
+                type: string
+              fk_place:
+                type: integer
+                description: ID of the place where the probe was sniffed
+              fk_mac:
+                type: integer
+                description: ID of the MAC contained in the prob
+    delete:
+      operationId: probes.delete
+      tags:
+        - probes
+      summary: Delete a probe
+      description: Delete a probe
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully deleted a probe
+  /macs:
+    get:
+      operationId: macs.read_all
+      tags:
+        - MAC Address
+      summary: Read the entire list of mac adresses
+      description: Read the list of adresses
+      parameters:
+        - name: length
+          in: query
+          type: integer
+          description: Number of mac adresses to get
+          required: false
+        - name: offset
+          in: query
+          type: integer
+          description: Offset from beginning of list where to start gathering mac adresses
+          required: false
+      responses:
+        200:
+          description: Successfully read mac adresses list operation
+          schema:
+            type: object
+            properties:
+              address:
+                type: integer
+              isRandom:
+                type: boolean
+              fk_vendor:
+                type: string
+    post:
+      operationId: macs.create
+      tags:
+        - MAC Address
+      summary: Create a MAC address
+      description: Create a MAC address
+      parameters:
+        - name: mac
+          in: body
+          description: MAC address to create
+          required: True
+          schema:
+            type: object
+            properties:
+              address:
+                type: string
+              isRandom:
+                type: boolean
+              fk_vendor:
+                type: string
+      responses:
+        201:
+          description: Successfully created MAC Adress
+  /macs/{address}/pictures:
+    get:
+      operationId: macs.read_pictures
+      tags:
+        - MAC Address
+      summary: Get the pictures ID and probability of relationship with this MAC address
+      description: Get the pictures ID and probability of relationship with this MAC address
+      parameters:
+        - name: address
+          in: path
+          description: MAC address to get details of
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully read pictures list 
+          schema:
+            type: array
+            items:
+              properties:
+                fk_mac:
+                  type: string
+                fk_picture:
+                  type: integer
+                probability:
+                  type: integer
+  
+  /goesalongs/{address}/{id}:
+    delete:
+      operationId: goesalongs.delete
+      tags:
+        - MAC Address - Pictures
+      summary: Delete a relationship MAC Address - Pictures
+      description: Delete a relationship MAC Address - Pictures
+      parameters:
+        - name: address
+          in: path
+          type: string
+          required: True
+        - name: id
+          in: path
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully deleted the relationship
+
+    get:
+      operationId: goesalongs.read_pictures
+      tags:
+        - MAC Address - Pictures
+      summary: Get the probability of relationship between this image and this MAC address
+      description: Get the probability of relationship between this image and this MAC address
+      parameters:
+        - name: address
+          in: path
+          description: MAC address
+          type: string
+          required: True
+        - name: id
+          in: path
+          description: id of the picture
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read pictures list operation
+          schema:
+            type: object
+            properties:
+              fk_mac:
+                type: string
+              fk_picture:
+                type: integer
+              probability:
+                type: integer
+  /goesalongs:
+    post:
+      operationId: goesalongs.create
+      tags:
+        - MAC Address - Pictures
+      summary: Create a relationship between a MAC address and a picture
+      description: Create a relationship between a MAC address and a picture
+      parameters:
+        - name: goesalong
+          in: body
+          description: Relationship to create
+          required: True
+          schema:
+            type: object
+            properties:
+              probability:
+                type: integer
+              fk_mac:
+                type: string
+              fk_picture:
+                type: integer
+      responses:
+        200:
+          description: Successfully created the relationship
+          schema:
+            type: object
+            properties:
+              probability:
+                type: integer
+              fk_mac:
+                type: string
+              fk_picture:
+                type: integer
+    
+  /macs/{address}:
+    get:
+      operationId: macs.read_one
+      tags:
+        - MAC Address
+      summary: Read one MAC Address
+      description: Read one MAC Address
+      parameters:
+        - name: address
+          in: path
+          description: MAC address to get details of
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully read one MAC Address
+          schema:
+              properties:
+                address:
+                  type: integer
+                isRandom:
+                  type: boolean
+                fk_vendor:
+                  type: string
+    delete:
+      operationId: macs.delete
+      tags:
+        - MAC Address
+      summary: Delete a MAC Address
+      description: Delete a MAC Address
+      parameters:
+        - name: address
+          in: path
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully deleted a MAC Address
+
+  /places:
+      get:
+        operationId: places.read_all
+        tags:
+          - Places
+        summary: Read the entire list of places
+        description: Read the list of places
+        parameters:
+          - name: length
+            in: query
+            type: integer
+            description: Number of places to get
+            required: false
+          - name: offset
+            in: query
+            type: integer
+            description: Offset from beginning of list where to start gathering places
+            required: false
+        responses:
+          200:
+            description: Successfully read places list operation
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                longitude:
+                  type: number
+                latitude:
+                  type: number
+      post:
+        operationId: places.create
+        tags:
+          - Places
+        summary: Create a place
+        description: Create a place
+        parameters:
+          - name: place
+            in: body
+            description: Place to create
+            required: True
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                longitude:
+                  type: number
+                latitude:
+                  type: number
+        responses:
+          201:
+            description: Successfully created the place
+  
+  /places/{id}:
+      get:
+        operationId: places.read_one
+        tags:
+          - Places
+        summary: Read one place
+        description: Read one place
+        parameters:
+          - name: id
+            in: path
+            description: Place to get details of
+            type: integer
+            required: True
+        responses:
+          200:
+            description: Successfully read one place
+            schema:
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                longitude:
+                  type: number
+                latitude:
+                  type: number
+      delete:
+        operationId: places.delete
+        tags:
+          - Places
+        summary: Delete a place
+        description: Delete a place
+        parameters:
+          - name: id
+            in: path
+            type: integer
+            required: True
+        responses:
+          200:
+            description: Successfully deleted a place
+
+  /identities:
+        get:
+          operationId: identities.read_all
+          tags:
+            - Identities
+          summary: Read the entire list of identities
+          description: Read the list of identities
+          parameters:
+            - name: length
+              in: query
+              type: integer
+              description: Number of identities to get
+              required: false
+            - name: offset
+              in: query
+              type: integer
+              description: Offset from beginning of list where to start gathering identities
+              required: false
+          responses:
+            200:
+              description: Successfully read identities list operation
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  firstname:
+                    type: string
+                  lastname:
+                    type: string
+                  mail:
+                    type: string
+        post:
+          operationId: identities.create
+          tags:
+            - Identities
+          summary: Create an identitiy
+          description: Create an identitiy
+          parameters:
+            - name: identitiy
+              in: body
+              description: identitiy to create
+              required: True
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  firstname:
+                    type: string
+                  lastname:
+                    type: string
+                  mail:
+                    type: string
+          responses:
+            201:
+              description: Successfully created the identitiy
+  
+  /identities/{id}:
+    get:
+      operationId: identities.read_one
+      tags:
+        - Identities
+      summary: Read one identitiy
+      description: Read one identitiy
+      parameters:
+        - name: id
+          in: path
+          description: identitiy to get details of
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read one identitiy
+          schema:
+            properties:
+              id:
+                type: integer
+              firstname:
+                type: string
+              lastname:
+                type: string
+              mail:
+                type: string
+    delete:
+      operationId: identities.delete
+      tags:
+        - Identities
+      summary: Delete an identitiy
+      description: Delete an identitiy
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully deleted an identitiy
+
+  /pictures:
+    get:
+      operationId: pictures.read_all
+      tags:
+        - Pictures
+      summary: Read the entire list of pictures
+      description: Read the list of pictures
+      parameters:
+        - name: length
+          in: query
+          type: integer
+          description: Number of pictures to get
+          required: false
+        - name: offset
+          in: query
+          type: integer
+          description: Offset from beginning of list where to start gathering pictures
+          required: false
+      responses:
+        200:
+          description: Successfully read pictures list operation
+          schema:
+            type: array
+            items:
+              properties:
+                id:
+                  type: integer
+                timestamp:
+                  type: string
+                picPath:
+                  type: string
+                fk_place:
+                  type: integer
+                  description: ID of the place where the picture was sniffed
+    post:
+      operationId: pictures.create
+      tags:
+        - Pictures
+      summary: Create a picture
+      description: Create a picture
+      parameters:
+        - name: picture
+          in: body
+          description: Picture to create
+          required: True
+          schema:
+            type: object
+            properties:
+                id:
+                  type: integer
+                timestamp:
+                  type: string
+                picPath:
+                  type: string
+                fk_place:
+                  type: integer
+                  description: ID of the place where the picture was sniffed
+      responses:
+        201:
+          description: Successfully created picture
+
+  /pictures/{id}:
+    get:
+      operationId: pictures.read_one
+      tags:
+        - Pictures
+      summary: Read one picture
+      description: Read one picture
+      parameters:
+        - name: id
+          in: path
+          description: ID of the picture
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read one picture
+          schema:
+            properties:
+                id:
+                  type: integer
+                timestamp:
+                  type: string
+                picPath:
+                  type: string
+                fk_place:
+                  type: integer
+                  description: ID of the place where the picture was sniffed
+    delete:
+      operationId: pictures.delete
+      tags:
+        - Pictures
+      summary: Delete a picture
+      description: Delete a picture
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully deleted a picture
