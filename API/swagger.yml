@@ -417,6 +417,8 @@ paths:
                   type: boolean
                 fk_vendor:
                   type: string
+        409:
+          description: The ressource already exists
     delete:
       operationId: macs.delete
       tags:
