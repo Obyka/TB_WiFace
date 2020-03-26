@@ -2,7 +2,7 @@ import re
 
 class MAC:
     def __init__(self, address, isRandom, fk_vendor):
-        self.address = address
+        self.address = address.upper()
         self.isRandom = isRandom
         self.fk_vendor = fk_vendor
     

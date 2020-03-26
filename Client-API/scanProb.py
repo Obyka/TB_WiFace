@@ -28,6 +28,7 @@ def postMAC(mac):
     return response.text
 
 def getMACByAddress(address):
+    address = address.upper()
     api_url = '{0}macs/{1}'.format(api_url_base, address)
     response = requests.get(api_url, headers=headers)
     if response.status_code != 200:
@@ -50,18 +51,20 @@ def analyzePacket(packet):
         #print(packet.show())
         # Le paquet est-il un paquet de management et est une probe request
         if packet.type == 0 and packet.subtype == 4:
+            print("Probe!")
             try:
-                address = packet.info.decode('utf-8')
-                mac = getMACByAddress(address)
+                address = packet.addr2
+                json_mac = json.loads(getMACByAddress(address))
             except APIErrorNotFound:
                 try:
-                    mac = MAC(address, MAC.isLocallyAssigned(address), MAC.extractVendor(address))
-                    mac = postMAC(mac)
+                    mac = MAC(address.upper(), MAC.isLocallyAssigned(address), 'F8-4D-33')
+                    json_mac = json.loads(postMAC(mac))
                 except:
                     return
             except APIError:
                 return
-            probe = Probe(mac, 1, 1)
+            
+            probe = Probe(packet.info.decode('utf-8'), 1, json_mac.get('address'))
             postProbeRequest(probe)
             print("SSID: ", packet.addr2)
             print("ESSID : ", packet.info.decode('utf-8'))
@@ -70,7 +73,7 @@ def analyzePacket(packet):
 
 
 
-#sniff(iface=args.i, prn=analyzePacket)
+sniff(iface=args.i, prn=analyzePacket)
 
 probe = Probe("Coucou", 1, "FF:FF:AB:FF:FF:FF")
 mac = MAC("FF:FF:AB:FF:FF:FJ", True, "F8-4D-33")
