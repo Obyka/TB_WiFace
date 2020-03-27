@@ -3,6 +3,8 @@ import connexion
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from os import environ
+
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
