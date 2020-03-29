@@ -13,7 +13,7 @@ class User(db.Model):
 
     def __init__(self, email, password, admin=False):
         self.email = email
-        self.password = User.hash(password)
+        self.password = password
         self.admin = admin
     
     @staticmethod

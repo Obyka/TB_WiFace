@@ -1,10 +1,13 @@
 from config import db
 from models import User, UserSchema
 from flask import abort, make_response, Response
+from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 
+@jwt_required
 def create(user):
     schema = UserSchema()
     new_user = schema.load(user, session=db.session)
+    new_user.password = User.hash(new_user.password)
 
     userDB = User.query \
         .filter(User.email==new_user.email) \
@@ -16,7 +19,11 @@ def create(user):
     db.session.add(new_user)
     db.session.commit()
     status_code = Response(status=201)
-    return status_code
+
+    access_token = create_access_token(identity = new_user.email)
+    refresh_token = create_refresh_token(identity = new_user.email)
+
+    return access_token, 201
 
 def login(user):
     schema = UserSchema()
@@ -28,8 +35,12 @@ def login(user):
         abort(404, "User {email} does not exist".format(email=user.email))
 
     else:
-        if user.password == userDB.password:
-            return "GG t'es loggé", 200
+        if User.verifyHash(user.password, userDB.password):
+            access_token = create_access_token(identity = user.email)
+            refresh_token = create_refresh_token(identity = user.email)
+            return {
+                'access_token': access_token,
+                'refresh_token': refresh_token
+                }
         else:
-            print(user.password, " ", userDB.password)
             abort(401, 'bad auth')

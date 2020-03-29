@@ -778,3 +778,9 @@ paths:
         responses:
           201:
             description: Successfully logged
+            schema:
+              properties:
+                  auth_token:
+                    type: string
+                  refresh_token:
+                    type: string

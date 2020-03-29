@@ -3,7 +3,10 @@ import connexion
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from flask_jwt_extended import JWTManager
 from os import environ
+
+
 
 
 
@@ -23,11 +26,16 @@ app.config["SQLALCHEMY_ECHO"] = True
 app.config["SQLALCHEMY_DATABASE_URI"] = sqlite_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+app.config['SECRET_KEY'] = '***REMOVED***'
+
 # Create the SqlAlchemy db instance
 db = SQLAlchemy(app)
 
 # Initialize Marshmallow
 ma = Marshmallow(app)
+
+# Tokens for auth
+jwtM = JWTManager(app)
 
 def _fk_pragma_on_connect(dbapi_con, con_record):  # noqa
             dbapi_con.execute('pragma foreign_keys=ON')
