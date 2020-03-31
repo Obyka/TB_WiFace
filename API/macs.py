@@ -5,6 +5,7 @@ from models import (
     GoesAlong,
     GoesAlongSchema
 )
+from flask_jwt_extended import jwt_required
 from flask import abort, make_response
 
 def read_pictures(address):
@@ -17,6 +18,7 @@ def read_pictures(address):
     else:
         abort(404, "No pictures found for the address {address}".format(address=address))
 
+@jwt_required
 def read_all():
     macs = MacAddress.query.order_by(MacAddress.address).all()
 
@@ -24,6 +26,7 @@ def read_all():
     macs_scheme = MacAddressSchema(many=True)
     return macs_scheme.dump(macs)
 
+@jwt_required
 def create(mac):
 
     schema = MacAddressSchema()
@@ -43,7 +46,7 @@ def create(mac):
     # Serialize and return the newly created person in the response
     return schema.dump(new_mac), 201
 
-
+@jwt_required
 def read_one(address):
     mac = MacAddress.query \
         .filter(MacAddress.address== address) \
@@ -55,6 +58,7 @@ def read_one(address):
     else:
         abort(404, 'MAC {address} not found'.format(address=address))
 
+@jwt_required
 def delete(address):
     mac = MacAddress.query.filter(MacAddress.address == address).one_or_none()
 

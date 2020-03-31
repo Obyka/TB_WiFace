@@ -1,9 +1,14 @@
 import os
 from config import db
-from models import Probes, MacAddress, Places, Identities, Pictures, GoesAlong, Represents, Vendors
+from models import Probes, MacAddress, Places, Identities, Pictures, GoesAlong, Represents, Vendors, User
 from datetime import datetime
 
+
 # Data to initialize database with
+USERS = [
+    {"email":"polier.florian@gmail.com", "password":"pass", "admin":1}
+]
+
 VENDORS = [
     {"oui":"F8-4D-33", "name" : "Macrohard"},
     {"oui":"F9-4D-33", "name" : "Nintendor"},
@@ -64,6 +69,10 @@ if os.path.exists('probes.db'):
 db.create_all()
 
 # Iterate over the PEOPLE structure and populate the database
+
+for user in USERS:
+    u = User(email=user['email'], password=user['password'], admin=user['admin'])
+    db.session.add(u)
 
 for vendor in VENDORS:
     v = Vendors(oui=vendor['oui'], name=vendor['name'])

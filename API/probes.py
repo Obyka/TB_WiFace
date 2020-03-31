@@ -5,7 +5,9 @@ from models import (
 )
 from flask import abort, make_response
 from flask import request
+from flask_jwt_extended import jwt_required
 
+@jwt_required
 def read_all():
     """
     This function responds to a request for /api/probes
@@ -19,6 +21,7 @@ def read_all():
     probes_scheme = ProbesSchema(many=True)
     return probes_scheme.dump(probes)
 
+@jwt_required
 def create(probe):
     """
     This function creates a new probe
@@ -39,7 +42,7 @@ def create(probe):
     # Serialize and return the newly created person in the response
     return schema.dump(new_probe), 201
 
-
+@jwt_required
 def read_one(id):
     probe = Probes.query \
         .filter(Probes.id == id) \
@@ -51,6 +54,7 @@ def read_one(id):
     else:
         abort(404, 'Probe not found for Id: {probe_id}'.format(probe_id=id))
 
+@jwt_required
 def delete(id):
     probe = Probes.query.filter(Probes.id == id).one_or_none()
 

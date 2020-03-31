@@ -1,6 +1,35 @@
 from datetime import datetime
 from config import db, ma
+from passlib.hash import pbkdf2_sha256
 
+class User(db.Model):
+    """ User Model for storing user related details """
+    __tablename__ = "users"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    admin = db.Column(db.Boolean, nullable=False, default=False)
+
+    def __init__(self, email, password, admin=False):
+        self.email = email
+        self.password = password
+        self.admin = admin
+    
+    @staticmethod
+    def hash(password):
+        return pbkdf2_sha256.hash(password)
+
+    @staticmethod
+    def verifyHash(password, hash):
+        return pbkdf2_sha256.verify(password, hash)
+
+
+    
+class UserSchema(ma.ModelSchema):
+    class Meta:
+        model = User
+        sqla_session = db.session
 
 class Probes(db.Model):
     __tablename__ = "probes"

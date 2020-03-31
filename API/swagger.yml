@@ -734,3 +734,55 @@ paths:
       responses:
         200:
           description: Successfully deleted a picture
+
+  /register:
+    post:
+        operationId: users.create
+        tags:
+          - Users
+        summary: Create an user
+        description: Create an user
+        parameters:
+          - name: user
+            in: body
+            description: user to create
+            required: True
+            schema:
+              type: object
+              properties:
+                  email:
+                    type: string
+                  password:
+                    type: string
+        responses:
+          201:
+            description: Successfully created the user
+
+  /login:
+    post:
+        operationId: users.login
+        tags:
+          - Users
+        summary: Log as an user
+        description: Log as an user
+        parameters:
+          - name: user
+            in: body
+            description: user to create
+            required: True
+            schema:
+              type: object
+              properties:
+                  email:
+                    type: string
+                  password:
+                    type: string
+        responses:
+          201:
+            description: Successfully logged
+            schema:
+              properties:
+                  auth_token:
+                    type: string
+                  refresh_token:
+                    type: string
