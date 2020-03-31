@@ -8,7 +8,9 @@ from models import (
     GoesAlongSchema
 )
 from flask import abort, make_response
+from flask_jwt_extended import jwt_required
 
+@jwt_required
 def read_pictures(address, id):
     goes_along = GoesAlong.query\
             .filter(GoesAlong.fk_mac==address, GoesAlong.fk_picture==id).one_or_none()
@@ -19,6 +21,7 @@ def read_pictures(address, id):
     else:
         abort(404, "Association {address} - {id} not found".format(address=address, id=id))
 
+@jwt_required
 def create(goesalong):
     schema = GoesAlongSchema()
     new_goesalong = schema.load(goesalong, session=db.session)
@@ -30,6 +33,7 @@ def create(goesalong):
     # Serialize and return the newly created person in the response
     return schema.dump(new_goesalong), 201
 
+@jwt_required
 def delete(address, id):
     goesAlong = GoesAlong.query.filter(GoesAlong.fk_mac == address, GoesAlong.fk_picture == id).one_or_none()
 

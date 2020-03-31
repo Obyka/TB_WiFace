@@ -4,7 +4,9 @@ from models import (
     PicturesSchema,
 )
 from flask import abort, make_response
+from flask_jwt_extended import jwt_required
 
+@jwt_required
 def read_all():
     pictures = Pictures.query.order_by(Pictures.timestamp).all()
 
@@ -12,6 +14,7 @@ def read_all():
     pictures_scheme = PicturesSchema(many=True)
     return pictures_scheme.dump(pictures)
 
+@jwt_required
 def create(picture):
     schema = PicturesSchema()
     new_picture = schema.load(picture, session=db.session)
@@ -23,7 +26,7 @@ def create(picture):
     # Serialize and return the newly created person in the response
     return schema.dump(new_picture), 201
 
-
+@jwt_required
 def read_one(id):
     picture = Pictures.query \
         .filter(Pictures.id == id) \
@@ -35,6 +38,7 @@ def read_one(id):
     else:
         abort(404, 'Picture with the id {id} not found'.format(id=id))
 
+@jwt_required
 def delete(id):
     picture = Pictures.query.filter(Pictures.id == id).one_or_none()
 
