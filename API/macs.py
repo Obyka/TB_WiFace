@@ -28,8 +28,16 @@ def read_all():
 
 @jwt_required
 def create(mac):
+
     schema = MacAddressSchema()
     new_mac = schema.load(mac, session=db.session)
+
+    macDB = MacAddress.query \
+        .filter(MacAddress.address==new_mac.address) \
+        .one_or_none()
+
+    if macDB is not None:
+        abort(409, 'MAC {address} already exist'.format(address=new_mac.address))
 
     # Add the person to the database
     db.session.add(new_mac)

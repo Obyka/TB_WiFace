@@ -4,6 +4,7 @@ from models import (
     ProbesSchema,
 )
 from flask import abort, make_response
+from flask import request
 from flask_jwt_extended import jwt_required
 
 @jwt_required
@@ -30,7 +31,7 @@ def create(probe):
     :param probe:  probe to create
     :return:        201 on success
     """
-
+    print(request.headers)
     schema = ProbesSchema()
     new_probe = schema.load(probe, session=db.session)
 
