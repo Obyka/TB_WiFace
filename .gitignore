@@ -3,7 +3,7 @@
 # Edit at https://www.gitignore.io/?templates=python
 
 env/
-
+envAPI/
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
