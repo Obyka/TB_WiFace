@@ -2,48 +2,19 @@ import argparse
 from scapy.all import *
 import json
 from json import JSONEncoder
-import requests
 import datetime
 from MAC import MAC
 from Place import Place
 from Probe import Probe
-from APIException import *
-
+from Auth import User
+from API import *
+import time
 
 parser = argparse.ArgumentParser(description="Scan for probes request")
 parser.add_argument('-i', help="interface wifi en monitor")
 args = parser.parse_args()
 
-#api consts
-headers = {'Content-Type': 'application/json'}
-api_url_base = 'http://localhost:5000/api/'
 
-def postMAC(mac):
-    api_url = '{0}macs'.format(api_url_base)
-    mac_json = {'address':mac.address, 'isRandom':mac.isRandom, 'fk_vendor':mac.fk_vendor}
-    response = requests.post(api_url, headers=headers, json=mac_json)
-    if response.status_code != 201:
-        raise APIError(response.status_code)
-
-    return response.text
-
-def getMACByAddress(address):
-    address = address.upper()
-    api_url = '{0}macs/{1}'.format(api_url_base, address)
-    response = requests.get(api_url, headers=headers)
-    if response.status_code != 200:
-        if response.status_code != 404:
-            raise APIError(response.status_code)
-        else:
-            raise APIErrorNotFound(response.status_code)
-
-    return response.text
-
-def postProbeRequest(probe):
-    api_url = '{0}probes'.format(api_url_base)
-    probe_json = {'fk_mac':probe.fk_mac, 'fk_place':probe.fk_place, 'ssid':probe.ssid}
-    response = requests.post(api_url, headers=headers, json=probe_json)
-    print(response)
 
 def analyzePacket(packet):
     # Le paquet possede-t-il la couche 802.11
@@ -54,18 +25,18 @@ def analyzePacket(packet):
             print("Probe!")
             try:
                 address = packet.addr2
-                json_mac = json.loads(getMACByAddress(address))
+                json_mac = json.loads(API.getMACByAddress(address))
             except APIErrorNotFound:
                 try:
                     mac = MAC(address.upper(), MAC.isLocallyAssigned(address), 'F8-4D-33')
-                    json_mac = json.loads(postMAC(mac))
+                    json_mac = json.loads(API.postMAC(mac))
                 except:
                     return
             except APIError:
                 return
             
             probe = Probe(packet.info.decode('utf-8'), 1, json_mac.get('address'))
-            postProbeRequest(probe)
+            API.postProbeRequest(probe)
             print("SSID: ", packet.addr2)
             print("ESSID : ", packet.info.decode('utf-8'))
 
@@ -73,12 +44,20 @@ def analyzePacket(packet):
 
 
 
-sniff(iface=args.i, prn=analyzePacket)
+#sniff(iface=args.i, prn=analyzePacket)
+creds = User("Obyka","pass")
+MyAPI = API(creds)
+
+
 
 probe = Probe("Coucou", 1, "FF:FF:AB:FF:FF:FF")
 mac = MAC("FF:FF:AB:FF:FF:FJ", True, "F8-4D-33")
-mac2 = MAC("FF:FF:AB:FF:FF:FA", True, "F8-4D-33")
-print(postMAC(mac))
+mac2 = MAC("", True, "F8-4D-33")
+
+while True:
+    print(MyAPI.getMACByAddress("FF:FF:AB:FF:FF:FF"))
+    time.sleep(5)
+
 
 
 
