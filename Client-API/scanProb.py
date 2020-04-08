@@ -10,6 +10,9 @@ from Auth import User
 from API import *
 import time
 
+creds = User("Obyka","pass")
+MyAPI = API(creds)
+
 parser = argparse.ArgumentParser(description="Scan for probes request")
 parser.add_argument('-i', help="interface wifi en monitor")
 args = parser.parse_args()
@@ -45,8 +48,7 @@ def analyzePacket(packet):
 
 
 #sniff(iface=args.i, prn=analyzePacket)
-creds = User("Obyka","pass")
-MyAPI = API(creds)
+
 
 
 

@@ -34,7 +34,7 @@ class API:
     def postIdentity(self, identity):
         headers = {'Content-Type': 'application/json', 'Authorization':'Bearer '+self.get_APIToken().access}
         api_url = '{0}identities'.format(self.api_url_base)
-        identity_json = {'firstname':identity.firstname, 'lastname':identity.lastname, 'mail':identity.mail}
+        identity_json = {'firstname':identity.firstname, 'lastname':identity.lastname, 'mail':identity.mail, 'uuid':identity.uuid}
         response = requests.post(api_url, headers=headers, json=identity_json)
         if response.status_code != 201:
             raise APIError(response.status_code)

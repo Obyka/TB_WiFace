@@ -7,6 +7,11 @@ import os
 import uuid
 from API import API
 from Identity import Identity, Represents
+from Auth import User
+
+
+creds = User("Obyka","pass")
+MyAPI = API(creds)
 
 
 def recognizeFace(client,image,collection):
@@ -19,15 +24,15 @@ def recognizeFace(client,image,collection):
                     face_matched = True
                 return face_matched, response
 
-def add_face_collection(collection, image, name=str(uuid.uuid4)):
+def add_face_collection(collection, image, name=str(uuid.uuid4())):
         #initialize reckognition sdk
         client = boto3.client('rekognition')
-        identity = Identity(name, "", "")
-        API.postIdentity(identity)
         with open(image, mode='rb') as file:
                 response = client.index_faces(Image={'Bytes': file.read()}, CollectionId=collection, ExternalImageId=name, DetectionAttributes=['ALL'])
                 print(len(response))
-                
+        print("name to put in database: ", name)
+        new_identity = Identity("", "", "", name)
+        MyAPI.postIdentity(new_identity)
 
 def detectFace(frame,face_cascade):     
         face_detected = False
@@ -53,6 +58,7 @@ def main():
         parser.add_argument('--face_cascade', help='Path to face cascade.', default='/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascade_frontalface_alt2.xml')
         parser.add_argument('--camera', help='Camera device number.', type=int, default=0)
         args = parser.parse_args()
+
 
         #intialize opencv face detection
         face_cascade_name = args.face_cascade
