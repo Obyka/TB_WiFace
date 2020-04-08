@@ -7,7 +7,7 @@ class API:
 
     def __init__(self, creds):
         self.creds = creds
-        self.api_url_base = 'http://localhost:5000/api/'
+        self.api_url_base = 'http://192.168.0.17:5000/api/'
         self.__APIToken = None
     
     def set_APIToken(self, token):
@@ -29,6 +29,26 @@ class API:
         response = requests.post(api_url, headers=headers, json=login_json)
         if response.status_code == 401:
             raise APIErrorBadAuth(response.status_code)
+        return response.text
+
+    def postIdentity(self, identity):
+        headers = {'Content-Type': 'application/json', 'Authorization':'Bearer '+self.get_APIToken().access}
+        api_url = '{0}identities'.format(self.api_url_base)
+        identity_json = {'firstname':identity.firstname, 'lastname':identity.lastname, 'mail':identity.mail}
+        response = requests.post(api_url, headers=headers, json=identity_json)
+        if response.status_code != 201:
+            raise APIError(response.status_code)
+
+        return response.text
+
+    def postRepresent(self, represent):
+        headers = {'Content-Type': 'application/json', 'Authorization':'Bearer '+self.get_APIToken().access}
+        api_url = '{0}represents'.format(self.api_url_base)
+        represents_json = {'fk_picture':represent.fk_picture, 'fk_identity':represent.fk_identity, 'probability':represent.fk_probability}
+        response = requests.post(api_url, headers=headers, json=represents_json)
+        if response.status_code != 201:
+            raise APIError(response.status_code)
+
         return response.text
 
     def postMAC(self, mac):

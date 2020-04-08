@@ -4,6 +4,10 @@ import argparse
 import boto3
 import time
 import os
+import uuid
+from API import API
+from Identity import Identity, Represents
+
 
 def recognizeFace(client,image,collection):
         face_matched = False
@@ -14,6 +18,16 @@ def recognizeFace(client,image,collection):
                 else:
                     face_matched = True
                 return face_matched, response
+
+def add_face_collection(collection, image, name=str(uuid.uuid4)):
+        #initialize reckognition sdk
+        client = boto3.client('rekognition')
+        identity = Identity(name, "", "")
+        API.postIdentity(identity)
+        with open(image, mode='rb') as file:
+                response = client.index_faces(Image={'Bytes': file.read()}, CollectionId=collection, ExternalImageId=name, DetectionAttributes=['ALL'])
+                print(len(response))
+                
 
 def detectFace(frame,face_cascade):     
         face_detected = False
@@ -29,10 +43,9 @@ def detectFace(frame,face_cascade):
         if len(faces) > 0 :
                 face_detected = True
                 cv.imwrite(image,frame) 
-                print('Your image was saved to %s', image)
+                print('Your image was saved to {}'.format(image))
 
         return face_detected, image
-
 def main():
         #get args
         parser = argparse.ArgumentParser(description='Facial recognition')
@@ -56,7 +69,7 @@ def main():
         cam = cv.VideoCapture(camera_device)
         #setting the buffer size and frames per second, to reduce frames in buffer
         cam.set(cv.CAP_PROP_BUFFERSIZE, 1)
-        cam.set(cv.CAP_PROP_FPS, 2);
+        cam.set(cv.CAP_PROP_FPS, 2)
 
         if not cam.isOpened:
                 print('--(!)Error opening video capture')
@@ -81,11 +94,13 @@ def main():
                         face_matched, response = recognizeFace(client, image , args.collection)
                         print('Face detected!')
                         if (face_matched):
-                            print('Identity matched %s with %r similarity and %r confidence...',response['FaceMatches'][0]['Face']['ExternalImageId'], round(response['FaceMatches'][0]['Similarity'], 1), round(response['FaceMatches'][0]['Face']['Confidence'], 2))
+                            confidence = round(response['FaceMatches'][0]['Face']['Confidence'], 2)
+                            print('Identity matched {} with {} similarity and {} confidence...'.format(response['FaceMatches'][0]['Face']['ExternalImageId'], round(response['FaceMatches'][0]['Similarity'], 1), confidence))
                                 
                         else:
                             print('Unknown Human Detected!')
-                            time.sleep(120)
+                            add_face_collection(args.collection, image)
+                            time.sleep(5)
 
                 if cv.waitKey(20) & 0xFF == ord('q'):
                         break
