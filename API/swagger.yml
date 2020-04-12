@@ -85,7 +85,7 @@ paths:
               id_identity:
                 type: integer
               probability:
-                type: integer
+                type: number
   /represents:
     post:
       operationId: represents.create
@@ -102,7 +102,7 @@ paths:
             type: object
             properties:
               probability:
-                type: integer
+                type: number
               fk_identity:
                 type: integer
               fk_picture:
@@ -114,7 +114,7 @@ paths:
             type: object
             properties:
               probability:
-                type: integer
+                type: number
               fk_picture:
                 type: string
               fk_identity:

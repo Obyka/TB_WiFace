@@ -60,7 +60,7 @@ class GoesAlongSchema(ma.ModelSchema):
 
 class Represents(db.Model):
     __tablename__ = "represents"
-    probability = db.Column(db.Integer)
+    probability = db.Column(db.Float)
     fk_identity = db.Column(db.Integer, db.ForeignKey('identities.id'))
     fk_picture = db.Column(db.Integer, db.ForeignKey('pictures.id'))
     db.PrimaryKeyConstraint(fk_identity, fk_picture, name='represents_pk')
