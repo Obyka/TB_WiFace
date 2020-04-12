@@ -3,10 +3,12 @@ import cv2 as cv
 import argparse
 import boto3
 import time
+from datetime import datetime, timedelta
 import os
 import uuid
-from API import API
+from API import API, APIErrorNotFound
 from Identity import Identity, Represents
+from Picture import Picture
 from Auth import User
 
 
@@ -24,7 +26,7 @@ def recognizeFace(client,image,collection):
                     face_matched = True
                 return face_matched, response
 
-def add_face_collection(collection, image, name=str(uuid.uuid4())):
+def add_face_collection(collection, image, name):
         #initialize reckognition sdk
         client = boto3.client('rekognition')
         with open(image, mode='rb') as file:
@@ -101,11 +103,21 @@ def main():
                         print('Face detected!')
                         if (face_matched):
                             confidence = round(response['FaceMatches'][0]['Face']['Confidence'], 2)
-                            print('Identity matched {} with {} similarity and {} confidence...'.format(response['FaceMatches'][0]['Face']['ExternalImageId'], round(response['FaceMatches'][0]['Similarity'], 1), confidence))
-                                
+                            faceUUID = response['FaceMatches'][0]['Face']['ExternalImageId']
+                            similarity = round(response['FaceMatches'][0]['Similarity'], 1)
+                            try:
+                                picture = Picture(str(datetime.utcnow()), image, 1)
+                                postedPic = MyAPI.postPicture(picture)
+                                foundIdentity = MyAPI.getIdentityByUUID(faceUUID)
+                                rep = Represents(foundIdentity.id, postedPic.id, confidence)
+                                MyAPI.postRepresent(rep)
+                            except APIErrorNotFound as e:
+                                print(e)
+
+                            print('Identity matched {} with {} similarity and {} confidence...'.format(faceUUID, similarity, confidence))
                         else:
                             print('Unknown Human Detected!')
-                            add_face_collection(args.collection, image)
+                            add_face_collection(args.collection, image, str(uuid.uuid4()))
                             time.sleep(5)
 
                 if cv.waitKey(20) & 0xFF == ord('q'):

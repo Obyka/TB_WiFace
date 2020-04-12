@@ -1,9 +1,8 @@
-class Identity:
-  def __init__(self, firstname, lastname, mail, uuid, id=None):
-    self.firstname = firstname
-    self.lastname = lastname
-    self.mail = mail
-    self.uuid = uuid
+class Picture:
+  def __init__(self, timestamp, picPath, fk_place, id=None):
+    self.timestamp = timestamp
+    self.picPath = picPath
+    self.fk_place = fk_place
     if id is not None:
       self.id = id
 
