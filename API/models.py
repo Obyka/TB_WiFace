@@ -99,6 +99,7 @@ class VendorsSchema(ma.ModelSchema):
 class Identities(db.Model):
     __tablename__ = "identities"
     id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String(36), unique=True)
     firstname = db.Column(db.String(32))
     lastname = db.Column(db.String(32))
     mail = db.Column(db.String(64))

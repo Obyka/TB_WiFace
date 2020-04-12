@@ -6,7 +6,7 @@ from datetime import datetime
 
 # Data to initialize database with
 USERS = [
-    {"email":"polier.florian@gmail.com", "password":"pass", "admin":1}
+    {"email":"Obyka", "password":User.hash("pass"), "admin":1}
 ]
 
 VENDORS = [
@@ -34,9 +34,9 @@ PLACES = [
 ]
 
 IDENTITIES = [
-    {"id":1,"firstname" : "Bruce", "lastname" : "Wayne", "mail" : "bruce.wayne@iamnotbatman.com"},
-    {"id":2,"firstname" : "Geralt", "lastname" : "De Riv", "mail" : "thewhitewolf@gmail.com"},
-    {"id":3,"firstname" : "Florian", "lastname" : "Polier", "mail" : "florian.polier@heig-vd.ch"}
+    {"id":1,"firstname" : "Bruce", "lastname" : "Wayne", "mail" : "bruce.wayne@iamnotbatman.com", "uuid":"f8d9c454-443e-45d0-937f-17b676dd6fde"},
+    {"id":2,"firstname" : "Geralt", "lastname" : "De Riv", "mail" : "thewhitewolf@gmail.com", "uuid":"3cf2fca0-f743-415b-ac3d-728121d64bae"},
+    {"id":3,"firstname" : "Florian", "lastname" : "Polier", "mail" : "florian.polier@heig-vd.ch", "uuid":"629fa6e3-4b6b-49d4-abef-29829c1f860e"}
 ]
 
 PICTURES = [
@@ -91,7 +91,7 @@ for place in PLACES:
     db.session.add(p)
 
 for identity in IDENTITIES:
-    i = Identities(id=identity['id'],firstname=identity['firstname'], lastname=identity['lastname'], mail=identity['mail'])
+    i = Identities(id=identity['id'],firstname=identity['firstname'], lastname=identity['lastname'], mail=identity['mail'], uuid=identity['uuid'])
     db.session.add(i)
 
 for picture in PICTURES:

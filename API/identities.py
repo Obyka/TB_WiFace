@@ -36,6 +36,17 @@ def create(identitiy):
     # Serialize and return the newly created person in the response
     return schema.dump(new_identity), 201
 
+def read_one_by_uuid(uuid):
+    identity = Identities.query \
+        .filter(Identities.uuid == uuid) \
+        .one_or_none()
+
+    if identity is not None:
+        identity_schema = IdentitiesSchema()
+        return identity_schema.dump(identity)
+    else:
+        abort(404, 'identity with the id {uuid} not found'.format(uuid=uuid))
+
 
 def read_one(id):
     identity = Identities.query \

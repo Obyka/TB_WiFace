@@ -565,6 +565,8 @@ paths:
                     type: string
                   mail:
                     type: string
+                  uuid:
+                    type: string
         post:
           operationId: identities.create
           tags:
@@ -587,10 +589,41 @@ paths:
                     type: string
                   mail:
                     type: string
+                  uuid:
+                    type: string
           responses:
             201:
               description: Successfully created the identitiy
   
+  /identities/uuid/{uuid}:
+    get:
+      operationId: identities.read_one_by_uuid
+      tags:
+        - Identities
+      summary: Read one identitiy by its uuid
+      description: Read one identitiy by its uuid
+      parameters:
+        - name: uuid
+          in: path
+          description: identitiy to get details of
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully read one identitiy
+          schema:
+            properties:
+              id:
+                type: integer
+              firstname:
+                type: string
+              lastname:
+                type: string
+              mail:
+                type: string
+              uuid:
+                type: string
+
   /identities/{id}:
     get:
       operationId: identities.read_one
@@ -616,6 +649,8 @@ paths:
               lastname:
                 type: string
               mail:
+                type: string
+              uuid:
                 type: string
     delete:
       operationId: identities.delete
