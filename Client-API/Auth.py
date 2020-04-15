@@ -1,11 +1,15 @@
+from dataclasses import dataclass
+@dataclass
 class User:
-  def __init__(self, email, password):
-    self.email = email
-    self.password = password
+    """Simple dataclass to represent an user
+    """
+    email: str
+    password: str
 
+@dataclass
 class Token:
-  def __init__(self, access, refresh, timestamp):
-      self.access = access
-      self.refresh = refresh
-      self.timestamp = timestamp
-      
+    """Simple dataclass to represent a token
+    """
+    access: str
+    refresh: str
+    timestamp: str

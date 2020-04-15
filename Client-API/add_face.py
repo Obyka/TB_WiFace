@@ -4,7 +4,7 @@ import boto3
 import time
 import os
 
-#get args
+#get args from client
 parser = argparse.ArgumentParser(description='Capture image and add to collection.')
 parser.add_argument('--collection', help='Collection Name', default='wiface-faces')
 parser.add_argument('--name', help='Face Name')

@@ -1,14 +1,19 @@
+from dataclasses import dataclass
 class Identity:
-  def __init__(self, firstname, lastname, mail, uuid, id=None):
-    self.firstname = firstname
-    self.lastname = lastname
-    self.mail = mail
-    self.uuid = uuid
-    if id is not None:
-      self.id = id
+    """Simple class to represent an identity
+    """
+    def __init__(self, firstname, lastname, mail, uuid, id=None):
+        self.firstname = firstname
+        self.lastname = lastname
+        self.mail = mail
+        self.uuid = uuid
+        if id is not None:
+            self.id = id
 
+@dataclass
 class Represents:
-  def __init__(self, fk_identity, fk_picture, probability):
-    self.fk_identity = fk_identity
-    self.fk_picture = fk_picture
-    self.probability = probability
+    """Simple dataclass to represent the link between an identity and a picture
+    """
+    fk_identity: int
+    fk_picture: int
+    probability: float

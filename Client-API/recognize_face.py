@@ -13,46 +13,72 @@ from Auth import User
 
 
 creds = User("Obyka","pass")
-MyAPI = API(creds)
-
+MyAPI = API(creds, "http://92.222.64.114:5555/api/")
 
 def recognizeFace(client,image,collection):
-        face_matched = False
-        with open(image, 'rb') as file:
-                response = client.search_faces_by_image(CollectionId=collection, Image={'Bytes': file.read()}, MaxFaces=1, FaceMatchThreshold=85)
-                if (not response['FaceMatches']):
-                    face_matched = False
-                else:
-                    face_matched = True
-                return face_matched, response
+    """[Check in an Amazon Rekognition collection if a given image contains one of its faces]
+    
+    Arguments:
+        client {[object]} -- [boto3 client]
+        image {[file]} -- [image to check]
+        collection {[string]} -- [collection name]
+    
+    Returns:
+        [bool] -- [Is the face in the collection ?]
+        [type] -- [Amazon rekognition's response]
+    """
+    face_matched = False
+    with open(image, 'rb') as file:
+            response = client.search_faces_by_image(CollectionId=collection, Image={'Bytes': file.read()}, MaxFaces=1, FaceMatchThreshold=85)
+            if (not response['FaceMatches']):
+                face_matched = False
+            else:
+                face_matched = True
+            return face_matched, response
 
 def add_face_collection(collection, image, name):
-        #initialize reckognition sdk
-        client = boto3.client('rekognition')
-        with open(image, mode='rb') as file:
-                response = client.index_faces(Image={'Bytes': file.read()}, CollectionId=collection, ExternalImageId=name, DetectionAttributes=['ALL'])
-                print(len(response))
-        print("name to put in database: ", name)
-        new_identity = Identity("", "", "", name)
-        MyAPI.postIdentity(new_identity)
+    """Index the face contained in an image and add it in a collection
+    
+    Arguments:
+        collection {[string]} -- [Collection name where to add the face]
+        image {[file]} -- [image to extract the face from]
+        name {[type]} -- [identity UUID linked to the face]
+    """
+    #initialize reckognition sdk
+    client = boto3.client('rekognition')
+    with open(image, mode='rb') as file:
+            response = client.index_faces(Image={'Bytes': file.read()}, CollectionId=collection, ExternalImageId=name, DetectionAttributes=['ALL'])
+            print(len(response))
+    print("name to put in database: ", name)
+    new_identity = Identity("", "", "", name)
+    MyAPI.postIdentity(new_identity)
 
-def detectFace(frame,face_cascade):     
-        face_detected = False
-        #Detect faces
-        faces = face_cascade.detectMultiScale(frame,
-                scaleFactor=1.1,
-                minNeighbors=5,
-                minSize=(30, 30),
-                flags = cv.CASCADE_SCALE_IMAGE)
-        print("Found {0} faces!".format(len(faces)))
-        timestr = time.strftime("%Y%m%d-%H%M%S")
-        image = '{0}/image_{1}.png'.format(directory, timestr)
-        if len(faces) > 0 :
-                face_detected = True
-                cv.imwrite(image,frame) 
-                print('Your image was saved to {}'.format(image))
+def detectFace(frame,face_cascade):
+    """OpenCV face detection using pre-trained cascade
+    
+    Arguments:
+        frame {[file]} -- [image which may contain a face]
+        face_cascade {[file]} -- [pre-trained cascade to detect face]
+    
+    Returns:
+        [face_detected] -- [Does the image contain a face?]
+        [string] -- [Path of the saved image]
+    """  
+    face_detected = False
+    faces = face_cascade.detectMultiScale(frame,
+            scaleFactor=1.1,
+            minNeighbors=5,
+            minSize=(30, 30),
+            flags = cv.CASCADE_SCALE_IMAGE)
+    print("Found {0} faces!".format(len(faces)))
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    image = '{0}/image_{1}.png'.format(directory, timestr)
+    if len(faces) > 0 :
+            face_detected = True
+            cv.imwrite(image,frame) 
+            print('Your image was saved to {}'.format(image))
 
-        return face_detected, image
+    return face_detected, image
 def main():
         #get args
         parser = argparse.ArgumentParser(description='Facial recognition')

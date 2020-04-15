@@ -10,12 +10,12 @@ from Auth import User
 from API import *
 import time
 
-creds = User("Obyka","pass")
-MyAPI = API(creds)
-
 parser = argparse.ArgumentParser(description="Scan for probes request")
 parser.add_argument('-i', help="interface wifi en monitor")
 args = parser.parse_args()
+
+creds = User("Obyka","pass")
+MyAPI = API(creds, "http://92.222.64.114:5555/api/")
 
 
 
@@ -28,18 +28,18 @@ def analyzePacket(packet):
             print("Probe!")
             try:
                 address = packet.addr2
-                json_mac = json.loads(API.getMACByAddress(address))
+                ret_mac = MyAPI.getMACByAddress(address)
             except APIErrorNotFound:
                 try:
                     mac = MAC(address.upper(), MAC.isLocallyAssigned(address), 'F8-4D-33')
-                    json_mac = json.loads(API.postMAC(mac))
+                    ret_mac = MyAPI.postMAC(mac)
                 except:
                     return
             except APIError:
                 return
             
-            probe = Probe(packet.info.decode('utf-8'), 1, json_mac.get('address'))
-            API.postProbeRequest(probe)
+            probe = Probe(packet.info.decode('utf-8'), 1, ret_mac.address)
+            MyAPI.postProbeRequest(probe)
             print("SSID: ", packet.addr2)
             print("ESSID : ", packet.info.decode('utf-8'))
 
@@ -55,10 +55,6 @@ def analyzePacket(packet):
 probe = Probe("Coucou", 1, "FF:FF:AB:FF:FF:FF")
 mac = MAC("FF:FF:AB:FF:FF:FJ", True, "F8-4D-33")
 mac2 = MAC("", True, "F8-4D-33")
-
-while True:
-    print(MyAPI.getMACByAddress("FF:FF:AB:FF:FF:FF"))
-    time.sleep(5)
 
 
 
