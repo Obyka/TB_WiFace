@@ -2,17 +2,14 @@ import os
 from config import db
 from models import Probes, MacAddress, Places, Identities, Pictures, GoesAlong, Represents, Vendors, User
 from datetime import datetime
-
-
+from xml.dom import minidom
 # Data to initialize database with
+
+xmldoc = minidom.parse('vendors.xml')
+VendorsList = xmldoc.getElementsByTagName('VendorMapping')
+
 USERS = [
     {"email":"Obyka", "password":User.hash("pass"), "admin":1}
-]
-
-VENDORS = [
-    {"oui":"F8-4D-33", "name" : "Macrohard"},
-    {"oui":"F9-4D-33", "name" : "Nintendor"},
-    {"oui":"F8-EE-33", "name" : "Plop"}
 ]
 
 PROBES = [
@@ -22,9 +19,9 @@ PROBES = [
 ]
 
 MACS = [
-    {"address" : "FF:FF:FF:FF:FF:FF", "isRandom" : False, "fk_vendor" : "F8-4D-33"},
-    {"address" : "FF:FF:FF:FF:FF:EF", "isRandom" : True, "fk_vendor" : "F8-4D-33"},
-    {"address" : "FF:FF:AB:FF:FF:FF", "isRandom" : False, "fk_vendor" : "F8-4D-33"}
+    {"address" : "FF:FF:FF:FF:FF:FF", "isRandom" : False, "fk_vendor" : "DC:F0:90"},
+    {"address" : "FF:FF:FF:FF:FF:EF", "isRandom" : True, "fk_vendor" : "E0:02:A5"},
+    {"address" : "FF:FF:AB:FF:FF:FF", "isRandom" : False, "fk_vendor" : "FC:F8:AE"}
 ]
 
 PLACES = [
@@ -70,13 +67,18 @@ db.create_all()
 
 # Iterate over the PEOPLE structure and populate the database
 
+for vendor in VendorsList:
+    v = Vendors(name=vendor.attributes['vendor_name'].value, oui=vendor.attributes['mac_prefix'].value.upper())
+    #print(vendor.attributes['mac_prefix'].value.upper())
+    db.session.add(v)
+
 for user in USERS:
     u = User(email=user['email'], password=user['password'], admin=user['admin'])
     db.session.add(u)
 
-for vendor in VENDORS:
+""" for vendor in VENDORS:
     v = Vendors(oui=vendor['oui'], name=vendor['name'])
-    db.session.add(v)
+    db.session.add(v) """
 
 for mac in MACS:
     m = MacAddress(address=mac['address'], isRandom=mac['isRandom'], fk_vendor=mac['fk_vendor'])

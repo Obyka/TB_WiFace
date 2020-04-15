@@ -23,8 +23,6 @@ class User(db.Model):
     @staticmethod
     def verifyHash(password, hash):
         return pbkdf2_sha256.verify(password, hash)
-
-
     
 class UserSchema(ma.ModelSchema):
     class Meta:
