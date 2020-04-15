@@ -8,6 +8,7 @@ from models import (
 from flask_jwt_extended import jwt_required
 from flask import abort, make_response
 
+@jwt_required
 def read_pictures(address):
     goes_along = GoesAlong.query\
             .filter(GoesAlong.fk_mac==address).all()

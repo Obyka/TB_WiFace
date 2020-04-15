@@ -6,7 +6,9 @@ from models import (
     RepresentsSchema
 )
 from flask import abort, make_response
+from flask_jwt_extended import jwt_required
 
+@jwt_required
 def read_pictures(id_identity):
     represent = Represents.query\
             .filter(Represents.fk_identity==id_identity).all()
@@ -17,7 +19,7 @@ def read_pictures(id_identity):
     else:
         abort(404, "No pictures found for the identity {id_identity}".format(id_identity=id_identity))
 
-
+@jwt_required
 def read_all():
     identities = Identities.query.order_by(Identities.lastname).all()
 
@@ -25,6 +27,7 @@ def read_all():
     Identities_scheme = IdentitiesSchema(many=True)
     return Identities_scheme.dump(identities)
 
+@jwt_required
 def create(identitiy):
     schema = IdentitiesSchema()
     new_identity = schema.load(identitiy, session=db.session)
@@ -36,6 +39,7 @@ def create(identitiy):
     # Serialize and return the newly created person in the response
     return schema.dump(new_identity), 201
 
+@jwt_required
 def read_one_by_uuid(uuid):
     identity = Identities.query \
         .filter(Identities.uuid == uuid) \
@@ -47,7 +51,7 @@ def read_one_by_uuid(uuid):
     else:
         abort(404, 'identity with the id {uuid} not found'.format(uuid=uuid))
 
-
+@jwt_required
 def read_one(id):
     identity = Identities.query \
         .filter(Identities.id == id) \
@@ -59,6 +63,7 @@ def read_one(id):
     else:
         abort(404, 'identity with the id {id} not found'.format(id=id))
 
+@jwt_required
 def delete(id):
     identity = Identities.query.filter(Identities.id == id).one_or_none()
 
