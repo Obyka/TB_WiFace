@@ -1,0 +1,72 @@
+This is BibTeX, Version 0.99d (TeX Live 2017/Debian)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: tb_report.aux
+The style file: plain.bst
+Database file #1: chapters/biblio.bib
+Warning--entry type for "BROWIFI" isn't style-file defined
+--line 1 of file chapters/biblio.bib
+Warning--entry type for "RANMAC1" isn't style-file defined
+--line 9 of file chapters/biblio.bib
+Warning--entry type for "WIFIKARMA" isn't style-file defined
+--line 28 of file chapters/biblio.bib
+Warning--entry type for "NANOWIKIT4" isn't style-file defined
+--line 36 of file chapters/biblio.bib
+Warning--entry type for "MITPROBE" isn't style-file defined
+--line 71 of file chapters/biblio.bib
+Warning--entry type for "MACDEAKYN" isn't style-file defined
+--line 79 of file chapters/biblio.bib
+Warning--entry type for "FLASKREST" isn't style-file defined
+--line 88 of file chapters/biblio.bib
+Warning--entry type for "FLASKJWT" isn't style-file defined
+--line 106 of file chapters/biblio.bib
+Warning--entry type for "COMPFAV" isn't style-file defined
+--line 114 of file chapters/biblio.bib
+Warning--entry type for "OPENCVINSTRASP" isn't style-file defined
+--line 122 of file chapters/biblio.bib
+Warning--entry type for "PRICEAZURE" isn't style-file defined
+--line 130 of file chapters/biblio.bib
+Warning--entry type for "NYTIME" isn't style-file defined
+--line 148 of file chapters/biblio.bib
+Warning--empty institution in Grother2019
+You've used 20 entries,
+            2118 wiz_defined-function locations,
+            602 strings with 6626 characters,
+and the built_in function-call counts, 4473 in all, are:
+= -- 438
+> -- 169
+< -- 0
++ -- 74
+- -- 52
+* -- 190
+:= -- 766
+add.period$ -- 69
+call.type$ -- 20
+change.case$ -- 87
+chr.to.int$ -- 0
+cite$ -- 21
+duplicate$ -- 151
+empty$ -- 420
+format.name$ -- 52
+if$ -- 957
+int.to.chr$ -- 0
+int.to.str$ -- 20
+missing$ -- 2
+newline$ -- 112
+num.names$ -- 34
+pop$ -- 140
+preamble$ -- 1
+purify$ -- 69
+quote$ -- 0
+skip$ -- 122
+stack$ -- 0
+substring$ -- 129
+swap$ -- 19
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 80
+warning$ -- 1
+while$ -- 35
+width$ -- 22
+write$ -- 221
+(There were 13 warnings)

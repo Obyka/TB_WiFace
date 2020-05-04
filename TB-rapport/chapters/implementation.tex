@@ -1,0 +1,31 @@
+\chapter{Implémentation}
+\label{ch:implémentation}
+
+\section{La base de données}
+
+\section{L'API WiFace}
+
+\subsection{Choix de la stack}
+
+Du côté serveur, le langage utilisé est le Python (3.7). Pour faciliter le développement d’une API rest, le micro-
+framework \textbf{Flask} a été choisi. Au vu de la documentation et de mon expérience personnelle, ce choix est pertinent
+dans le cadre de ce projet.
+
+Avantages de Flask :
+\begin{itemize}
+\item Simple et léger
+\item Convient bien au développement d’application de petite ou moyenne envergure
+\item Très flexible
+\item Prise en main rapide
+\item Compatible avec l’ORM sqlalchemy
+\end{itemize}
+
+L’ORM qui a été choisi pour fonctionner avec Flask est \textbf{SQLAlchemy}. Il existe en effet un module python flask-
+sqlalchemy qui rend l’intégration simple.
+Les données sont sérialisées à l’aide de \textbf{marshmallow}.
+La gestion de l’authentification se fait à l’aide de token JWT et du module correspondant \textbf{flask-jwt} et \textbf{pyjwt}
+La spécification est écrite à l’aide de swagger, qui propose également une documentation automatique.
+
+\section{Le client Raspberry}
+
+\section{Algorithme PP2I}

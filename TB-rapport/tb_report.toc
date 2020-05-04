@@ -1,0 +1,69 @@
+\babel@toc {french}{}
+\contentsline {chapter}{Pr\IeC {\'e}ambule}{iii}{chapter*.1}
+\contentsline {chapter}{Authentification}{iv}{chapter*.2}
+\contentsline {chapter}{Cahier des charges}{v}{chapter*.3}
+\contentsline {chapter}{\numberline {1}Probl\IeC {\'e}matique et \IeC {\'E}tat de l'Art}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}Introduction}{1}{section.1.1}
+\contentsline {section}{\numberline {1.2}Travail \IeC {\`a} effectuer}{1}{section.1.2}
+\contentsline {section}{\numberline {1.3}Quelques projets existants}{1}{section.1.3}
+\contentsline {chapter}{\numberline {2}\IeC {\'E}tude sur la l\IeC {\'e}gislation}{2}{chapter.2}
+\contentsline {section}{\numberline {2.1}Cas d\IeC {\textquoteright }utilisation}{2}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}Shopping : Publicit\IeC {\'e} cibl\IeC {\'e}e}{2}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}Analyse de fr\IeC {\'e}quentation d\IeC {\textquoteright }un espace publique et pr\IeC {\'e}diction de d\IeC {\'e}placement}{3}{subsection.2.1.2}
+\contentsline {subsection}{\numberline {2.1.3}Forensique}{4}{subsection.2.1.3}
+\contentsline {section}{\numberline {2.2}D\IeC {\'e}finitions}{4}{section.2.2}
+\contentsline {section}{\numberline {2.3}Articles affectant le projet}{5}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Section 1, Art 3, alin\IeC {\'e}a 2}{5}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2}Section 1, Art 5, alin\IeC {\'e}a 1}{5}{subsection.2.3.2}
+\contentsline {subsection}{\numberline {2.3.3}Section 3, Art 12, alin\IeC {\'e}a 2}{6}{subsection.2.3.3}
+\contentsline {section}{\numberline {2.4}Conclusion}{6}{section.2.4}
+\contentsline {chapter}{\numberline {3}\IeC {\'E}thique et moralit\IeC {\'e} des syst\IeC {\`e}mes de surveillance}{7}{chapter.3}
+\contentsline {section}{\numberline {3.1}La reconnaissance faciale, une technologie d\IeC {\'e}shumanisante}{7}{section.3.1}
+\contentsline {section}{\numberline {3.2}L\IeC {\textquoteright }opposition entre s\IeC {\'e}curit\IeC {\'e} et confidentialit\IeC {\'e}}{8}{section.3.2}
+\contentsline {section}{\numberline {3.3}Le function creep}{8}{section.3.3}
+\contentsline {section}{\numberline {3.4}La fiabilit\IeC {\'e} et les erreurs}{8}{section.3.4}
+\contentsline {section}{\numberline {3.5}La vie priv\IeC {\'e}e}{9}{section.3.5}
+\contentsline {section}{\numberline {3.6}Conclusion}{10}{section.3.6}
+\contentsline {chapter}{\numberline {4}\IeC {\'E}tude de march\IeC {\'e}}{11}{chapter.4}
+\contentsline {section}{\numberline {4.1}Nano-ordinateurs}{11}{section.4.1}
+\contentsline {section}{\numberline {4.2}Cam\IeC {\'e}ra pour la reconnaissance faciale}{12}{section.4.2}
+\contentsline {section}{\numberline {4.3}Antenne 802.11}{12}{section.4.3}
+\contentsline {chapter}{\numberline {5}Conception}{13}{chapter.5}
+\contentsline {section}{\numberline {5.1}La base de donn\IeC {\'e}e}{13}{section.5.1}
+\contentsline {subsection}{\numberline {5.1.1}Mod\IeC {\`e}le entit\IeC {\'e}-association}{13}{subsection.5.1.1}
+\contentsline {subsubsection}{\numberline {5.1.1.1}Premi\IeC {\`e}re version}{14}{subsubsection.5.1.1.1}
+\contentsline {subsubsection}{\numberline {5.1.1.2}Deuxi\IeC {\`e}me version \IeC {\textendash } Mod\IeC {\'e}lisation des probabilit\IeC {\'e}s}{14}{subsubsection.5.1.1.2}
+\contentsline {subsubsection}{\numberline {5.1.1.3}Troisi\IeC {\`e}me version \IeC {\textendash } Identit\IeC {\'e} \IeC {\`a} partir d\IeC {\textquoteright }une photographie}{15}{subsubsection.5.1.1.3}
+\contentsline {section}{\numberline {5.2}API rest}{16}{section.5.2}
+\contentsline {section}{\numberline {5.3}L'API WiFace}{16}{section.5.3}
+\contentsline {section}{\numberline {5.4}Le client Raspberry}{16}{section.5.4}
+\contentsline {section}{\numberline {5.5}Algorithme PP2I}{16}{section.5.5}
+\contentsline {chapter}{\numberline {6}Reconnaissance faciale}{17}{chapter.6}
+\contentsline {subsection}{\numberline {6.0.1}Une petite touche de th\IeC {\'e}orie}{17}{subsection.6.0.1}
+\contentsline {section}{\numberline {6.1}Choix de la solution}{18}{section.6.1}
+\contentsline {subsection}{\numberline {6.1.1}Performences}{19}{subsection.6.1.1}
+\contentsline {subsection}{\numberline {6.1.2}Tarification}{21}{subsection.6.1.2}
+\contentsline {subsubsection}{\numberline {6.1.2.1}Kairos}{21}{subsubsection.6.1.2.1}
+\contentsline {subsubsection}{\numberline {6.1.2.2}Microsoft Azure Face}{21}{subsubsection.6.1.2.2}
+\contentsline {subsubsection}{\numberline {6.1.2.3}Amazon AWS rekognition}{21}{subsubsection.6.1.2.3}
+\contentsline {subsection}{\numberline {6.1.3}Facilit\IeC {\'e} d\IeC {\textquoteright }utilisation}{21}{subsection.6.1.3}
+\contentsline {subsection}{\numberline {6.1.4}Choix de la solution}{22}{subsection.6.1.4}
+\contentsline {section}{\numberline {6.2}Amazon Rekognition : pr\IeC {\'e}sentation}{22}{section.6.2}
+\contentsline {subsection}{\numberline {6.2.1}Concepts et op\IeC {\'e}rations}{22}{subsection.6.2.1}
+\contentsline {subsection}{\numberline {6.2.2}Pr\IeC {\'e}requis}{23}{subsection.6.2.2}
+\contentsline {chapter}{\numberline {7}Les probes requests}{25}{chapter.7}
+\contentsline {section}{\numberline {7.1}Quelques explications}{25}{section.7.1}
+\contentsline {section}{\numberline {7.2}Scapy et le sniffing}{25}{section.7.2}
+\contentsline {chapter}{\numberline {8}Impl\IeC {\'e}mentation}{26}{chapter.8}
+\contentsline {section}{\numberline {8.1}La base de donn\IeC {\'e}es}{26}{section.8.1}
+\contentsline {section}{\numberline {8.2}L'API WiFace}{26}{section.8.2}
+\contentsline {subsection}{\numberline {8.2.1}Choix de la stack}{26}{subsection.8.2.1}
+\contentsline {section}{\numberline {8.3}Le client Raspberry}{27}{section.8.3}
+\contentsline {section}{\numberline {8.4}Algorithme PP2I}{27}{section.8.4}
+\contentsline {chapter}{\numberline {9}Tests du prototype}{28}{chapter.9}
+\contentsline {chapter}{\numberline {10}Conclusion}{29}{chapter.10}
+\contentsline {section}{\numberline {10.1}Difficult\IeC {\'e}s rencontr\IeC {\'e}es}{29}{section.10.1}
+\contentsline {section}{\numberline {10.2}Am\IeC {\'e}liorations futures}{29}{section.10.2}
+\contentsline {section}{\numberline {10.3}Retour personnel}{29}{section.10.3}
+\contentsline {section}{\numberline {10.4}Remerciements}{29}{section.10.4}
+\contentsline {chapter}{Bibliographie}{30}{section.10.4}

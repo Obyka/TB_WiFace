@@ -1,0 +1,133 @@
+\documentclass[a4paper,11pt,oneside,openright]{book} % Type du document
+
+% compiler avec : pdflatex, bibtex, pdflatex, pdflatex
+
+
+% +---------------------------------------------------------------+
+% | Language
+% +---------------------------------------------------------------+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{multirow}
+\def\UrlBreaks{\do\.\do\@\do\\\do\/\do\!\do\_\do\|\do\;\do\>%
+\do\]\do\)\do\,\do\?\do\'\do+\do\=\do\#\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z%
+\do\A\do\B\do\C\do\D\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X\do\Y\do\Z%
+\do\1\do\2\do\3\do\4\do\5\do\6\do\7\do\8\do\9\do\%\do\=}%
+
+\newif\ifisconfidential	\isconfidentialfalse
+
+\newif\ifisdraft\isdraftfalse
+
+
+
+% +---------------------------------------------------------------+
+% | Paramètres
+% +---------------------------------------------------------------+
+
+\newcommand{\TBtitle}{WiFace}
+\newcommand{\TBsubtitle}{WiFace - Identification et suivi de personnes utilisant le WiFi du téléphone mobile}%laisser vide si pas de sous-titre
+\newcommand{\TByear}{2020}
+\newcommand{\TBacademicYears}{2019-2020}
+
+\newcommand{\TBdpt}{Département des Technologie de l'information et de la communication (TIC)}
+\newcommand{\TBfiliere}{Filière Télécommunications}
+\newcommand{\TBorient}{Orientation Sécurité de l'information}
+
+\newcommand{\TBauthor}{Florian Polier}
+\newcommand{\TBsupervisor}{Prof. Abraham Rubinstein}
+\newcommand{\TBindustryContact}{-}
+\newcommand{\TBindustryName}{-}
+\newcommand{\TBindustryAddress}{-}
+
+% Confidentiel?
+% uncomment if confidential / comment if not confiential
+% \isconfidentialtrue
+
+\newcommand{\TBresumePubliable}{
+Dans ce travail... Ceci est le résumé publiable...
+}
+
+% +---------------------------------------------------------------+
+
+
+
+% +-[set path]-------------------------------------+
+\usepackage{template/TB-style}
+\usepackage{template/TB-macros}
+\usepackage{template/TB-template}
+%\graphicspath{images/}
+
+
+\begin{document}
+
+\frontmatter
+\pagestyle{empty}
+
+% TITLE and template
+% +---------------------------------------------------------------+
+
+\TBmaketitle
+
+\pagestyle{frontmatter}
+
+\TBsecondTitle
+
+\TBpreambule
+
+\TBauthentification
+
+
+% Cahier des charges
+% +---------------------------------------------------------------+
+\input{chapters/cdc}
+
+
+% TOC
+% +---------------------------------------------------------------+
+\tableofcontents
+\clearpage
+
+
+% Content
+% +---------------------------------------------------------------+
+
+\mainmatter
+\pagestyle{plain}
+
+\input{chapters/problematic}
+
+\input{chapters/etude-legislation}
+
+\input{chapters/etude-moralite}
+
+\input{chapters/etude-de-marche}
+
+\input{chapters/conception}
+
+\input{chapters/reco_faciale}
+
+\input{chapters/probe_req}
+
+\input{chapters/implementation}
+
+\input{chapters/test}
+
+\input{chapters/conclusion}
+
+% +---------------------------------------------------------------+
+\cleardoublepage
+\addcontentsline{toc}{chapter}{Bibliographie}
+\bibliographystyle{plain}
+\bibliography{chapters/biblio}
+\nocite{*} %ajoute tout ce qu'il y a dans le bibtex
+
+\listoffigures
+\listoftables
+
+% Annexes
+% +---------------------------------------------------------------+
+\appendix
+
+\end{document}
