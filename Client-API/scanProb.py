@@ -16,6 +16,7 @@ args = parser.parse_args()
 
 creds = User("Obyka","pass")
 MyAPI = API(creds, "http://92.222.64.114:5555/api/")
+mac_dic = dict()
 
 def analyzePacket(packet):
     # Le paquet possede-t-il la couche 802.11
@@ -24,14 +25,18 @@ def analyzePacket(packet):
         # Le paquet est-il un paquet de management et est une probe request
         if packet.type == 0 and packet.subtype == 4:
             print("Probe!")
+            address = packet.addr2
+            if address not in mac_dic or (datetime.utcnow() - mac_dic[address]) / timedelta(seconds=1) > 60:
+                mac_dic[address] = datetime.utcnow()
+            else:
+                return
             try:
-                address = packet.addr2
                 ret_mac = MyAPI.getMACByAddress(address)
             except APIErrorNotFound:
                 try:
                     vendor = MAC.extractVendor(address.upper())
-                    vendor = vendor if MyAPI.getVendorByOUI(vendor) else "UNDEFINED"
-                    mac = MAC(address.upper(), MAC.isLocallyAssigned(address), vendor)
+                    vendor = vendor if MyAPI.getVendorByOUI(vendor) else "UNDEF"
+                    mac = MAC(address.upper(), MAC.isRandomFunc(address), vendor)
                     ret_mac = MyAPI.postMAC(mac)
                 except Exception as e:
                     print(e)
@@ -45,10 +50,6 @@ def analyzePacket(packet):
             print("ESSID : ", packet.info.decode('utf-8'))
 
 sniff(iface=args.i, prn=analyzePacket)
-
-probe = Probe("Coucou", 1, "FF:FF:AB:FF:FF:FF")
-mac = MAC("FF:FF:AB:FF:FF:FJ", True, "F8-4D-33")
-mac2 = MAC("", True, "F8-4D-33")
 
 
 

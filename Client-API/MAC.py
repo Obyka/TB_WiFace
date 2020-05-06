@@ -46,6 +46,19 @@ class MAC:
                         in zip(*[iter('{:012x}'.format(intAddress))]*2)])
 
     @staticmethod
+    def isRandomFunc(address):
+        """Check if a given MAC address is random given what we know about MAC address randomisation
+
+        Arguments:
+            address {[string]} -- [mac address to check]
+
+        Returns:
+            [bool] -- [is the given address random]
+        """
+        return MAC.isLocallyAssigned(address) or MAC.extractVendor(address).upper() == "DA:A1:19" or MAC.extractVendor(address).upper() == "92:68:C3"
+
+    
+    @staticmethod
     def isLocallyAssigned(address):
         """Check the locally assigned bit. if it is set, we assume the address is random
         
@@ -53,7 +66,7 @@ class MAC:
             address {[string]} -- [mac address to check]
         
         Returns:
-            [bool] -- [is the given address random]
+            [bool] -- [is the given address locally assigned]
         """
         intAddress = MAC.mac_to_int(address)
         # set the 41th bit to one and the others to zero
