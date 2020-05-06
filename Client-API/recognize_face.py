@@ -138,7 +138,7 @@ def main():
                                 rep = Represents(foundIdentity.id, postedPic.id, confidence)
                                 MyAPI.postRepresent(rep)
                             except APIErrorNotFound as e:
-                                print(e)
+                                print(e + "salut")
 
                             print('Identity matched {} with {} similarity and {} confidence...'.format(faceUUID, similarity, confidence))
                         else:

@@ -12,6 +12,29 @@ basePath: /api
 
 # Paths supported by the server application
 paths:
+  /vendors/{oui}:
+    get:
+      operationId: vendors.read_by_oui
+      tags:
+        - Vendors
+      summary: Get a vendor by its OUI
+      description: Get a vendor by its OUI
+      parameters:
+      - name: oui
+        in: path
+        description: vendor's OUI
+        type: string
+        required: True
+      responses:
+          200:
+            description: Successfully read one vendor
+            schema:
+              properties:
+                name:
+                  type: string
+                oui:
+                  type: string
+
 
   /identities/{id_identity}/pictures:
     get:

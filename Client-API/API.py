@@ -210,6 +210,20 @@ class API:
         pic = Picture(loaded_json.get('timestamp'),loaded_json.get('picPath'),loaded_json.get('fk_place'),loaded_json.get('id'))
         return pic
 
+    def getVendorByOUI(self, OUI):
+        """API request to get a vendor from its OUI
+
+        Arguments:
+            OUI {[String]} -- [Prefix for the vendor]
+
+        Returns:
+            [Vendor] -- [vendor details]
+        """
+        headers = {'Content-Type': 'application/json', 'Authorization':'Bearer '+self.get_APIToken().access}
+        api_url = '{0}vendors/{1}'.format(self.api_url_base, OUI)
+        response = requests.get(api_url, headers=headers)
+        return response.status_code == 200
+
 
 
 # source : https://stackoverflow.com/questions/30970905/python-conditional-exception-messages

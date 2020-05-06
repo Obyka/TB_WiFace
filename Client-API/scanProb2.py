@@ -17,6 +17,8 @@ args = parser.parse_args()
 creds = User("Obyka","pass")
 MyAPI = API(creds, "http://92.222.64.114:5555/api/")
 
+
+
 def analyzePacket(packet):
     # Le paquet possede-t-il la couche 802.11
     if packet.haslayer(Dot11) or packet.haslayer(Dot11FCS):
@@ -29,12 +31,9 @@ def analyzePacket(packet):
                 ret_mac = MyAPI.getMACByAddress(address)
             except APIErrorNotFound:
                 try:
-                    vendor = MAC.extractVendor(address.upper())
-                    vendor = vendor if MyAPI.getVendorByOUI(vendor) else "UNDEFINED"
-                    mac = MAC(address.upper(), MAC.isLocallyAssigned(address), vendor)
+                    mac = MAC(address.upper(), MAC.isLocallyAssigned(address), 'F8-4D-33')
                     ret_mac = MyAPI.postMAC(mac)
-                except Exception as e:
-                    print(e)
+                except:
                     return
             except APIError:
                 return
@@ -44,7 +43,14 @@ def analyzePacket(packet):
             print("SSID: ", packet.addr2)
             print("ESSID : ", packet.info.decode('utf-8'))
 
-sniff(iface=args.i, prn=analyzePacket)
+
+
+
+
+#sniff(iface=args.i, prn=analyzePacket)
+
+
+
 
 probe = Probe("Coucou", 1, "FF:FF:AB:FF:FF:FF")
 mac = MAC("FF:FF:AB:FF:FF:FJ", True, "F8-4D-33")
