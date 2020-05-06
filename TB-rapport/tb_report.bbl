@@ -1,0 +1,148 @@
+\begin{thebibliography}{10}
+
+\bibitem{HESCHARTE}
+Charte d'éthique et de déontologie des hautes écoles universitaire et
+  spécialisée de genève.
+\newblock 2020-04-29.
+
+\bibitem{DOORLOCK}
+adneovrebo.
+\newblock Face-recognition-door-opener-raspberry-pi.
+\newblock
+  \url{https://github.com/adneovrebo/Face-recognition-door-opener-raspberry-pi},
+  2019.
+
+\bibitem{FLASKJWT}
+Oleg Agapov.
+\newblock Jwt authorization in flask.
+\newblock \url{https://codeburst.io/jwt-authorization-in-flask-c63c1acf4eeb},
+  2017.
+\newblock 2020-04-29.
+
+\bibitem{brey_2004}
+Philip Brey.
+\newblock Ethical aspects of facial recognition systems in public places.
+\newblock {\em Journal of Information, Communication and Ethics in Society},
+  2(2):97–109, 2004.
+
+\bibitem{NANOWIKIT4}
+Wiki contributors.
+\newblock Nanopc-t4.
+\newblock \url{http://wiki.friendlyarm.com/wiki/index.php/NanoPC-T4}, 2020.
+\newblock 2020-04-29.
+
+\bibitem{COMPFAV}
+dataturks.
+\newblock Comparing the top face recognition apis.
+\newblock
+  \url{https://dataturks.com/blog/face-verification-api-comparison.php}, 2018.
+\newblock 2020-04-29.
+
+\bibitem{LPD}
+Gouvernement de~la Confédération~suisse.
+\newblock Loi fédérale sur la protection des données, 2018.
+\newblock 2020-04-29.
+
+\bibitem{BROWIFI}
+Brannon Dorsey.
+\newblock The perils of probe requests.
+\newblock \url{https://medium.com/@brannondorsey/wi-fi-is-broken-3f6054210fa5},
+  2017.
+\newblock 2020-04-29.
+
+\bibitem{FLASKREST}
+Doug Farrell.
+\newblock Python rest apis with flask, connexion, and sqlalchemy.
+\newblock \url{https://realpython.com/flask-connexion-rest-api/}, 2019.
+\newblock 2020-04-29.
+
+\bibitem{MANRASPCAM}
+Fondation Raspberry Pi.
+\newblock {\em Camera Module}, 2020.
+\newblock 2020-04-29.
+
+\bibitem{MANRASP}
+Fondation Raspberry Pi.
+\newblock {\em Setting up your Raspberry Pi}, 2020.
+\newblock 2020-04-29.
+
+\bibitem{Grother2019}
+Patrick Grother, Mei Ngan, and Kayee Hanaoka.
+\newblock Face recognition vendor test part 3:.
+\newblock Technical report, December 2019.
+
+\bibitem{WIFIKARMA}
+hash3liZer.
+\newblock Wifi karma: A brief guide on probe response frames.
+\newblock
+  \url{https://www.shellvoide.com/wifi/wifi-karma-a-brief-guid-on-probe-response-frames/},
+  2019.
+\newblock 2020-04-29.
+
+\bibitem{crowdprobe}
+Hande Hong, Girisha Silva, and Mun Chan.
+\newblock Crowdprobe: Non-invasive crowd monitoring with wi-fi probe.
+\newblock {\em Proceedings of the ACM on Interactive, Mobile, Wearable and
+  Ubiquitous Technologies}, 2:1--23, 09 2018.
+
+\bibitem{MACDEAKYN}
+Oisín Kyne.
+\newblock Mac address de-anonymisation, 5 2017.
+\newblock 2020-04-29.
+
+\bibitem{ASMARMD}
+Jeremy Martin, Travis Mayberry, Collin Donahue, Lucas Foppe, Lamont Brown,
+  Chadwick Riggins, Erik Rye, and Dane Brown.
+\newblock A study of mac address randomization in mobile devices and when it
+  fails.
+\newblock {\em Proceedings on Privacy Enhancing Technologies}, 2017, 03 2017.
+
+\bibitem{PRICEAZURE}
+Microsoft.
+\newblock Cognitive services pricing - face api.
+\newblock
+  \url{https://azure.microsoft.com/en-us/pricing/details/cognitive-services/face-api/},
+  2020.
+\newblock 2020-04-29.
+
+\bibitem{MITPROBE}
+Moin Nadeem.
+\newblock How we tracked and analyzed over 200,000 people’s footsteps at mit.
+\newblock
+  \url{https://www.freecodecamp.org/news/tracking-analyzing-over-200-000-peoples-every-step-at-mit-e736a507ddbf/},
+  2017.
+\newblock 2020-04-29.
+
+\bibitem{OPENCVINSTRASP}
+Gangadharan Natarajan.
+\newblock How to install opencv on raspberry pi 3b+.
+\newblock
+  \url{https://nerdynat.com/programming/2019/how-to-install-opencv-on-raspberry-pi-3b/},
+  2019.
+\newblock 2020-04-29.
+
+\bibitem{NYTIME}
+Cade~Metz Natasha~Singer.
+\newblock Netherlands 'will pay the price' for blocking turkish visit –
+  erdoğan, 2017.
+
+\bibitem{RANMAC1}
+WiFi Nigel.
+\newblock Randomized mac addresses in 802.11 probe frames.
+\newblock
+  \url{https://wifinigel.blogspot.com/2018/04/to-address-perceived-privacy-issues.html},
+  2018.
+\newblock 2020-04-29.
+
+\bibitem{MACPY}
+nlm.
+\newblock macaddr.py.
+\newblock \url{https://gist.github.com/nlm/9ec20c78c4881cf23ed132ae59570340},
+  2017.
+
+\bibitem{MANXU4}
+odroid.
+\newblock {\em USER MANUAL ODROID-XU4}.
+\newblock 2020-04-29.
+
+\end{thebibliography}

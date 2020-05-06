@@ -1,0 +1,140 @@
+\chapter{Éthique et moralité des systèmes de surveillance}
+\label{ch:etudemoralite}
+
+Au delà de l’aspect législatif abordé dans le chapitre précédent, il est essentiel pour un ingénieur de mesurer ses
+responsabilités morales quant aux produits qu’il aide à créer. N’étant pas convenablement formé sur ce sujet, je
+me permettrai de me baser sur le travail d’autrui et de faire le lien avec le projet «WiFace».
+
+\section{Positionnement personnel}
+À des fins de transparence, j'ai jugé pertinent d'inclure mon positionnement sur la question de la moralité de mon projet,
+notamment avant le début de mes recherches.
+
+En tant que technophile, je suis toujours emballé à l'idée de concevoir, développer ou implémenter de nouvelles idées et faire progresser petit à
+petit mon savoir. 
+Toutefois, dès que le sujet m'a été présenté, je n'ai pu m'empêcher de penser aux conséquences sociétales du développement technologique, 
+souvent plus rapide que le développement légistlatif et moral.
+
+Prenons l'exemple évident du système de crédit social en Chine: les outils de surveillance de masse utilisés sont technologiquement très intéressant, mais
+beaucoup ressentent un certain malaise quant à leur champs d'application. Dans ce travail de bachelor, je développe également un outil, sans fixer son cadre d'utilisation.
+Je me permets donc d'être vigilant et d'inclure ce chapitre traitant des possibles dérives d'utilisation d'un tel produit. 
+
+\section{La reconnaissance faciale, une technologie déshumanisante}
+Dès le début des recherches, il est apparu clairement que la reconnaissance faciale allait être l’aspect soulevant le
+plus de questionements moraux dans mon travail, bien plus que l’association d’une identité et d’un terminal.
+Pourquoi est-ce le cas ? Les deux situations permettent pourant de caractériser une personne de manière unique.
+
+Le Prof. Brey l’explique en qualifiant le procédé de reconnaissance faciale de «déshumanisant». En effet, pouvoir
+encoder le visage (ses features) d’une personne – et donc une partie de son unicité - sur quelques bytes semble
+dérangeant pour beaucoup. De plus, un visage est partie intégrante de l’identité d’un individu, alors qu’un terminal
+n’est finalement qu’une possession temporaire.
+
+Une autre problèmatique inhérente à cette technologie est celle de l’atteinte à la vie privée et à la confidentialité.
+Un système permettant d’identifier, tracer, journaliser et incriminer un individu dans l’espace publique ou privé
+nuit gravement aux droits des individus tels que mentionnés dans l’Article 8 de la Convention européenne des droits
+de l’homme.
+
+Cette dernière proclame le droit de toute personne au respect « de sa vie privée et familiale, de son domicile et de
+sa correspondance », concrétisant ainsi nos questionnements.
+
+\section{L’opposition entre sécurité et confidentialité}
+Malgré tout, une part de l’opinion publique approuve l’implémentation de tels systèmes de reconnaissance.
+Comme argument principal, nous retrouvons souvent l’augmentation de la sécurité.
+
+L’exemple des passeports bioémtriques est parlant: certains acceptent volontiers son utilisation car les avantages
+(lutte contre le terrorisme, l’usurpation d’identité, augmentation de la facilité de déplacement) semblent
+supérieurs aux désavantages (processus déshumanisant, atteinte à la liberté) mais il s’agit d’un cadre très précis, et
+ces même personnes ne seraient pas forcément d’accord de trouver de pareils systèmes dans d’autres
+circonstances (dans l’espace publique, dans des établissements privés). Cela nous amène donc à la première dérive
+: le «Function creep» (dérapage fonctionnel).
+
+\section{Le function creep}
+Ce terme, emprunté de l’auteur John Woodward est le phénomème par lequel une technologie développée dans
+un certain but outrepasse ces derniers et élargit son champs d’utilisation. Cela peut être dû à un usage abusif ou
+par des changements législatifs la concernant.
+
+L’étude susmentionnée prend l’exemple des Smart CCTV au début des années 2000 (caméras de surveillance
+couplées à un système de reconnaissance faciale.) Ces dernières ont été testées par la police afin de retrouver les
+personnes disparues et identifier des criminels inscrit dans une base de données.
+
+Cette technologie étant très versatile, il est facile d’imaginer d’autres use-case pour la même implémentation de
+ce système. Par exemple, l’utilisation abusive pour le bénéfice personnel d’un agent de police (surveillance de ces
+proches, utilisation illégitime des images capturées). Le système initiale semblait alors moralement acceptable mais
+son dérapage fonctionnel l’a rendu intolérable, pourtant ce dernier n’est pas forcément détectable par les sujets
+de cette technologie (le grand public).
+
+\section{La fiabilité et les erreurs}
+Comme nous l’avons expliqué, il existe déjà des implémentations servant des systèmes très critiques, pouvant
+mener à des arrestations et d’autres conséquences importantes pour ses sujets. Or, bien qu’elle s’améliore avec le temps, la reconnaissance facial est sujette à des erreurs. Dans les systèmes de surveillance, cela amène à une
+méfiance générale, et à un sentiment d’insécurité. 
+
+Il existe deux types d’erreurs ayant des conséquences différentes:
+\begin{enumerate}
+\item Le faux négatif : Une personne devant être identifiée ne l’est pas, le système ne remplit pas on objectif et
+donc ses désavantages outrepassent ses avantages
+\item Le faux positif: Une personne ne devant pas être identifiée est mal reconnue et prise pour quelqu’un
+d’autre, le système incrimine une personne innocente / non-concernée, cela décridibilise le système et
+amène à des conséquences néfastes
+\end{enumerate}
+
+La deuxième catégorie d’erreur est plus critique que la première, c’est pourquoi la majeur partie des
+implémentations choisisse un seuil minimal de confiance très haut même si cela mène à un nombre supérieur de
+faux négatifs.
+
+Pour ne rien arranger, il a été montré dans une étude effectuée par le NIST (National Institute of Standards and
+Technology) que la plupart des meilleures solutions commercialisées de reconnaissance faciale possédent un biais
+lié à l’origine du sujet. En effet, le taux d’erreur est 10 à 100 fois supérieurs sur les sujet Afro-Américains et
+asiatiques par rapport aux sujets caucasiens.
+
+Un tel biais a le potentiel d’être un facteur d’augmentation de la tension sociale et pourrait impacter la législation
+en criminalisant et discriminant injustement certains groupes d’individu par rapport à d’autres.
+
+\section{La vie privée}
+Le dérapage fonctionnel et la possibilité d’erreurs n’exprime pas totalement en quoi de telles technologies portent
+atteinte à la vie privée.
+
+De manière empirique, nous pouvons remarque que certaines personnes pensent qu’il est incompatible de lié
+espace publique et vie privée, puisque le premier ne pourraient pas exister dans le deuxième, et donc que la
+surveillance n’est pas un problème. Pourtant, dans son essai de 1998, l’auteure Helen Nissenbaum argumente le
+contraire. Elle affirme que la récole et le stockage d’informations à l’aide de dispositifs automatisés amène souvent
+à la violation de la vie privée.
+
+Pour appuyer ses propos, elle se base sur deux prémises:
+Premièrement, en sachant que la plupart des gens se sentent surpris ou mécontents quand ils apprennet que leur
+données personnelles ont été collectées à leur insu, même dans un espace publique, elle prouve que ces personnes
+s’attendaient à un certain respect de leur vie privée, même dans des lieux de vie communs.
+
+Deuxième, elle affirme que l’automatisation de la récolte des données est bien plus problématique qu’une
+surveillance «manuelle» dans l’espace publique, et ce à cause de deux pratiques rendues possibles par la
+technologie. La première pratique rendue possible est le changement de contexte de l’information une fois
+enregistrée (via la vente de données recoltées par exemple). Or l’être humain donne beaucoup d’importance au
+contexte quand il délivre une information volontairement (on parle de ses finances à son banquier, de ses
+problèmes de santé à son médecin, mais pas inversemment). La journalisation des données amène alors à de
+potentielles atteintes à la vie privée. La deuxième pratique est « l’aggrégation des données» ou le Big Data.
+L’observation individuelle de certaines actions ou habitudes n’a pas vraiment de conséquences, mais lorsque ces
+systèmes sont capables de mettre en lien beaucoup d’information et d’en tirer des corrélation (par exemple à l’aide
+du machine learning) de nouvelles informations peuvent être déduites sans le consentement explicite du sujet,
+menant à une autre forme d’atteinte.
+
+\section{Conclusion}
+Nous avons examiné certaines implications morales d’un système de surveillance et de récolte de données, en
+particulier sur la technologie de la reconnaissance faciale. Parmi les problèmes principaux, nous avons identifié:
+l’atteinte à la vie privée, de dérapage fonctionnel, et la potentialité d’erreur.
+
+Au moment de sa conception, WiFace ne dispose pas d’un use case établi. Il s’agit d’un outil, sans cadre prédéfini.
+Ce constat nous permet d’affirmer qu’il est donc fortement sujet au dérapage fonctionnel, puisque n’importe quelle
+personne pourrait facilement déployer cette solution à bas coût pour son bénéfice personnel.
+
+À la fin de ce travail, WiFace doit être amené au stade de prototype et non de projet fini. Ce statut atteste de son
+manque de fiabilité potentiel. Il est donc probable ques on utilisation amène à des erreurs, ce qui pose un autre
+problème éthique.
+
+L’atteinte à la vie privée semble inhérente à tout système de collecte de données automatisée, WiFace ne faisant
+pas exception. En permettant de lier un terminal à un utilisateur, nous pouvons facilement imaginer des situations
+où cette information pourrait être sortie de son contexte (publicité ciblée, statistiques de fréquentation). Un autre
+objectif secondaire de ce travail est la recherche d’informations sur une identité, menant obligatoirement à
+l’agglomération de ces données.
+
+D’après ces critères, nous pouvons affirmer que l’utilisation de ce travail ne respecte pas les standards d’éthique et de déontologie
+qu’un établissement comme la HEIG-VD veut s’imposer (conformémant à la charte d'éthique et de déontologie~\cite{HESCHARTE}). Seuls les objectifs pédagogiques et d’évaluation doivent
+être visés, et en aucun cas ce travail ne devra mener à la commercialisation d’un futur produit.
+
