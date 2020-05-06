@@ -3,6 +3,7 @@
 <!-- original data from IEEE -->
 <!-- see http://standards.ieee.org/faqs/OUI.html -->
 <MacAddressVendorMappings xmlns="http://www.cisco.com/server/spt">
+    <VendorMapping mac_prefix="UNEDEFINED" vendor_name="Undefined"/>
 	<VendorMapping mac_prefix="00:00:00" vendor_name="Xerox" />
 	<VendorMapping mac_prefix="00:00:01" vendor_name="Xerox" />
 	<VendorMapping mac_prefix="00:00:02" vendor_name="Xerox" />
