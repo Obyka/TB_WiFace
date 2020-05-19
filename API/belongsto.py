@@ -11,7 +11,7 @@ from flask import abort, make_response
 from flask_jwt_extended import jwt_required
 
 @jwt_required
-def read_identites(address, id):
+def read_identities(address, id):
     belongs_to = BelongsTo.query\
             .filter(BelongsTo.fk_mac==address, BelongsTo.fk_identity==id).one_or_none()
 
