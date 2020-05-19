@@ -4,41 +4,41 @@ from models import (
     PicturesSchema,
     MacAddress,
     MacAddressSchema,
-    GoesAlong,
-    GoesAlongSchema
+    BelongsTo,
+    BelongsToSchema
 )
 from flask import abort, make_response
 from flask_jwt_extended import jwt_required
 
 @jwt_required
-def read_pictures(address, id):
-    goes_along = GoesAlong.query\
-            .filter(GoesAlong.fk_mac==address, GoesAlong.fk_picture==id).one_or_none()
+def read_identites(address, id):
+    belongs_to = BelongsTo.query\
+            .filter(BelongsTo.fk_mac==address, BelongsTo.fk_identity==id).one_or_none()
 
-    if goes_along is not None:
-        goes_along_scheme = GoesAlongSchema()
-        return goes_along_scheme.dump(goes_along)
+    if belongs_to is not None:
+        belongs_to_scheme = BelongsToSchema()
+        return belongs_to_scheme.dump(belongs_to)
     else:
         abort(404, "Association {address} - {id} not found".format(address=address, id=id))
 
 @jwt_required
-def create(goesalong):
-    schema = GoesAlongSchema()
-    new_goesalong = schema.load(goesalong, session=db.session)
+def create(belongsto):
+    schema = BelongsToSchema()
+    new_belongsto = schema.load(belongsto, session=db.session)
 
     # Add the person to the database
-    db.session.add(new_goesalong)
+    db.session.add(new_belongsto)
     db.session.commit()
 
     # Serialize and return the newly created person in the response
-    return schema.dump(new_goesalong), 201
+    return schema.dump(new_belongsto), 201
 
 @jwt_required
 def delete(address, id):
-    goesAlong = GoesAlong.query.filter(GoesAlong.fk_mac == address, GoesAlong.fk_picture == id).one_or_none()
+    belongsTo = BelongsTo.query.filter(BelongsTo.fk_mac == address, BelongsTo.fk_identity == id).one_or_none()
 
-    if goesAlong is not None:
-        db.session.delete(goesAlong)
+    if belongsTo is not None:
+        db.session.delete(belongsTo)
         db.session.commit()
         return make_response(
             "Relationship {address} - {id} deleted".format(id=id, address=address), 200

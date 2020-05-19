@@ -1,7 +1,7 @@
 import os
 from config import db
-from models import Probes, MacAddress, Places, Identities, Pictures, GoesAlong, Represents, Vendors, User
-from datetime import datetime
+from models import Probes, MacAddress, Places, Identities, Pictures, BelongsTo, Represents, Vendors, User
+from datetime import datetime, timedelta
 from xml.dom import minidom
 # Data to initialize database with
 
@@ -14,14 +14,16 @@ USERS = [
 
 PROBES = [
     {"ssid": "probe_ssid_1", "timestamp": datetime.utcnow(), "fk_mac" : "FF:FF:FF:FF:FF:FF", "fk_place" : 1},
-    {"ssid": "probe_ssid_2", "timestamp": datetime.utcnow(), "fk_mac" : "FF:FF:FF:FF:FF:EF", "fk_place" : 2},
-    {"ssid": "probe_ssid_3", "timestamp": datetime.utcnow(), "fk_mac" : "FF:FF:AB:FF:FF:FF", "fk_place" : 3}
+    {"ssid": "probe_ssid_2", "timestamp": datetime.utcnow(), "fk_mac" : "FF:FF:FF:FF:FF:EF", "fk_place" : 1},
+    {"ssid": "probe_ssid_3", "timestamp": datetime.utcnow(), "fk_mac" : "FF:FF:AB:FF:FF:FF", "fk_place" : 1},
+    {"ssid": "probe_ssid_3", "timestamp": datetime.utcnow() + timedelta(minutes=10), "fk_mac" : "FF:FF:AB:FF:FF:AA", "fk_place" : 1}
 ]
 
 MACS = [
     {"address" : "FF:FF:FF:FF:FF:FF", "isRandom" : False, "fk_vendor" : "DC:F0:90"},
     {"address" : "FF:FF:FF:FF:FF:EF", "isRandom" : True, "fk_vendor" : "E0:02:A5"},
-    {"address" : "FF:FF:AB:FF:FF:FF", "isRandom" : False, "fk_vendor" : "FC:F8:AE"}
+    {"address" : "FF:FF:AB:FF:FF:FF", "isRandom" : False, "fk_vendor" : "FC:F8:AE"},
+    {"address" : "FF:FF:AB:FF:FF:AA", "isRandom" : False, "fk_vendor" : "FC:F8:AE"}
 ]
 
 PLACES = [
@@ -38,8 +40,8 @@ IDENTITIES = [
 
 PICTURES = [
     {"id":1,"picPath" : "/tmp/test.png", "timestamp" : datetime.utcnow(), "fk_place" : 1},
-    {"id":2,"picPath" : "/tmp/test2.png", "timestamp" : datetime.utcnow(), "fk_place" : 2},
-    {"id":3,"picPath" : "/tmp/test3.png", "timestamp" : datetime.utcnow(), "fk_place" : 3},
+    {"id":2,"picPath" : "/tmp/test2.png", "timestamp" : datetime.utcnow(), "fk_place" : 1},
+    {"id":3,"picPath" : "/tmp/test3.png", "timestamp" : datetime.utcnow(), "fk_place" : 1},
 ]
 
 REPRENSENTS = [
@@ -50,11 +52,11 @@ REPRENSENTS = [
 ] 
 
 
-GOESALONG = [
-    {"probability" : 50, "fk_mac" : "FF:FF:FF:FF:FF:FF", "fk_picture" : 1},
-    {"probability" : 50, "fk_mac" : "FF:FF:FF:FF:FF:FF", "fk_picture" : 2},
-    {"probability" : 60, "fk_mac" : "FF:FF:FF:FF:FF:EF", "fk_picture" : 2},
-    {"probability" : 10, "fk_mac" : "FF:FF:AB:FF:FF:FF", "fk_picture" : 3}
+BELONGSTO = [
+    {"probability" : 50, "fk_mac" : "FF:FF:FF:FF:FF:FF", "fk_identity" : 1},
+    {"probability" : 50, "fk_mac" : "FF:FF:FF:FF:FF:FF", "fk_identity" : 2},
+    {"probability" : 60, "fk_mac" : "FF:FF:FF:FF:FF:EF", "fk_identity" : 2},
+    {"probability" : 10, "fk_mac" : "FF:FF:AB:FF:FF:FF", "fk_identity" : 3}
 ] 
 
 
@@ -100,9 +102,9 @@ for picture in PICTURES:
     p = Pictures(id=picture['id'], picPath=picture['picPath'], timestamp=picture['timestamp'], fk_place=picture['fk_place'])
     db.session.add(p)
 
-for goes in GOESALONG:
-    g = GoesAlong(probability=goes['probability'], fk_mac=goes['fk_mac'], fk_picture=goes['fk_picture'])
-    db.session.add(g) 
+for belongs in BELONGSTO:
+    b = BelongsTo(probability=belongs['probability'], fk_mac=belongs['fk_mac'], fk_identity=belongs['fk_identity'])
+    db.session.add(b) 
 
 for represents in REPRENSENTS:
     r = Represents(probability=represents['probability'], fk_identity=represents['fk_identity'], fk_picture=represents['fk_picture'])

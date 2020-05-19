@@ -2,22 +2,22 @@ from config import db
 from models import (
     MacAddress,
     MacAddressSchema,
-    GoesAlong,
-    GoesAlongSchema
+    BelongsTo,
+    BelongsToSchema
 )
 from flask_jwt_extended import jwt_required
 from flask import abort, make_response
 
 @jwt_required
-def read_pictures(address):
-    goes_along = GoesAlong.query\
-            .filter(GoesAlong.fk_mac==address).all()
+def read_identities(address):
+    belongs_to = BelongsTo.query\
+            .filter(BelongsTo.fk_mac==address).all()
 
-    if goes_along is not None:
-        goes_along_scheme = GoesAlongSchema(many=True)
-        return goes_along_scheme.dump(goes_along)
+    if belongs_to is not None:
+        belongs_to_scheme = BelongsToSchema(many=True)
+        return belongs_to_scheme.dump(belongs_to)
     else:
-        abort(404, "No pictures found for the address {address}".format(address=address))
+        abort(404, "No identities found for the address {address}".format(address=address))
 
 @jwt_required
 def read_all():

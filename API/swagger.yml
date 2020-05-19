@@ -306,13 +306,13 @@ paths:
       responses:
         201:
           description: Successfully created MAC Adress
-  /macs/{address}/pictures:
+  /macs/{address}/identities:
     get:
-      operationId: macs.read_pictures
+      operationId: macs.read_identities
       tags:
         - MAC Address
-      summary: Get the pictures ID and probability of relationship with this MAC address
-      description: Get the pictures ID and probability of relationship with this MAC address
+      summary: Get the identities ID and probability of relationship with this MAC address
+      description: Get the identities ID and probability of relationship with this MAC address
       parameters:
         - name: address
           in: path
@@ -321,25 +321,25 @@ paths:
           required: True
       responses:
         200:
-          description: Successfully read pictures list 
+          description: Successfully read identities list 
           schema:
             type: array
             items:
               properties:
                 fk_mac:
                   type: string
-                fk_picture:
+                fk_identity:
                   type: integer
                 probability:
                   type: integer
   
-  /goesalongs/{address}/{id}:
+  /belongsto/{address}/{id}:
     delete:
-      operationId: goesalongs.delete
+      operationId: belongsto.delete
       tags:
-        - MAC Address - Pictures
-      summary: Delete a relationship MAC Address - Pictures
-      description: Delete a relationship MAC Address - Pictures
+        - MAC Address - Identities
+      summary: Delete a relationship MAC Address - Identities
+      description: Delete a relationship MAC Address - Identities
       parameters:
         - name: address
           in: path
@@ -354,11 +354,11 @@ paths:
           description: Successfully deleted the relationship
 
     get:
-      operationId: goesalongs.read_pictures
+      operationId: belongsto.read_identities
       tags:
-        - MAC Address - Pictures
-      summary: Get the probability of relationship between this image and this MAC address
-      description: Get the probability of relationship between this image and this MAC address
+        - MAC Address - Identities
+      summary: Get the probability of relationship between this identity and this MAC address
+      description: Get the probability of relationship between this identity and this MAC address
       parameters:
         - name: address
           in: path
@@ -367,7 +367,7 @@ paths:
           required: True
         - name: id
           in: path
-          description: id of the picture
+          description: id of the identity
           type: integer
           required: True
       responses:
@@ -378,19 +378,19 @@ paths:
             properties:
               fk_mac:
                 type: string
-              fk_picture:
+              fk_identity:
                 type: integer
               probability:
                 type: integer
-  /goesalongs:
+  /belongsto:
     post:
-      operationId: goesalongs.create
+      operationId: belongsto.create
       tags:
-        - MAC Address - Pictures
-      summary: Create a relationship between a MAC address and a picture
-      description: Create a relationship between a MAC address and a picture
+        - MAC Address - Identities
+      summary: Create a relationship between a MAC address and an identity
+      description: Create a relationship between a MAC address and an identity
       parameters:
-        - name: goesalong
+        - name: belongsto
           in: body
           description: Relationship to create
           required: True
@@ -401,7 +401,7 @@ paths:
                 type: integer
               fk_mac:
                 type: string
-              fk_picture:
+              fk_identity:
                 type: integer
       responses:
         200:
@@ -413,7 +413,7 @@ paths:
                 type: integer
               fk_mac:
                 type: string
-              fk_picture:
+              fk_identity:
                 type: integer
     
   /macs/{address}:

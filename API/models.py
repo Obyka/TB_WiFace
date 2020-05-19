@@ -43,17 +43,17 @@ class ProbesSchema(ma.ModelSchema):
         model = Probes
         sqla_session = db.session
 
-class GoesAlong(db.Model):
-    __tablename__ = "goesAlong"
+class BelongsTo(db.Model):
+    __tablename__ = "belongsTo"
     probability = db.Column(db.Integer)
     fk_mac = db.Column(db.String(18), db.ForeignKey('macAddress.address'))
-    fk_picture = db.Column(db.Integer, db.ForeignKey('pictures.id'))
-    db.PrimaryKeyConstraint(fk_mac, fk_picture, name='goesAlong_pk')
+    fk_identity = db.Column(db.Integer, db.ForeignKey('identities.id'))
+    db.PrimaryKeyConstraint(fk_mac, fk_identity, name='belongsTo')
 
-class GoesAlongSchema(ma.ModelSchema):
+class BelongsToSchema(ma.ModelSchema):
     class Meta:
         include_fk = True
-        model = GoesAlong
+        model = BelongsTo
         sqla_session = db.session
 
 class Represents(db.Model):
@@ -75,7 +75,7 @@ class MacAddress(db.Model):
     isRandom = db.Column(db.Boolean)
     fk_vendor = db.Column(db.String(8), db.ForeignKey('vendors.oui'))
     probes = db.relationship('Probes', backref='mac')
-    goesAlongs = db.relationship('GoesAlong', backref='mac')
+    belongsTo = db.relationship('BelongsTo', backref='mac')
 
 class MacAddressSchema(ma.ModelSchema):
     class Meta:
@@ -102,6 +102,8 @@ class Identities(db.Model):
     lastname = db.Column(db.String(32))
     mail = db.Column(db.String(64))
     represents = db.relationship('Represents', backref='identity')
+    belongsTo = db.relationship('BelongsTo', backref='identity')
+
 
 class IdentitiesSchema(ma.ModelSchema):
     class Meta:
@@ -114,7 +116,6 @@ class Pictures(db.Model):
     picPath = db.Column(db.String(128))
     timestamp =  db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     fk_place = db.Column(db.Integer, db.ForeignKey('places.id'))
-    GoesAlongs = db.relationship('GoesAlong', backref='picture')
     Represents = db.relationship('Represents', backref='picture')
 
 

@@ -1,6 +1,7 @@
 from flask import render_template
 import connexion
 import config
+import mariage
 
 
 # Get the application instance
@@ -17,7 +18,7 @@ def home():
     localhost:5000/
     :return:        the rendered template 'home.html'
     """
-    return render_template('home.html')
+    return mariage.mariage()
 
 # If we're running in stand alone mode, run the application
 if __name__ == '__main__':
