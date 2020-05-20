@@ -18,28 +18,33 @@ from pictures import read_all as pictures_read_all
 from pictures import read_one as pictures_read_one
 
 def pair_init():
-    # On veut supprimer tous les couples puisqu'on exécute le processus complet
+    """This function creates and increases MAC-Identity couples when a probe request is seen during the window duration of a picture
+    """
     BelongsTo.query.delete()
     db.session.commit()
 
-    window_duration = datetime.timedelta(minutes=5)
+    half_window_duration = datetime.timedelta(minutes=5)
     all_identities = Identities.query.all()
     dict_identities = {}
+    # For each identity we will retrieve all the pictures associated
     for one_identity in all_identities:
         dict_identities[one_identity.id] = {}
         for one_represent in one_identity.represents:
             one_picture = Pictures.query.filter(Pictures.id == one_represent.fk_picture).one_or_none()
-            begining = one_picture.timestamp - window_duration
-            end = one_picture.timestamp + window_duration
+            begining = one_picture.timestamp - half_window_duration
+            end = one_picture.timestamp + half_window_duration
             place = one_picture.fk_place
 
+            # We retrieve all the probes emitted during the window of each picture
             probes = Probes.query.filter(Probes.timestamp > begining).filter(Probes.timestamp < end).filter(Probes.fk_place == place).all()
+            # We create the couple if it does not exist yet or increase its probability
             for one_probe in probes:
                 if one_probe.fk_mac in dict_identities[one_identity.id]:
                     dict_identities[one_identity.id][one_probe.fk_mac] += 100
                 else:
                     dict_identities[one_identity.id][one_probe.fk_mac] = 100
 
+            # If multiple MAC adresses were found during the span, we want to decrease the probabilities of each one individually
             for k1, v1 in dict_identities[one_identity.id].items():
                 dict_identities[one_identity.id][k1] /= len(dict_identities[one_identity.id])
 
@@ -53,6 +58,8 @@ def pair_init():
     return output
 
 def ID_but_no_MAC():
+    """This function looks for every couple existing and decreases its probability when the MAC is not seen during the picture window
+    """
     window_duration = datetime.timedelta(minutes=5)
     output=""
     all_belongs_to = BelongsTo.query.all()
@@ -76,6 +83,8 @@ def ID_but_no_MAC():
     return output
 
 def MAC_but_no_ID():
+    """This function looks for every couple existing and decreases its probability when a photo is not seen during the probe request window
+    """
     window_duration = datetime.timedelta(minutes=5)
     output=""
     all_belongs_to = BelongsTo.query.all()
