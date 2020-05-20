@@ -44,7 +44,10 @@ PICTURES = [
     {"id":1,"picPath" : "/tmp/batman.png", "timestamp" : batman_time, "fk_place" : 1},
     {"id":2,"picPath" : "/tmp/superman.png", "timestamp" : superman_time, "fk_place" : 1},
     {"id":3,"picPath" : "/tmp/ironman.png", "timestamp" : ironman_time, "fk_place" : 1},
-    {"id":4,"picPath" : "/tmp/wonderwoman.png", "timestamp" : wonderwoman, "fk_place" : 1}
+    {"id":4,"picPath" : "/tmp/wonderwoman.png", "timestamp" : wonderwoman, "fk_place" : 1},
+
+    {"id":5,"picPath" : "/tmp/batmanWithoutMAC.png", "timestamp" : batman_time + timedelta(hours=1), "fk_place" : 1},
+
 ]
 
 PROBES = [
@@ -59,6 +62,7 @@ PROBES = [
 ]
 REPRENSENTS = [
     {"probability" : 100, "fk_identity" : 1, "fk_picture" : 1},
+    {"probability" : 100, "fk_identity" : 1, "fk_picture" : 5},
     {"probability" : 100, "fk_identity" : 2, "fk_picture" : 2},
     {"probability" : 100, "fk_identity" : 3, "fk_picture" : 3},
     {"probability" : 100, "fk_identity" : 4, "fk_picture" : 4}

@@ -332,7 +332,6 @@ paths:
                   type: integer
                 probability:
                   type: integer
-  
   /belongsto/{address}/{id}:
     delete:
       operationId: belongsto.delete
@@ -383,6 +382,13 @@ paths:
               probability:
                 type: integer
   /belongsto:
+    get:
+      operationId: belongsto.read_all
+      tags:
+        - MAC Address - Identities
+      responses:
+        200:
+          description: Successfully created the relationship
     post:
       operationId: belongsto.create
       tags:

@@ -5,11 +5,23 @@ from models import (
     MacAddress,
     MacAddressSchema,
     BelongsTo,
-    BelongsToSchema
+    BelongsToSchema,
+    Identities
 )
+from flask import jsonify
+import json
 from flask import abort, make_response
 from flask_jwt_extended import jwt_required
+from flask import Response
 
+@jwt_required
+def read_all():
+    output = []
+    for i, b  in db.session.query(Identities, BelongsTo).filter(Identities.id == BelongsTo.fk_identity).all():
+        output.append((json.dumps({"values":[i.mail,b.fk_mac,b.probability]})))
+    response = json.dumps({'belongs_to':output})
+    return Response(response,  mimetype='application/json')
+    
 @jwt_required
 def read_identities(address, id):
     belongs_to = BelongsTo.query\

@@ -49,6 +49,8 @@ class BelongsTo(db.Model):
     fk_mac = db.Column(db.String(18), db.ForeignKey('macAddress.address'))
     fk_identity = db.Column(db.Integer, db.ForeignKey('identities.id'))
     db.PrimaryKeyConstraint(fk_mac, fk_identity, name='belongsTo')
+    def __str__(self):
+        return self.fk_mac +" "+ str(self.fk_identity) + " " + str(self.probability) + "\n"
 
 class BelongsToSchema(ma.ModelSchema):
     class Meta:
