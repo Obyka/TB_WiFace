@@ -37,9 +37,9 @@ def pair_init():
             # We create the couple if it does not exist yet or increase its probability
             for one_probe in probes:
                 if (one_probe.fk_mac, one_identity.id) in dict_belongs_to:
-                    dict_belongs_to[(one_probe.fk_mac, one_identity.id)] += 100
+                    dict_belongs_to[(one_probe.fk_mac, one_identity.id)] += 1000
                 else:
-                    dict_belongs_to[(one_probe.fk_mac, one_identity.id)] = 100
+                    dict_belongs_to[(one_probe.fk_mac, one_identity.id)] = 1000
 
     all_identities = set([i[1] for i in dict_belongs_to.keys()])
     for one_identity in all_identities:
@@ -80,23 +80,30 @@ def MAC_but_no_ID(dict_belongs_to):
                 dict_belongs_to[(one_mac, one_identity)] -= 100
     return dict_belongs_to
 
-def my_tanh():
-    identities = db.session.query(BelongsTo.fk_identity).distinct()
-    for one_identity in identities:
-            belongs_identity = db.session.query(BelongsTo).filter(BelongsTo.fk_identity == one_identity.fk_identity)
-            belongs_identity_probability = [b.probability for b in belongs_identity]
-            minP = np.min(belongs_identity_probability)
-            maxP = np.max(belongs_identity_probability)
-            for one_belong in belongs_identity:
-                one_belong.probability = (one_belong.probability - minP) / (maxP - minP) * (maxP - minP) + minP
-                db.session.commit()
+def my_tanh(dict_belongs_to):
+    new_dict_belongs_to = {}
+    all_identities = set([i[1] for i in dict_belongs_to.keys()])
+    for one_identity in all_identities:
+        dict_mac = {key[0]:item for key, item in dict_belongs_to.items() if key[1] == one_identity}
+        minP = min(dict_mac.values())
+        maxP = max(dict_mac.values())
+        print(dict_mac)
+        print("AAAAH")
+        for k in dict_mac.keys():
+            # https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.MinMaxScaler.html
+            dict_mac[k] = 1. if maxP-minP == 0 else (dict_mac[k] - minP) / float(maxP - minP)
+            new_dict_belongs_to[(k,one_identity)] = dict_mac[k]
+    print(new_dict_belongs_to)
+
+    return new_dict_belongs_to
+
 
 def add_to_database(dict_belongs_to):
     BelongsTo_db = [BelongsTo(probability=item, fk_mac=key[0], fk_identity=key[1]) for key,item in dict_belongs_to.items()]
     db.session.add_all(BelongsTo_db)
     db.session.commit()
 def mariage():
-    add_to_database(MAC_but_no_ID(ID_but_no_MAC(pair_init())))
+    add_to_database(my_tanh(MAC_but_no_ID(ID_but_no_MAC(pair_init()))))
     #ID_but_no_MAC()
     #MAC_but_no_ID()
     #my_tanh()
