@@ -98,6 +98,7 @@ def my_tanh(dict_belongs_to):
     return new_dict_belongs_to
 
 
+
 def add_to_database(dict_belongs_to):
     BelongsTo_db = [BelongsTo(probability=item, fk_mac=key[0], fk_identity=key[1]) for key,item in dict_belongs_to.items()]
     db.session.add_all(BelongsTo_db)

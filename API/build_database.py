@@ -6,9 +6,8 @@ from xml.dom import minidom
 import boto3
 from botocore.exceptions import ClientError
 
-def create_collection(collection_id):
+def create_collection(collection_id, client):
 
-    client=boto3.client('rekognition')
 
     #Create a collection
     print('Creating collection:' + collection_id)
@@ -17,9 +16,8 @@ def create_collection(collection_id):
     print('Status code: ' + str(response['StatusCode']))
     print('Done...')
 
-def delete_collection(collection_id):
+def delete_collection(collection_id, client):
     print('Attempting to delete collection ' + collection_id)
-    client=boto3.client('rekognition')
     status_code=0
     try:
         response=client.delete_collection(CollectionId=collection_id)
@@ -167,4 +165,5 @@ def main():
     db.session.commit()
 
 if __name__ == "__main__":
+    client = boto3.client('rekognition', aws_access_key_id=app.config['aws_access_key_id'],aws_secret_access_key=app.config['aws_secret_access_key'])
     main() 
