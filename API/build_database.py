@@ -35,8 +35,8 @@ def delete_collection(collection_id, client):
 
 def main():
     collection_id=app.config['COLLECTION_NAME']
-    status_code=delete_collection(collection_id)
-    create_collection(collection_id)
+    delete_collection(collection_id, client)
+    create_collection(collection_id, client)
 
 
     # Data to initialize database with
