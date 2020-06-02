@@ -25,6 +25,10 @@ sqlite_url = "sqlite:////" + os.path.join(basedir, "probes.db")
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SQLALCHEMY_DATABASE_URI"] = sqlite_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config['UPLOAD_FOLDER'] = "pictures"
+app.config['COLLECTION_NAME'] = "wiface-faces"
+app.config['aws_access_key_id'] = "***REMOVED***"
+app.config['aws_secret_access_key'] = "***REMOVED***"
 
 app.config['SECRET_KEY'] = '***REMOVED***'
 

@@ -84,6 +84,19 @@ class API:
         foundIdentity = Identity(loaded_json.get('firstname'), loaded_json.get('lastname'), loaded_json.get('mail'), loaded_json.get('uuid'), loaded_json.get('id'))
         return foundIdentity
 
+    def postFile(self, picture):
+        """API request to upload a file on the API
+
+        Arguments:
+            picture {[file]} -- File to send
+        """
+        headers = {'Content-Type': 'application/json', 'Authorization':'Bearer '+self.get_APIToken().access}
+        api_url = '{0}upload'.format(self.api_url_base)
+        files = {'file': picture}
+        response = requests.post(api_url, headers=headers, file=files)
+        return response.text
+
+
     def postIdentity(self, identity):
         """API request to post a new Identity on the WiFace API
         
