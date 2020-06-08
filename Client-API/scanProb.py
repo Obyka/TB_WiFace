@@ -9,14 +9,19 @@ from Probe import Probe
 from Auth import User
 from API import *
 import time
+import os
 import math 
 
 parser = argparse.ArgumentParser(description="Scan for probes request")
 parser.add_argument('-i', help="interface wifi en monitor")
+parser.add_argument('--api', help='Base address for the API')
 args = parser.parse_args()
 
-creds = User("Obyka","pass")
-MyAPI = API(creds, "http://92.222.64.114:5555/api/")
+
+username = os.environ['wiface_username']
+password = os.environ['wiface_password']
+creds = User(username, password)
+MyAPI = API(creds, args.api)
 mac_dic = dict()
 
 # source : https://pdfs.semanticscholar.org/f690/3910e7256946b138bf50b8dff8e9c8e73526.pdf

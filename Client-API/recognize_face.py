@@ -44,8 +44,9 @@ def main():
     parser.add_argument('--api', help='Base address for the API')
 
     args = parser.parse_args()
-
-    creds = User("Obyka","pass")
+    username = os.environ['wiface_username']
+    password = os.environ['wiface_password']
+    creds = User(username,password)
     MyAPI = API(creds, args.api)
 
 
