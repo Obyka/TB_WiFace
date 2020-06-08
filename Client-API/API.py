@@ -90,10 +90,10 @@ class API:
         Arguments:
             picture {[file]} -- File to send
         """
-        headers = {'Content-Type': 'application/json', 'Authorization':'Bearer '+self.get_APIToken().access}
+        headers = {'Authorization':'Bearer '+self.get_APIToken().access}
         api_url = '{0}upload'.format(self.api_url_base)
-        files = {'file': picture}
-        response = requests.post(api_url, headers=headers, file=files)
+        files = {'file': open(picture, 'rb')}
+        response = requests.post(api_url, headers=headers, files=files)
         return response.text
 
 
