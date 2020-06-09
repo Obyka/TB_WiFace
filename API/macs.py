@@ -8,6 +8,13 @@ from models import (
 from flask_jwt_extended import jwt_required
 from flask import abort, make_response
 
+def count_random():
+    return MacAddress.query.filter(MacAddress.isRandom == True).count()
+
+
+def count():
+    return MacAddress.query.count()
+
 @jwt_required
 def read_identities(address):
     belongs_to = BelongsTo.query\

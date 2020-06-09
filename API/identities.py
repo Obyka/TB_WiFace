@@ -8,6 +8,9 @@ from models import (
 from flask import abort, make_response
 from flask_jwt_extended import jwt_required
 
+def count():
+    return Identities.query.count()
+
 @jwt_required
 def read_pictures(id_identity):
     represent = Represents.query\

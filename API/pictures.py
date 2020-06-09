@@ -2,11 +2,28 @@ from config import db
 from models import (
     Pictures,
     PicturesSchema,
+    Probes,
+    ProbesSchema
 )
 from flask import abort, make_response, request
 from flask_restful import reqparse
 from flask_jwt_extended import jwt_required
+from sqlalchemy import literal
 import os
+import json
+
+def count():
+    return Pictures.query.count()
+
+def first(elem):
+    return elem[0]
+
+def feed():
+    pictures = db.session.query(Pictures.timestamp.label('timestamp'), literal("Picture").label('Type')).limit(10).all()
+    probes = db.session.query(Probes.timestamp.label('timestamp'), literal("Probe").label('Type')).limit(10).all()
+    pictures.extend(probes)
+    pictures.sort(key=first)
+    return pictures
 
 @jwt_required
 def upload():

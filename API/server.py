@@ -6,6 +6,12 @@ import os
 from flask import abort, make_response, request, jsonify
 from werkzeug.utils import secure_filename
 from recognize_face import handle_picture
+import probes
+import macs
+import identities
+import pictures
+from dateutil.relativedelta import relativedelta
+import datetime
 
 # Get the application instance
 connex_app = config.connex_app
@@ -15,17 +21,38 @@ connex_app.add_api('swagger.yml')
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 # Create a URL route in our application for "/"
-@connex_app.route('/')
+
+@connex_app.app.context_processor
+def inject_counters():
+    return dict(probe_count=probes.count(), mac_count=macs.count(), id_count=identities.count(), pic_cout=pictures.count(), mac_random=macs.count_random())
+
+@connex_app.route('/mariage')
 def home():
 	"""
 	This function just responds to the browser ULR
 	localhost:5000/
 	:return:        the rendered template 'home.html'
 	"""
-	return render_template('index.html', message=mariage.mariage())
+	test = pictures.feed()
+	test = [((verbose_timedelta(datetime.datetime.utcnow() - i[0])), i[1]) for i in test]
+	return render_template('mariage.html', message=mariage.mariage(), test=test)
 
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+def verbose_timedelta(delta):
+    d = delta.days
+    h, s = divmod(delta.seconds, 3600)
+    m, s = divmod(s, 60)
+    labels = ['day', 'hour', 'minute', 'second']   
+    dhms = ['%s %s%s' % (i, lbl, 's' if i != 1 else '') for i, lbl in zip([d, h, m, s], labels)]
+    for start in range(len(dhms)):
+        if not dhms[start].startswith('0'):
+            break
+    for end in range(len(dhms)-1, -1, -1):
+        if not dhms[end].startswith('0'):
+            break  
+    return ', '.join(dhms[start:end+1])
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
