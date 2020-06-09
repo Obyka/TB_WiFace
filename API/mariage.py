@@ -104,8 +104,9 @@ def add_to_database(dict_belongs_to):
     db.session.add_all(BelongsTo_db)
     db.session.commit()
 def mariage():
-    add_to_database(my_tanh(MAC_but_no_ID(ID_but_no_MAC(pair_init()))))
+    final_values = my_tanh(MAC_but_no_ID(ID_but_no_MAC(pair_init())))
+    add_to_database(final_values)
     #ID_but_no_MAC()
     #MAC_but_no_ID()
     #my_tanh()
-    return redirect("/api/belongsto")
+    return str(final_values)

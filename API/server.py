@@ -22,7 +22,7 @@ def home():
 	localhost:5000/
 	:return:        the rendered template 'home.html'
 	"""
-	return mariage.mariage()
+	return render_template('index.html', message=mariage.mariage())
 
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
