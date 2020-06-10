@@ -21,7 +21,15 @@ def read_all():
         output.append((json.dumps({"values":[i.mail,b.fk_mac,b.probability]})))
     response = json.dumps({'belongs_to':output})
     return Response(response,  mimetype='application/json')
-    
+
+def read_by_identity(id):
+    belongs_to = BelongsTo.query.filter(BelongsTo.fk_identity==id).all()
+    if belongs_to is not None:
+        belongs_to_scheme = BelongsToSchema(many=True)
+        return belongs_to_scheme.dump(belongs_to)
+    else:
+        abort(404, "Identity {id} is not associated to any address".format(id=id))
+
 @jwt_required
 def read_identities(address, id):
     belongs_to = BelongsTo.query\

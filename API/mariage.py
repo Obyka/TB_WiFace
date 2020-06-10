@@ -87,17 +87,15 @@ def my_tanh(dict_belongs_to):
         dict_mac = {key[0]:item for key, item in dict_belongs_to.items() if key[1] == one_identity}
         minP = min(dict_mac.values())
         maxP = max(dict_mac.values())
-        print(dict_mac)
-        print("AAAAH")
         for k in dict_mac.keys():
             # https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.MinMaxScaler.html
             dict_mac[k] = 1. if maxP-minP == 0 else (dict_mac[k] - minP) / float(maxP - minP)
             new_dict_belongs_to[(k,one_identity)] = dict_mac[k]
-    print(new_dict_belongs_to)
-
     return new_dict_belongs_to
 
-
+def best_fit(dict_one_identity):
+    maxProb = max([one_dic['probability'] for one_dic in dict_one_identity ])
+    return [one_dic for one_dic in dict_one_identity if one_dic['probability'] == maxProb]
 
 def add_to_database(dict_belongs_to):
     BelongsTo_db = [BelongsTo(probability=item, fk_mac=key[0], fk_identity=key[1]) for key,item in dict_belongs_to.items()]

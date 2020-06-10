@@ -9,7 +9,9 @@ from recognize_face import handle_picture
 import probes
 import macs
 import identities
+import belongsto
 import pictures
+import vendors
 from dateutil.relativedelta import relativedelta
 import datetime
 
@@ -20,22 +22,46 @@ connex_app = config.connex_app
 connex_app.add_api('swagger.yml')
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
-# Create a URL route in our application for "/"
-
 @connex_app.app.context_processor
 def inject_counters():
     return dict(probe_count=probes.count(), mac_count=macs.count(), id_count=identities.count(), pic_cout=pictures.count(), mac_random=macs.count_random())
 
-@connex_app.route('/mariage')
-def home():
-	"""
-	This function just responds to the browser ULR
-	localhost:5000/
-	:return:        the rendered template 'home.html'
-	"""
+@connex_app.app.context_processor
+def inject_path():
+    return dict(picture_path=config.app.config['UPLOAD_FOLDER'])
+
+@connex_app.route('/web/statistics')
+def statistics_front():
 	test = pictures.feed()
 	test = [((verbose_timedelta(datetime.datetime.utcnow() - i[0])), i[1]) for i in test]
-	return render_template('mariage.html', message=mariage.mariage(), test=test)
+	return render_template('statistics.html', message=mariage.mariage(), test=test)
+
+@connex_app.route('/web/identities')
+def identities_front():
+	if 'id' in request.args:
+		identity = identities.read_one(request.args.get('id'))
+		macs = belongsto.read_by_identity(identity.get('id'))
+		best_pic = pictures.read_best_pic(identity.get('id'))
+		best_macs = mariage.best_fit(macs)
+		best_pic_path = os.path.join(config.app.config['UPLOAD_FOLDER'], best_pic['picPath'])
+		return render_template('identity_details.html', identity=identity, best_pic=best_pic_path, best_macs=best_macs)
+	identitiy_list = identities.read_all()
+	return render_template('identities.html', identitiy_list=identitiy_list)
+
+@connex_app.route('/web/macs')
+def macs_front():
+	mac_list = macs.read_all()
+	for mac in mac_list:
+		vendor = vendors.read_by_oui(mac['fk_vendor'])
+		mac['vendor_name'] = vendor['name']
+		mac['nb_probes'] = len(mac['probes'])
+
+	return render_template('macs.html', mac_list=mac_list)
+
+@connex_app.route('/web/pictures')
+def pictures_front():
+	return render_template('pictures.html')
+
 
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])

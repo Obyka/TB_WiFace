@@ -26,7 +26,7 @@ def read_identities(address):
     else:
         abort(404, "No identities found for the address {address}".format(address=address))
 
-@jwt_required
+#@jwt_required
 def read_all():
     macs = MacAddress.query.order_by(MacAddress.address).all()
 

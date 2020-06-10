@@ -3,7 +3,8 @@ from models import (
     Pictures,
     PicturesSchema,
     Probes,
-    ProbesSchema
+    ProbesSchema,
+    Represents
 )
 from flask import abort, make_response, request
 from flask_restful import reqparse
@@ -66,6 +67,19 @@ def read_one(id):
         return picture_schema.dump(picture)
     else:
         abort(404, 'Picture with the id {id} not found'.format(id=id))
+
+def read_best_pic(id_identity):
+    picture = Pictures.query\
+        .join(Represents, Pictures.id==Represents.fk_picture) \
+        .filter(Represents.fk_identity == id_identity) \
+        .order_by(Represents.probability) \
+        .first()
+
+    if picture is not None:
+        picture_schema = PicturesSchema()
+        return picture_schema.dump(picture)
+    else:
+        abort(404, 'Best picture for {id_identity} not found'.format(id_identity=id_identity))
 
 @jwt_required
 def delete(id):
