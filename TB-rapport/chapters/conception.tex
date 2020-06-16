@@ -52,7 +52,7 @@ identité est maintenant « pondérée » par une probabilité.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=12cm]{images/proto-1.png}
+	\includegraphics[width=12cm]{images/proto-2.png}
 	\caption{Deuxième version entité-association}
 	\label{fig:arealytics}
 \end{figure}
@@ -86,5 +86,157 @@ traitement sur les entités présentée dans la section ~\ref{sec:database}.
 La liste des routes est donnée en annexe de ce document.
 
 \section{Le client Raspberry}
+Les différents clients Raspberry auront la responsabilité de collecter les informations, et de les envoyer
+au serveur principal via l'API. 
+
+Pour se faire, elles exécuteront en continu deux processus:
+\begin{enumerate}
+	\item scanProbe: Récupère les données 802.11 (extraction des MAC Address, du constructeur, analyse de l'aléatoire)
+	\item recognizeFace: Analyse des frames de la caméra, si un visage est détecté localement par OpenCV, envoi de l'image à l'API
+\end{enumerate}
+
+Ce même client peut être dupliqué autant de fois que nécessaire sans adaptation. 
+
+\section{Dashboard : Visualisation des informations}
+Afin qu'un opérateur puisse observer les données récoltées, les données reçues par l'API sont disponibles sous forme de front-end.
+
+Les pages présentes sont les suivantes : 
+
+Statistiques: Diverses informations générales, fil d'événement, pourcentages
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=16cm]{images/dashboard/stats.png}
+	\caption{Page de statistiques générales}
+	\label{fig:dashboard_stats}
+\end{figure}
+
+Liste des identités: Aggrégation des identités connues (Prénom, nom, adresse mail, UUID)
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=16cm]{images/dashboard/list-identities.png}
+	\caption{Page listant les identités}
+	\label{fig:dashboard_list_identities}
+\end{figure}
+
+Détails sur une identité: Toutes les informations concernant une identité spécifique. Liste des adresse MAC probablement associées. 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=16cm]{images/dashboard/identity.png}
+	\caption{Page de détails sur une identité}
+	\label{fig:dashboard_stats}
+\end{figure}
+
+Liste des adresses MAC: Aggrégation des adresses MAC connues (Adresse, constructeur, Randomness, Nombre d'occurrences dans les probes request)
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=16cm]{images/dashboard/list-macs.png}
+	\caption{Page listant les adresses MAC}
+	\label{fig:dashboard_stats}
+\end{figure}
 
 \section{Algorithme PP2I}
+L'algorithme PP2I (Probe requests and Pictures to Identity) a la responsabilité d'associer une ou plusieurs adresses MAC à une identité. 
+
+Afin d'en analyser le fonctionnement, un lexique doit être établi:
+\begin{itemize}
+	\item Identité: Personne unique reconnue par l'API Rekognition d'Amazon.
+	\item Fenêtre: Interval temporelle centré autour d'un événement. 
+\end{itemize}
+
+Le processus va se dérouler en quatre étapes. 
+\begin{enumerate}
+	\item Initialisation et incrémentation
+	\item Décrémentation majeure dûe à l'absence de l'adresse MAC
+	\item Décrémentation mineure dûe à l'absence de la photo
+	\item Normalisation des scores
+\end{enumerate}
+
+\subsection{Initialisation}
+Dans cette phase de l'algorithme, toutes les identités sont parcourues.
+Pour chaque identité, toutes les photos correspondantes sont mises en relation avec probes requests.
+Si un couple (photo, probe request) se trouve dans la même fenêtre, alors on initialise le couple et on l'ajoute au dictionnaire.
+
+\begin{algorithm2e}[H]
+	\SetAlgoLined
+	\KwIn{List of pictures timestamped and labeled with corresponding identity, list of probe request timestamped}
+	\KwResult{Dictionnary containing (adress, identity) tuple as key and probability as value}
+	$dict\_couple  \gets \emptyset $\;
+	\ForEach(){Identity \textbf{in} AllIdentities}{
+		 \ForEach(){Picture \textbf{in} Identity}{
+			 $beginning \gets Picture.timestamp - half\_window\_duration$\;
+			 $end \gets Picture.timestamp + half\_window\_duration$\;
+			 $place \gets Picture.place$\;
+			 \ForEach(){Probe \textbf{taken at} $place$ \textbf{between} beginning \textbf{and} end \textbf{in} allProbes}{
+				$dict\_couple.add(key=(address, identity), value=init\_score)$
+			 }
+			}
+		}
+	\Return{$dict\_couple$}
+	\caption{Initialisation et création de couples}
+\end{algorithm2e}
+
+\subsection{Décrémentation majeure dûe à l'absence de l'adresse MAC}
+Dans cette phase, nous regardons pour un couple donné, si il y a des instances où l'on trouve 
+l'identité (une photo) sans l'adresse MAC (une probe request). Comme c'est un cas peu probable si le couple
+est correct (une probe request est plus facilement récupérable qu'une photo), on descend beaucoup le score du couple si cela arrive.
+
+\begin{algorithm2e}[H]
+	\SetAlgoLined
+	\KwIn{$dict\_couple$, list of pictures timestamped and labeled with corresponding identity, list of probe request timestamped}
+	\KwResult{Dictionnary containing (adress, identity) tuple as key and probability as value}
+	$mac\_addresses  \gets \emptyset $\;
+	\ForEach(){Couple \textbf{in} $dict\_couple$}{
+		 \ForEach(){Picture \textbf{representing} Couple[Identity]}{
+			$beginning \gets Picture.timestamp - half\_window\_duration$\;
+			$end \gets Picture.timestamp + half\_window\_duration$\;
+			$place \gets Picture.place$\; 
+			\ForEach(){Probe \textbf{taken at} $place$ \textbf{between} beginning \textbf{and} end \textbf{in} allProbes}{
+				$mac\_addresses.add(Probe.mac)$
+			 }
+			}
+		\If(){Couple[mac] \textbf{not in} $mac\_addresses$}{
+			$dict\_couple[(adress, identity)]$ -= $BigMalus$\;
+		}
+
+		}
+	\Return{$dict\_couple$}
+	\caption{Décrémentation majeure dûe à l'absence de l'adresse MAC}
+\end{algorithm2e}
+
+
+\subsection{Décrémentation mineure dûe à l'absence de la photo}
+Dans cette phase, nous regardons pour un couple donné, si il y a des instances où l'on trouve 
+l'adresse MAC (une probe request) sans l'identité (une photo). Comme c'est un cas fréquent, on ne baissera qu'un peu le couple donné. 
+
+
+\begin{algorithm2e}[H]
+	\SetAlgoLined
+	\KwIn{$dict\_couple$, list of pictures timestamped and labeled with corresponding identity, list of probe request timestamped}
+	\KwResult{Dictionnary containing (adress, identity) tuple as key and probability as value}
+	$identities  \gets \emptyset $\;
+	\ForEach(){Couple \textbf{in} $dict\_couple$}{
+		 \ForEach(){Probe \textbf{containing} Couple[address]}{
+			$beginning \gets Probe.timestamp - half\_window\_duration$\;
+			$end \gets Probe.timestamp + half\_window\_duration$\;
+			$place \gets Probe.place$\; 
+			\ForEach(){Picture \textbf{taken at} $place$ \textbf{between} beginning \textbf{and} end \textbf{in} allPictures}{
+				$identities.add(Picture.identity)$
+			 }
+			}
+		\If(){Couple[identity] \textbf{not in} $identities$}{
+			$dict\_couple[(adress, identity)]$ -= $BSmallMalus$\;
+		}
+
+		}
+	\Return{$dict\_couple$}
+	\caption{Décrémentation mineure dûe à l'absence de la photo}
+\end{algorithm2e}
+
+\subsection{Normalisation~\cite{SKLEARNMINMAX}}
+Afin de faciliter le traitement, les scores seront normalisés dans une intervalle [0;1].
+Pour ce faire, toutes les adresses candidates à une identités sont sélectionnées et mises à l'échelle entre elles à l'aide de la formule: suivante
+
+\begin{listingsbox}{python}{Formule de normalisation}
+X_std = (X - X.min) / (X.max - X.min)
+X_scaled = X_std * (max_range - min_range) + min_range
+\end{listingsbox}

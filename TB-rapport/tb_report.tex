@@ -1,3 +1,5 @@
+% !TEX latex-workshop.latex.recipe.default = TB
+
 \documentclass[a4paper,11pt,oneside,openright]{book} % Type du document
 
 % compiler avec : pdflatex, bibtex, pdflatex, pdflatex
@@ -12,6 +14,7 @@
 \usepackage[table,xcdraw]{xcolor}
 \usepackage{multirow}
 \usepackage{dirtytalk}
+\usepackage[algo2e, ruled, vlined]{algorithm2e}
 \def\UrlBreaks{\do\.\do\@\do\\\do\/\do\!\do\_\do\|\do\;\do\>%
 \do\]\do\)\do\,\do\?\do\'\do+\do\=\do\#\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z%
 \do\A\do\B\do\C\do\D\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X\do\Y\do\Z%
@@ -83,6 +86,7 @@ Dans ce travail... Ceci est le résumé publiable...
 % Cahier des charges
 % +---------------------------------------------------------------+
 \input{chapters/cdc}
+
 
 
 % TOC
