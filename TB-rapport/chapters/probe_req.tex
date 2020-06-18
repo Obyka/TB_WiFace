@@ -69,6 +69,36 @@ Le processus de randomisation n'étant pas strictement standardisé, l'implémen
 Certaines de ces implémentations sont bonnes (iOS randomise les 6 octets de l'adresse MAC, sauf b1 et b0) alors que d'autres le sont moins (Android possède des OUI fixes pendant la randomisation, ce qui 
 permet déjà la divulgation d'informations sur l'appareil.)
 
+\subsection{Détection passive de la randomisation}
+
+\subsubsection{Le bit Locally Assigned}
+Le travail WiFace utilise plusieurs méthodes pour détecter la randomisation des adresses MAC. 
+La première consiste simplement à contrôler le bit \textbf{b1}, si ce dernier est à 1, cela veut
+dire avec de grandes chances que l'adresse est aléatoire. Cependant, ce n'est pas totalement vrai, c'est pourquoi
+d'autres techniques sont employées en concert avec celle-ci. 
+
+Dans un corpus datant de fin 2015, l'étude ~\cite{ASMARMD} a demontré les statistiques suivantes: 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=10cm]{images/probe/stats_locally_assigned.png}
+	\caption{Statistiques sur la randomisation - Locally Assigned bit}
+	\label{fig:macstruct}
+\end{figure}
+
+Près de 99\% des adresses assignées localement étaient également aléatoires. La consultation
+du bit b1 est donc une bonne estimation heuristique. Il est tout de fois intéressant de pouvoir afiner
+la détection afin d'obtenir d'autres informations sur le périphérique. 
+
+\subsubsection{Le préfixe DA:A1:19}
+Ce préfixe peut être retrouvé lors de la randomisation des adresses MAC sous Android.
+Il s'agit d'un CID hardcodé dans un fichier de configuration de l'OS. Cette valeur sera donc utilisée "par défaut"
+lors de la randomisation Android. Dans ce même corpus, 52685 étaient concernées.
+
+\subsubsection{Le préfixe 92:68:C3}
+Ce CID a également été observé sur un petit sous-ensemble des appareils. Il est possédé par Motorola et venaient remplacer
+celui d'Android.
+
 \section{Les probes requests}
 
 Les adresses MAC, aléatoires ou non, sont transmises dans chaque trame MAC, ainsi que bien d'autres
