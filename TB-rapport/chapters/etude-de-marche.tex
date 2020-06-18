@@ -9,9 +9,8 @@ caméra), ce qui offre le meilleur compromis entre puissance de calcul, mobilit�
 Voici les critères permettant de choisir le modèle à utiliser :
 \begin{itemize}
 \item Installation libre d’une distribution Linux compatible avec les outils à utiliser (librairies, langages, drivers)
-\item Compatibilité hardware avec les cartes réseaux 802.11 et les caméras choisies au point suivant
-\item Puissance processeur et RAM suffisante pour exécuter les tâches les plus lourdes du projet (Machine
-Learning, reconnaissance faciale)
+\item Compatibilité hardware avec les cartes réseaux 802.11 et les caméras choisies à la section \ref{sec:choix_camera}
+\item Puissance processeur et RAM suffisante pour exécuter les tâches les plus lourdes du projet (notamment le traitement à l'aide d'OpenCV)
 \item Prix adéquat et compatible avec le budget associé au travail de Bachelor
 \item Documentation fournie et/ou communauté active
 \end{itemize}
@@ -42,6 +41,8 @@ Au vu de la qualité de la documentation, du prix raisonnable du modèle posséd
 remplis, la meilleure alternative pour le projet semble être la \textbf{Raspberry Pi 4}.
 
 \section{Caméra pour la reconnaissance faciale}
+\label{sec:choix_camera}
+
 
 Afin de pouvoir enregistrer des images, pour les traiter et ainsi reconnaître des visages, une caméra devra être
 associée à la raspberry pi. Ce use-case étant fréquent, un module caméra officiel est proposé à la vente. Voici

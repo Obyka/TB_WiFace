@@ -19,7 +19,7 @@ En voici une liste non-exhaustive :
 \item Identifier l’utilisateur d’un téléphone (Apple FaceID)
 \item Aide à la recherche des personnes disparues
 \item Aide aux personnes malvoyantes (détection et notification du sourire de ces interlocteurs)
-\item Labélisation des personnes sur les réseaux sociaux
+\item Labellisation des personnes sur les réseaux sociaux
 \item Lutte contre le terrorisme
 \end{itemize}
 
@@ -50,9 +50,9 @@ complet.) Les trois solutions le proposant sont :
 \item Microsoft Azure : Face
 \end{itemize}
 
-Trois facteurs sont alors important dans le cadre du projet : La précision, le prix et la facilité d’utilisation.
+Trois facteurs sont alors importants dans le cadre du projet : La précision, le prix et la facilité d’utilisation.
 
-\subsection{Performences}
+\subsection{Performances}
 Concernant la précision, on peut le mesure à l’aide des concepts de True Positive (Un visage est correctement
 identifié), True Negative (Un visage est correctement exclu), False Positive (Un visage est identifié en tant qu’un
 autre) et False Negative (Un visage n’a pas été identifié comme connu)
@@ -105,17 +105,17 @@ moyennement précis tel que la raspberry).
 
 \subsection{Tarification}
 
-Concernant la tarfication, Amazon et Microsoft se démarque de Kairos grâce à leur prix moins élevés, et à des
+Concernant la tarfication, Amazon et Microsoft se démarquent de Kairos grâce à leur prix moins élevés, et à des
 solutions gratuites.
 
 \subsubsection{Kairos}
 
 Kairos pratique des prix mensuels fixes ainsi qu’un supplément par transaction. Par exemple, l’offre « Student
-Cloud » coûte 19\$par mois + 0.02\$ par transaction, avec tout de fois 2 semaines d’essai gratuites.
+Cloud » coûte 19\$ par mois + 0.02\$ par transaction, avec tout de fois 2 semaines d’essai gratuites.
 
 \subsubsection{Microsoft Azure Face}
 
-Microsoft propose deux solutions : « Free - Web/Container » et « Standard - Web/Container ». Il est à noté que la
+Microsoft propose deux solutions : « Free - Web/Container » et « Standard - Web/Container ». Il est à noter que la
 tier gratuit ne comprend pas le « Face Storage » et que l’entraînement est compté dans les transactions (1
 transaction / 1000 images utilisées pendant l’entrainement)
 
@@ -157,11 +157,11 @@ de reconnaissance, ce qui ne répond pas au cahier des charges.
 
 \subsection{Choix de la solution}
 Grâce aux différents facteurs analysés, c’est la solution d’Amazon (Rekognition) qui a été retenue pour ce projet. À
-l’aide d’un tiers gratuit (majoritairement suffisant pour la période de développement), de très bonne performences
+l’aide d’un tiers gratuit (majoritairement suffisant pour la période de développement), de très bonnes performances
 et d’un use case compatible avec le cahier des charges, nous pouvons affirmer qu’il est pertinent de faire ce choix.
 
 \section{Amazon Rekognition : présentation}
-Comme expliqué précédemment, Amazon rekognition est un service de reconnaissance d’image. Bien que nous
+Comme expliqué précédemment, Amazon rekognition est un service de reconnaissance d’images. Bien que nous
 utilisons seulement les fonctionnalités concernant les visages, il est aussi possible par exemple d’identifier du texte,
 des objets ou encore des images inappropriées (contenu explicite et suggestif).
 
@@ -170,8 +170,8 @@ Pour pouvoir utiliser Rekognition, il faut connaître les opérations principale
 principaux.
 
 \underline{Features} (caractéristique) : En machine learning, les caractéristiques sont les variables d’entrées permettant de
-simplifier le problème et de sur lesquels nous allons nous baser pour faire des classifications. Par exemple, pour la
-détection de visage, certaines des caractéristiques sont : écartement des yeux, couleur des yeux, la longueur du
+simplifier le problème et sur lesquelles nous allons nous baser pour faire des classifications. Par exemple, pour la
+détection de visages, certaines des caractéristiques sont : écartement des yeux, couleur des yeux, la longueur du
 nez, la forme des joues, la profondeur des orbites, ou encore la largeur de la mâchoire. La combinaison de ces
 caractéristiques permettent souvent d’identifier de manière unique un individu.
 
@@ -201,8 +201,8 @@ Voici un workflow détaillé d’Amazon Rekognition
 
 Afin de pouvoir travailler avec Amazon Rekognizion, il est nécessaire d’avoir une clé d’authentification à leur API.
 Pour cela, il faut créer un compte et s’inscrire au service. Une fois la clé obtenue, nous allons utiliser leur SDK pour
-Python : boto3 1 et leur CLI : awscli grâce auquel nous pouvons effectuer la configuration de base.
-Avec la comande `awsconfigure` nous pouvons saisir la clé qui sera alors utilisée pendant nos appels d’API
+Python : boto3  et leur CLI : awscli grâce auquel nous pouvons effectuer la configuration de base.
+Avec la comande `aws configure` nous pouvons saisir la clé qui sera alors utilisée pendant nos appels d’API.
 
 \begin{listingsbox}{console}{Configuration du client amazon}
 aws configure

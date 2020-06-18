@@ -45,7 +45,7 @@ locale, 1 pour une adresse administrée localement (ce bit sera crucial concerna
 
 \subsection{Problèmes de vie privée et randomisation}
 La propriété d'unicité des adresses MAC soulève évidemment des problématiques liées à la vie privée. 
-la vie privée. Par exemple, selon les dires d'Edward Snowden, la NSA se servait des adresses MAC afin de
+Par exemple, selon les dires d'Edward Snowden, la NSA se servait des adresses MAC afin de
 monitorer les déplacements d'individus.~\cite{hackernews:snowdan}
 
 Le sujet de ce travail de bachelor soulève les même problématiques. Par conséquent, certaines marques
@@ -53,7 +53,7 @@ ont mis en place la \textbf{MAC Address randomization}.
 
 \subsection{Randomisation des adresses MAC~\cite{connected:macrandom}}
 
-Depuis 2014, de plus en plus de constructeurs ont mis en place des mesures
+Depuis 2014, de plus en plus de constructeurs ont adopté des mesures
 afin de protéger la véritable adresse MAC de l'appareil. 
 
 \begin{itemize}
@@ -66,7 +66,7 @@ afin de protéger la véritable adresse MAC de l'appareil.
 L'objectif étant de varier suffisamment régulièrement l'adresse pour que empêcher le traçage. 
 Le processus de randomisation n'étant pas strictement standardisé, l'implémentation peut varier pour chaque constructeur. 
 
-Certaines de ces implémentations sont bonnes (iOS randomise les 6 octets de l'adresse MAC2 sauf b1 et b0) alors que d'autres le sont moins (Android possède des OUI fixes pendant la randomisation, ce qui 
+Certaines de ces implémentations sont bonnes (iOS randomise les 6 octets de l'adresse MAC, sauf b1 et b0) alors que d'autres le sont moins (Android possède des OUI fixes pendant la randomisation, ce qui 
 permet déjà la divulgation d'informations sur l'appareil.)
 
 \section{Les probes requests}
@@ -83,7 +83,7 @@ informations. Voici leur structure:
 
 On retrouve notamment les adresses MAC de source et de destination dans les champs Address[1|2|3].
 Malheureusement, pour qu'un appareil diffuse des trames de \textbf{données}, il faut qu'il soit associé avec un point d'accès. 
-Il existe cependant les trames de \textbf{management}. Le champs Subtype (cf figure \ref{fig:macframe}) définit justement
+Il existe cependant les trames de \textbf{management}. Le champ "Subtype" (cf figure \ref{fig:macframe}) définit justement
 la nature de ces frames. 
 
 Voici les trames de management principales:

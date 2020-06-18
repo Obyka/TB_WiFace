@@ -16,24 +16,24 @@ Vendor : Il s’agit du fabricant qui possède un OUI. Étant unique, cet identi
 MACAddress : Représente une adresse MAC. Un booléean lui est associé pour savoir si elle semble aléatoire. Une
 adresse MAC étant unique (ou presque) elle est utilisée comme clé de la table
 
-Probe : Représente une probe request. L’heure à laquelle elle a été capturée ainsi que le SSID visé font partis de
+Probe : Représente une probe request. L’heure à laquelle elle a été capturée ainsi que le SSID visé font partie de
 l’entité.
 
 Place : Représente l’endroit où la capture a eu lieu.
 
 Picture : Représente une photo prise par le module caméra
 
-Identity : Représente l’identité d’une personne. On y trouvera les données personnelle récupérée via différents
+Identity : Représente l’identité d’une personne. On y trouvera les données personnelle récupérées via différents
 vecteurs.
 
 \subsubsection{Première version}
 Dans cette première ébauche, toutes les entités sont reliées de manière plutôt simpliste. Regardons toutefois
 quelques-unes de ces relations.
-Une entité « vendor » peut n’avoir délivré aucune adresse MAC puisqu’ils seront tous inséré dans la base de donnée
+Une entité « vendor » peut n’avoir délivré aucune adresse MAC puisqu’ils seront tous insérés dans la base de donnée
 à sa création.
 
 Dans ce modèle, une « Identity » est reliée à aucune ou plusieurs MACAddress et photo. (L’individu peut posséder
-plusieurs appareils et plusieurs photo ont pu être prise)
+plusieurs appareils et plusieurs photos ont pu être prises)
 
 \begin{figure}[H]
 	\centering
@@ -44,7 +44,7 @@ plusieurs appareils et plusieurs photo ont pu être prise)
 
 Problème : Dans cette conception, il n y a aucune notion de probabilité. Quand une identité a été reliée à une
 adresse MAC par exemple, il n’est pas possible de modéliser le doute. Or, dans notre projet, il n y aura que très
-peu d’occurence où la certitude est présente. Il faut donc modéliser cette propriété de probabilité.
+peu d'occurences où la certitude est présente. Il faut donc modéliser cette propriété de probabilité.
 
 \subsubsection{Deuxième version – Modélisation des probabilités}
 Des relations intermédiaires ont été ajoutées. L’association entre une adresse MAC ou une photo avec une
@@ -118,7 +118,7 @@ Liste des identités: Aggrégation des identités connues (Prénom, nom, adresse
 	\label{fig:dashboard_list_identities}
 \end{figure}
 
-Détails sur une identité: Toutes les informations concernant une identité spécifique. Liste des adresse MAC probablement associées. 
+Détails sur une identité: Toutes les informations concernant une identité spécifique. Liste des adresses MAC probablement associées. 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=16cm]{images/dashboard/identity.png}
@@ -140,7 +140,7 @@ L'algorithme PP2I (Probe requests and Pictures to Identity) a la responsabilité
 Afin d'en analyser le fonctionnement, un lexique doit être établi:
 \begin{itemize}
 	\item Identité: Personne unique reconnue par l'API Rekognition d'Amazon.
-	\item Fenêtre: Interval temporelle centré autour d'un événement. 
+	\item Fenêtre: Intervalle temporel centré autour d'un événement. 
 \end{itemize}
 
 Le processus va se dérouler en quatre étapes. 
