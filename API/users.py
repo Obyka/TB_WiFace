@@ -1,7 +1,18 @@
 from config import db
 from models import User, UserSchema
-from flask import abort, make_response, Response
-from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
+from flask import abort, make_response, Response, jsonify
+from flask_jwt_extended import set_refresh_cookies, unset_jwt_cookies, set_access_cookies, create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt
+
+@jwt_refresh_token_required
+def refresh():
+    # Create the new access token
+    current_user = get_jwt_identity()
+    access_token = create_access_token(identity=current_user)
+
+    # Set the JWT access cookie in the response
+    resp = jsonify({'refresh': True})
+    set_access_cookies(resp, access_token)
+    return resp, 200
 
 @jwt_required
 def create(user):
@@ -36,11 +47,12 @@ def login(user):
 
     else:
         if User.verifyHash(user.password, userDB.password):
+            resp = jsonify({'login':True})     
             access_token = create_access_token(identity = user.email)
             refresh_token = create_refresh_token(identity = user.email)
-            return {
-                'access_token': access_token,
-                'refresh_token': refresh_token
-                }
+            print(access_token)
+            set_access_cookies(resp, access_token)
+            set_refresh_cookies(resp, refresh_token)
+            return resp        
         else:
             abort(401, 'bad auth')

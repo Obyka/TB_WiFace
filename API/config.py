@@ -30,7 +30,10 @@ app.config['COLLECTION_NAME'] = "wiface-faces"
 app.config['aws_access_key_id'] = "***REMOVED***"
 app.config['aws_secret_access_key'] = "***REMOVED***"
 
+app.config['JWT_ACCESS_COOKIE_PATH'] = '/api/'
 app.config['SECRET_KEY'] = '***REMOVED***'
+app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+app.config['JWT_COOKIE_CSRF_PROTECT'] = False
 
 # Create the SqlAlchemy db instance
 db = SQLAlchemy(app)

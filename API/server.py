@@ -11,8 +11,10 @@ import macs
 import identities
 import belongsto
 import pictures
+import users
 from dateutil.relativedelta import relativedelta
 import datetime
+from models import User, UserSchema
 
 # Get the application instance
 connex_app = config.connex_app
@@ -28,6 +30,11 @@ def inject_counters():
 @connex_app.app.context_processor
 def inject_path():
     return dict(picture_path=config.app.config['UPLOAD_FOLDER'])
+
+@connex_app.route('/web/login')
+def login_front():
+	# TODO
+	return users.login(user)
 
 @connex_app.route('/web/statistics')
 def statistics_front():

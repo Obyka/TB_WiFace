@@ -822,6 +822,22 @@ paths:
           201:
             description: Successfully created the user
 
+  /refresh:
+    post:
+      operationId: users.refresh
+      tags:
+        - Users
+      summary: Refresh the user access JWTtoken
+      description: Refresh the user access JWTtoken
+      responses:
+        '200':
+          description: >
+            Successfully refreshed the access token.
+            The new access and refresh JWTTokens are returned in a cookie. You need to include this cookie in subsequent requests.
+          headers: 
+            Set-Cookie:
+              type: string
+  
   /login:
     post:
         operationId: users.login
@@ -842,11 +858,10 @@ paths:
                   password:
                     type: string
         responses:
-          201:
-            description: Successfully logged
-            schema:
-              properties:
-                  auth_token:
-                    type: string
-                  refresh_token:
-                    type: string
+          '200':
+            description: >
+              Successfully authenticated.
+              The access and refresh JWTTokens are returned in a cookie. You need to include this cookie in subsequent requests.
+            headers: 
+              Set-Cookie:
+                type: string
