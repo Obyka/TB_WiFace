@@ -87,7 +87,7 @@ def main():
 
     PROBES = [
         {"ssid": "probe_ssid_1", "timestamp": batman_time + probe_time , "fk_mac" : "11:11:11:11:11:11", "fk_place" : 1},
-        {"ssid": "probe_ssid_2", "timestamp": batman_time - probe_time, "fk_mac" : "11:11:11:11:11:11", "fk_place" : 1},
+        {"ssid": "probe_ssid_2", "timestamp": batman_time - probe_time, "fk_mac" : "11:11:11:11:11:11", "fk_place" : 2},
         {"ssid": "probe_ssid_3", "timestamp": superman_time+ probe_time, "fk_mac" : "22:22:22:22:22:22", "fk_place" : 1},
         {"ssid": "probe_ssid_3", "timestamp": superman_time - probe_time, "fk_mac" : "22:22:22:22:22:22", "fk_place" : 1},
         {"ssid": "probe_ssid_1", "timestamp": ironman_time+ probe_time, "fk_mac" : "33:33:33:33:33:33", "fk_place" : 1},

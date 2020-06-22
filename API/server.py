@@ -11,7 +11,6 @@ import macs
 import identities
 import belongsto
 import pictures
-import vendors
 from dateutil.relativedelta import relativedelta
 import datetime
 
@@ -50,19 +49,17 @@ def identities_front():
 
 @connex_app.route('/web/macs')
 def macs_front():
+	if 'id' in request.args:
+		mac_data = macs.get_mac_infos(macs.read_one(request.args.get('id')))
+		return render_template('mac_details.html', mac_data=mac_data)
 	mac_list = macs.read_all()
 	for mac in mac_list:
-		vendor = vendors.read_by_oui(mac['fk_vendor'])
-		mac['vendor_name'] = vendor['name']
-		mac['nb_probes'] = len(mac['probes'])
-
+		mac =  macs.get_mac_infos(mac)
 	return render_template('macs.html', mac_list=mac_list)
 
 @connex_app.route('/web/pictures')
 def pictures_front():
 	return render_template('pictures.html')
-
-
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 

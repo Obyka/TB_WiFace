@@ -7,13 +7,28 @@ from models import (
 )
 from flask_jwt_extended import jwt_required
 from flask import abort, make_response
+import vendors, probes, places
 
 def count_random():
     return MacAddress.query.filter(MacAddress.isRandom == True).count()
-
-
+    
 def count():
     return MacAddress.query.count()
+
+def get_mac_infos(mac):
+    vendor = vendors.read_by_oui(mac['fk_vendor'])
+    mac['vendor_name'] = vendor['name']
+    mac['nb_probes'] = len(mac['probes'])
+    mac['places'] = []
+
+    places_set = set()
+    for probe in mac['probes']:
+        probe_data = probes.read_one(probe)
+        places_set.add(probe_data['fk_place'])
+
+    for place in places_set:
+        mac['places'].append(places.read_one(place))
+    return mac
 
 @jwt_required
 def read_identities(address):
@@ -54,7 +69,7 @@ def create(mac):
     # Serialize and return the newly created person in the response
     return schema.dump(new_mac), 201
 
-@jwt_required
+#@jwt_required
 def read_one(address):
     mac = MacAddress.query \
         .filter(MacAddress.address== address) \

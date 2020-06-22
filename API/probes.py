@@ -34,7 +34,6 @@ def create(probe):
     :param probe:  probe to create
     :return:        201 on success
     """
-    print(request.headers)
     schema = ProbesSchema()
     new_probe = schema.load(probe, session=db.session)
 
@@ -45,7 +44,7 @@ def create(probe):
     # Serialize and return the newly created person in the response
     return schema.dump(new_probe), 201
 
-@jwt_required
+#@jwt_required
 def read_one(id):
     probe = Probes.query \
         .filter(Probes.id == id) \

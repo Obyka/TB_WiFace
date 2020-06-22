@@ -26,7 +26,7 @@ def create(place):
     # Serialize and return the newly created person in the response
     return schema.dump(new_place), 201
 
-@jwt_required
+#@jwt_required
 def read_one(id):
     place = Places.query \
         .filter(Places.id == id) \

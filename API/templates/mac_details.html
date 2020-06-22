@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<title>Identities</title>
+<title>MAC Address details</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -39,34 +39,66 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
   <!-- Header -->
   <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-user"></i> List of MAC address</b></h5>
+    <h5><b><i class="fa fa-user"></i> Detailled MAC address</b></h5>
   </header>
 
-  <div class="w3-panel">
-    <div class="w3-row-padding" style="margin:0 -16px">
-      <div class="w3">
-        <table class="w3-table w3-striped w3-white">
-            <tr>
-                <th>MAC Address</th>
-                <th>Vendor name</th>
-                <th>Is random</th>
-                <th>Number of probes</th>
-            </tr>
-          {% for mac in mac_list %}
-          <tr>
-            <td><i><a href="{{ url_for('macs_front', id=mac.address) }}">{{mac.address}}</a></i></td>
-            <td><i>{{mac['vendor_name']}}</i></td>
-            <td><i>{{mac.isRandom}}</i></td>
-            <td><i>{{mac['nb_probes']}}</i></td>
+  <div class="w3-card w3-round w3-white w3-third" style="margin-right: 10px;">
+    <div class="w3-container">
+    <div id="googleMap" style="width:100%;height:400px;"></div>
+    </div>
+  </div>
 
-          </tr>
-          {% endfor %}
-        </table>
-      </div>
+
+  <div class="w3-card w3-round w3-white w3-rest">
+    <div class="w3-container">
+     <p class="w3-center w3-xlarge"><i class="fa fa-mobile fa-fw"></i> Address: {{mac_data.address}}</p>
+     <p class="w3-center w3-xlarge"><i class="fa fa-microchip fa-fw"></i> Vendor: {{mac_data.vendor_name}}</p>
+     <p class="w3-center w3-xlarge"><i class="fa fa-paper-plane fa-fw"></i> Probe requests: {{mac_data.nb_probes}}</p>
+     {% if mac_data.isRandom %}
+     <p class="w3-center w3-xlarge"><i class="fa fa-exclamation-triangle fa-fw"></i> This address is probably randomized.</p>
+     {% elif not mac_data.isRandom %}
+     <p class="w3-center w3-xlarge"><i class="fa fa-check fa-fw"></i> This address is probably NOT randomized.</p>
+     {% endif %}
+
     </div>
   </div>
   <hr>
+   <script>
+   function myMap() {
+   var mapProp= {
+     zoom:5,
+   };
 
+   arrayMarker = []
+
+   {% for place in mac_data.places %}
+   var contentString = '{{place.name}}<br>' + 'Latitude: ' + '{{place.latitude}}<br>' + 'Longitude: ' +'{{place.longitude}}<br>';
+   var marker = new google.maps.Marker({
+    position: new google.maps.LatLng({{place.latitude}}, {{place.longitude}}),
+    map: map,
+    title: "{{place.name}}"
+  });
+
+  google.maps.event.addListener(marker, 'click', function(content) {
+    infowindow = new google.maps.InfoWindow();
+    return function(){
+        infowindow.setContent(content);
+        infowindow.open(map,this);
+    }
+    }(contentString));
+
+  arrayMarker.push(marker)
+  {% endfor %}
+  mapProp.center = new google.maps.LatLng({{mac_data.places[0].latitude}}, {{mac_data.places[0].longitude}});
+
+   var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+   arrayMarker.forEach(function(element){
+    element.setMap(map);
+   });
+  }
+   </script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNgwbDiCLi_-4w3R0vPxRVhtUuqvALti0&callback=myMap"></script>
 
   <!-- Footer -->
   <footer class="w3-container w3-padding-16 w3-light-grey">
@@ -104,3 +136,14 @@ function w3_close() {
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+

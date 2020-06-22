@@ -50,10 +50,8 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
      <p class="w3-center w3-xlarge"><i class="fa fa-envelope fa-fw"></i> {{identity.mail}}</p>
      <p class="w3-center w3-xlarge"><i class="fa fa-mobile  fa-fw"></i> MAC: 
       {% for mac in best_macs %}
-      {{mac.fk_mac}}
+      <a href="{{ url_for('macs_front', id=mac.fk_mac) }}">{{mac.fk_mac}}</a>
       {% endfor %}
-    </p>
-
     </div>
   </div>
 
