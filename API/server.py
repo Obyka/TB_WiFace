@@ -12,7 +12,7 @@ import belongsto
 import pictures
 import users
 from dateutil.relativedelta import relativedelta
-from flask_jwt_extended import get_jwt_identity, jwt_optional, jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_optional, jwt_required, get_raw_jwt
 import datetime
 from models import User, UserSchema
 # Get the application instance
@@ -54,13 +54,13 @@ def login_front():
 		user = {'email': request.form['email'], 'password': request.form['password']}
 		response =  users.login(user)
 		if response.status_code != 200:
-			return render_template('login.html', error=True)
+			return render_template('login.html', error=True, csrf_token=(get_raw_jwt() or {}).get("csrf"))
 		else:
 			# Since the login function returns a response, here is a convoluted way to copy tokens while serving a template
 			r = make_response(render_template('login.html'))
 			r.headers.setlist('Set-Cookie', response.headers.getlist('Set-Cookie'))
 			return r
-	return render_template('login.html')
+	return render_template('login.html', csrf_token=(get_raw_jwt() or {}).get("csrf"))
 
 @connex_app.route('/web/statistics')
 def statistics_front():
