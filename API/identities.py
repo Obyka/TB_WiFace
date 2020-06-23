@@ -22,7 +22,7 @@ def read_pictures(id_identity):
     else:
         abort(404, "No pictures found for the identity {id_identity}".format(id_identity=id_identity))
 
-#@jwt_required
+@jwt_required
 def read_all():
     identities = Identities.query.order_by(Identities.lastname).all()
 
@@ -54,7 +54,7 @@ def read_one_by_uuid(uuid):
     else:
         abort(404, 'identity with the id {uuid} not found'.format(uuid=uuid))
 
-#@jwt_required
+@jwt_required
 def read_one(id):
     identity = Identities.query \
         .filter(Identities.id == id) \

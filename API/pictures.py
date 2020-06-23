@@ -68,6 +68,7 @@ def read_one(id):
     else:
         abort(404, 'Picture with the id {id} not found'.format(id=id))
 
+@jwt_required
 def read_best_pic(id_identity):
     picture = Pictures.query\
         .join(Represents, Pictures.id==Represents.fk_picture) \

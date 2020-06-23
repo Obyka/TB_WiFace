@@ -1,14 +1,11 @@
 import os
 import connexion
 from flask import Flask
+import logging
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_jwt_extended import JWTManager
 from os import environ
-
-
-
-
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -17,6 +14,9 @@ connex_app = connexion.App(__name__, specification_dir=basedir)
 
 # Get the underlying Flask app instance
 app = connex_app.app
+
+log = logging.getLogger('werkzeug')
+log.disabled = True
 
 # Build the Sqlite ULR for SqlAlchemy
 sqlite_url = "sqlite:////" + os.path.join(basedir, "probes.db")
@@ -30,7 +30,7 @@ app.config['COLLECTION_NAME'] = "wiface-faces"
 app.config['aws_access_key_id'] = "***REMOVED***"
 app.config['aws_secret_access_key'] = "***REMOVED***"
 
-app.config['JWT_ACCESS_COOKIE_PATH'] = '/api/'
+app.config['JWT_ACCESS_COOKIE_PATH'] = '/'
 app.config['SECRET_KEY'] = '***REMOVED***'
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 app.config['JWT_COOKIE_CSRF_PROTECT'] = False
@@ -45,7 +45,7 @@ ma = Marshmallow(app)
 jwtM = JWTManager(app)
 
 def _fk_pragma_on_connect(dbapi_con, con_record):  # noqa
-            dbapi_con.execute('pragma foreign_keys=ON')
+    dbapi_con.execute('pragma foreign_keys=ON')
 
 with app.app_context():
     from sqlalchemy import event

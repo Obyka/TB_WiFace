@@ -43,16 +43,16 @@ def login(user):
         .filter(User.email==user.email).one_or_none()
 
     if userDB is None:
-        abort(404, "User {email} does not exist".format(email=user.email))
-
+        status_code = Response(status=404)
+        return status_code
     else:
         if User.verifyHash(user.password, userDB.password):
             resp = jsonify({'login':True})     
             access_token = create_access_token(identity = user.email)
             refresh_token = create_refresh_token(identity = user.email)
-            print(access_token)
             set_access_cookies(resp, access_token)
             set_refresh_cookies(resp, refresh_token)
             return resp        
         else:
-            abort(401, 'bad auth')
+            status_code = Response(status=401)
+        return status_code

@@ -1,9 +1,8 @@
-from flask import render_template
 import connexion
 import config
 import mariage
 import os
-from flask import abort, make_response, request, jsonify
+from flask import abort, make_response, request, jsonify, render_template, redirect
 from werkzeug.utils import secure_filename
 from recognize_face import handle_picture
 import probes
@@ -13,15 +12,27 @@ import belongsto
 import pictures
 import users
 from dateutil.relativedelta import relativedelta
+from flask_jwt_extended import get_jwt_identity, jwt_optional, jwt_required
 import datetime
 from models import User, UserSchema
-
 # Get the application instance
 connex_app = config.connex_app
 
 # Read the swagger.yml file to configure the endpoints
 connex_app.add_api('swagger.yml')
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+
+@config.jwtM.unauthorized_loader
+def unauthorized_loader_handler(error):
+    if request.path.startswith('/api/'):
+        return jsonify(err="missing JWT"), 401
+    else:
+        return redirect('/web/login')
+
+@connex_app.app.context_processor
+@jwt_optional
+def inject_identity():
+	return dict(identity=get_jwt_identity())
 
 @connex_app.app.context_processor
 def inject_counters():
@@ -31,10 +42,25 @@ def inject_counters():
 def inject_path():
     return dict(picture_path=config.app.config['UPLOAD_FOLDER'])
 
-@connex_app.route('/web/login')
+@connex_app.route('/web/login', methods=['GET', 'POST'])
+@jwt_optional
 def login_front():
-	# TODO
-	return users.login(user)
+	identity = get_jwt_identity()
+	print(str(identity)*100)
+	if identity is not None:
+		return redirect('/web/statistics')
+
+	if request.method == 'POST':
+		user = {'email': request.form['email'], 'password': request.form['password']}
+		response =  users.login(user)
+		if response.status_code != 200:
+			return render_template('login.html', error=True)
+		else:
+			# Since the login function returns a response, here is a convoluted way to copy tokens while serving a template
+			r = make_response(render_template('login.html'))
+			r.headers.setlist('Set-Cookie', response.headers.getlist('Set-Cookie'))
+			return r
+	return render_template('login.html')
 
 @connex_app.route('/web/statistics')
 def statistics_front():
@@ -67,8 +93,6 @@ def macs_front():
 @connex_app.route('/web/pictures')
 def pictures_front():
 	return render_template('pictures.html')
-
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 def verbose_timedelta(delta):
     d = delta.days
