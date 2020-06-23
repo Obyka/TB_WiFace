@@ -25,23 +25,12 @@ class API:
         """
         self.creds = creds
         self.api_url_base = api_url
-        self.__APIToken = None
-    
-    def set_APIToken(self, token):
-        self.__APIToken = token
+        self.session = requests.session()
+        # It's the most repeated value, so it's set as default
+        self.session.headers = {'Content-Type': 'application/json'}
+        self.getTokens()
 
-    def get_APIToken(self):
-        """Getter for the JWT token. If the token is expired (>10min), a new request is made
-        
-        Returns:
-            [string] -- [JWT Token]
-        """
-        if self.__APIToken is None or (datetime.utcnow() - self.__APIToken.timestamp) / timedelta(seconds=1) > 600:
-            self.__APIToken = self.getTokens(self.creds)
-        return self.__APIToken
-                
-
-    def getTokens(self,creds):
+    def getTokens(self):
         """API request to get a new token given some creds
         
         Arguments:
@@ -49,19 +38,12 @@ class API:
         
         Raises:
             APIErrorBadAuth: Invalid login
-        
-        Returns:
-            [string] -- [JWT Token]
         """
-        headers = {'Content-Type': 'application/json'}
         api_url = '{0}login'.format(self.api_url_base)
-        login_json = {'email':creds.email, 'password':creds.password}
-        response = requests.post(api_url, headers=headers, json=login_json)
+        login_json = {'email':self.creds.email, 'password':self.creds.password}
+        response = self.session.post(api_url, json=login_json)
         if response.status_code == 401:
             raise APIErrorBadAuth(response.status_code)
-        loaded_json = json.loads(response.text)
-        token = Token(loaded_json.get('access_token'), loaded_json.get('refresh_token'), datetime.utcnow())
-        return token
 
     def getIdentityByUUID(self, uuid):
         """API request to get an identity based on its uuid
@@ -72,9 +54,8 @@ class API:
         Returns:
             [Identity] -- [The identity labeled with the given uuid]
         """
-        headers = {'Content-Type': 'application/json', 'Authorization':'Bearer '+self.get_APIToken().access}
         api_url = '{0}identities/uuid/{1}'.format(self.api_url_base, uuid)
-        response = requests.get(api_url, headers=headers)
+        response = self.session.get(api_url)
         if response.status_code != 200:
             if response.status_code != 404:
                 raise APIError(response.status_code)
@@ -90,10 +71,10 @@ class API:
         Arguments:
             picture {[file]} -- File to send
         """
-        headers = {'Authorization':'Bearer '+self.get_APIToken().access}
+        headers = {}
         api_url = '{0}upload'.format(self.api_url_base)
         files = {'file': open(picture, 'rb')}
-        response = requests.post(api_url, headers=headers, files=files)
+        response = self.session.post(api_url, files=files, headers=headers)
         return response.text
 
 
@@ -109,10 +90,9 @@ class API:
         Returns:
             [Identity] -- [Identity created on the server]
         """
-        headers = {'Content-Type': 'application/json', 'Authorization':'Bearer '+self.get_APIToken().access}
         api_url = '{0}identities'.format(self.api_url_base)
         identity_json = {'firstname':identity.firstname, 'lastname':identity.lastname, 'mail':identity.mail, 'uuid':identity.uuid}
-        response = requests.post(api_url, headers=headers, json=identity_json)
+        response = self.session.post(api_url, json=identity_json)
         if response.status_code != 201:
             raise APIError(response.status_code)
         loaded_json = json.loads(response.text)
@@ -131,10 +111,9 @@ class API:
         Returns:
             [Represent] -- [Represent created on the server]
         """
-        headers = {'Content-Type': 'application/json', 'Authorization':'Bearer '+self.get_APIToken().access}
         api_url = '{0}represents'.format(self.api_url_base)
         represents_json = {'fk_picture':represent.fk_picture, 'fk_identity':represent.fk_identity, 'probability':represent.probability}
-        response = requests.post(api_url, headers=headers, json=represents_json)
+        response = self.session.post(api_url, json=represents_json)
         if response.status_code != 201:
             raise APIError(response.status_code)
         loaded_json = json.loads(response.text)
@@ -153,10 +132,9 @@ class API:
         Returns:
             [MAC] -- [MAC created on the server]
         """
-        headers = {'Content-Type': 'application/json', 'Authorization':'Bearer '+self.get_APIToken().access}
         api_url = '{0}macs'.format(self.api_url_base)
         mac_json = {'address':mac.address, 'isRandom':mac.isRandom, 'fk_vendor':mac.fk_vendor}
-        response = requests.post(api_url, headers=headers, json=mac_json)
+        response = self.session.post(api_url, json=mac_json)
         if response.status_code != 201:
             raise APIError(response.status_code)
         loaded_json = json.loads(response.text)
@@ -172,10 +150,9 @@ class API:
         Returns:
             [MAC] -- [MAC created on the server]
         """
-        headers = {'Content-Type': 'application/json', 'Authorization':'Bearer '+self.get_APIToken().access}
         address = address.upper()
         api_url = '{0}macs/{1}'.format(self.api_url_base, address)
-        response = requests.get(api_url, headers=headers)
+        response = self.session.get(api_url)
         if response.status_code != 200:
             if response.status_code != 404:
                 raise APIError(response.status_code)
@@ -197,10 +174,9 @@ class API:
         Returns:
             [Probe] -- [Probe created on the server]
         """
-        headers = {'Content-Type': 'application/json', 'Authorization':'Bearer '+self.get_APIToken().access}
         api_url = '{0}probes'.format(self.api_url_base)
         probe_json = {'fk_mac':probe.fk_mac, 'fk_place':probe.fk_place, 'ssid':probe.ssid}
-        response = requests.post(api_url, headers=headers, json=probe_json)
+        response = self.session.post(api_url, json=probe_json)
         loaded_json = json.loads(response.text)
         probe = Probe(loaded_json.get("ssid"), loaded_json.get("fk_place"), loaded_json.get("fk_mac"))
         return probe
@@ -214,10 +190,9 @@ class API:
         Returns:
             [Picture] -- [Picture created on the server]
         """
-        headers = {'Content-Type': 'application/json', 'Authorization':'Bearer '+self.get_APIToken().access}
         api_url = '{0}pictures'.format(self.api_url_base)
         picture_json = {'timestamp':picture.timestamp, 'picPath':picture.picPath, "fk_place":picture.fk_place}
-        response = requests.post(api_url, headers=headers, json=picture_json)
+        response = self.session.post(api_url, json=picture_json)
         
         loaded_json = json.loads(response.text)
         pic = Picture(loaded_json.get('timestamp'),loaded_json.get('picPath'),loaded_json.get('fk_place'),loaded_json.get('id'))
@@ -232,9 +207,8 @@ class API:
         Returns:
             [Vendor] -- [vendor details]
         """
-        headers = {'Content-Type': 'application/json', 'Authorization':'Bearer '+self.get_APIToken().access}
         api_url = '{0}vendors/{1}'.format(self.api_url_base, OUI)
-        response = requests.get(api_url, headers=headers)
+        response = self.session.get(api_url)
         return response.status_code == 200
 
 
