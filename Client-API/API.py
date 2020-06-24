@@ -28,6 +28,7 @@ class API:
         self.session = requests.session()
         # It's the most repeated value, so it's set as default
         self.session.headers = {'Content-Type': 'application/json'}
+        self.session.verify = False
         self.getTokens()
 
     def getTokens(self):
