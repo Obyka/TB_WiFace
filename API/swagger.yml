@@ -838,6 +838,21 @@ paths:
             Set-Cookie:
               type: string
   
+  /logout:
+    post:
+      operationId: users.logout
+      tags:
+        - Users
+      summary: Log out an user
+      description: Log out an user
+      responses:
+        '200':
+          description: >
+            Successfully deauthenticated.
+            The access and refresh JWTTokens are returned empty in a cookie.
+          headers: 
+            Set-Cookie:
+              type: string
   /login:
     post:
         operationId: users.login

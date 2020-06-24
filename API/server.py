@@ -42,11 +42,19 @@ def inject_counters():
 def inject_path():
     return dict(picture_path=config.app.config['UPLOAD_FOLDER'])
 
+@connex_app.route('/web/logout', methods=['GET', 'POST'])
+@jwt_optional
+def logout_front():
+	response =  users.logout()
+	# Since the login function returns a response, here is a convoluted way to copy tokens while serving a template
+	r = redirect('/web/login')
+	r.headers.setlist('Set-Cookie', response.headers.getlist('Set-Cookie'))
+	return r
+
 @connex_app.route('/web/login', methods=['GET', 'POST'])
 @jwt_optional
 def login_front():
 	identity = get_jwt_identity()
-	print(str(identity)*100)
 	if identity is not None:
 		return redirect('/web/statistics')
 
@@ -54,21 +62,23 @@ def login_front():
 		user = {'email': request.form['email'], 'password': request.form['password']}
 		response =  users.login(user)
 		if response.status_code != 200:
-			return render_template('login.html', error=True, csrf_token=(get_raw_jwt() or {}).get("csrf"))
+			return render_template('login.html', error=True)
 		else:
 			# Since the login function returns a response, here is a convoluted way to copy tokens while serving a template
-			r = make_response(render_template('login.html'))
+			r = redirect('/web/statistics')
 			r.headers.setlist('Set-Cookie', response.headers.getlist('Set-Cookie'))
 			return r
 	return render_template('login.html', csrf_token=(get_raw_jwt() or {}).get("csrf"))
 
 @connex_app.route('/web/statistics')
+@jwt_required
 def statistics_front():
 	test = pictures.feed()
 	test = [((verbose_timedelta(datetime.datetime.utcnow() - i[0])), i[1]) for i in test]
 	return render_template('statistics.html', message=mariage.mariage(), test=test)
 
 @connex_app.route('/web/identities')
+@jwt_required
 def identities_front():
 	if 'id' in request.args:
 		identity = identities.read_one(request.args.get('id'))
@@ -81,6 +91,7 @@ def identities_front():
 	return render_template('identities.html', identitiy_list=identitiy_list)
 
 @connex_app.route('/web/macs')
+@jwt_required
 def macs_front():
 	if 'id' in request.args:
 		mac_data = macs.get_mac_infos(macs.read_one(request.args.get('id')))
@@ -91,6 +102,7 @@ def macs_front():
 	return render_template('macs.html', mac_list=mac_list)
 
 @connex_app.route('/web/pictures')
+@jwt_required
 def pictures_front():
 	return render_template('pictures.html')
 
