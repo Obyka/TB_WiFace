@@ -1,7 +1,7 @@
-from config import db
+from config import db, jwtM
 from models import User, UserSchema
-from flask import abort, make_response, Response, jsonify
-from flask_jwt_extended import set_refresh_cookies, unset_jwt_cookies, set_access_cookies, create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt
+from flask import abort, make_response, Response, jsonify, redirect, request
+from flask_jwt_extended import set_refresh_cookies, unset_jwt_cookies, unset_access_cookies, set_access_cookies, create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt
 
 @jwt_refresh_token_required
 def refresh():
@@ -10,9 +10,9 @@ def refresh():
     access_token = create_access_token(identity=current_user)
 
     # Set the JWT access cookie in the response
-    resp = jsonify({'refresh': True})
+    resp = make_response(jsonify({'refresh': True}), 200)
     set_access_cookies(resp, access_token)
-    return resp, 200
+    return resp
 
 @jwt_required
 def create(user):
