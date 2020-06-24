@@ -12,6 +12,7 @@ click==7.1.1
 clickclick==1.2.2
 colorama==0.4.3
 connexion==2.6.0
+cryptography==2.9.2
 decorator==4.4.2
 docutils==0.15.2
 Flask==1.1.1
@@ -40,12 +41,14 @@ parso==0.6.2
 passlib==1.7.2
 pexpect==4.8.0
 pickleshare==0.7.5
+pkg-resources==0.0.0
 prompt-toolkit==3.0.4
 ptyprocess==0.6.0
 pyasn1==0.4.8
 pycparser==2.20
 Pygments==2.6.1
 PyJWT==1.7.1
+pyOpenSSL==19.1.0
 pyrsistent==0.15.7
 python-dateutil==2.8.1
 pytz==2020.1

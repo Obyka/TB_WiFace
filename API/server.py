@@ -32,7 +32,7 @@ def unauthorized_loader_handler(error):
 @connex_app.app.context_processor
 @jwt_optional
 def inject_identity():
-	return dict(identity=get_jwt_identity())
+	return dict(current_user=get_jwt_identity())
 
 @connex_app.app.context_processor
 def inject_counters():
@@ -149,6 +149,6 @@ def upload_file():
 
 # If we're running in stand alone mode, run the application
 if __name__ == '__main__':
-	connex_app.run(host='0.0.0.0', port=5000, debug=True)
+	connex_app.run(host='0.0.0.0', port=5000, debug=True, ssl_context='adhoc')
 
 
