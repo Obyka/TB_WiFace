@@ -16,7 +16,7 @@ connex_app = connexion.App(__name__, specification_dir=basedir)
 app = connex_app.app
 
 log = logging.getLogger('werkzeug')
-log.disabled = True
+log.disabled = False
 
 # Build the Sqlite ULR for SqlAlchemy
 sqlite_url = "sqlite:////" + os.path.join(basedir, "probes.db")
@@ -35,6 +35,7 @@ app.config['SECRET_KEY'] = '***REMOVED***'
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 app.config['JWT_COOKIE_CSRF_PROTECT'] = False
 app.config['JWT_CSRF_CHECK_FORM'] = False
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 10
 
 # Create the SqlAlchemy db instance
 db = SQLAlchemy(app)

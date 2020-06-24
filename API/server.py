@@ -12,7 +12,7 @@ import belongsto
 import pictures
 import users
 from dateutil.relativedelta import relativedelta
-from flask_jwt_extended import get_jwt_identity, jwt_optional, jwt_required, get_raw_jwt
+from flask_jwt_extended import get_jwt_identity, jwt_optional, jwt_required, get_raw_jwt, unset_access_cookies, unset_jwt_cookies
 import datetime
 from models import User, UserSchema
 # Get the application instance
@@ -24,10 +24,31 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 @config.jwtM.unauthorized_loader
 def unauthorized_loader_handler(error):
+    print("unauthorized token" * 1000)
     if request.path.startswith('/api/'):
         return jsonify(err="missing JWT"), 401
     else:
         return redirect('/web/login')
+
+@config.jwtM.invalid_token_loader
+def invalid_token_callback(callback):
+    print("invalid token" * 1000)
+    # Invalid Fresh/Non-Fresh Access token in auth header
+    if request.path.startswith('/api/'):
+        resp = make_response(jsonify(err="invalid JWT"))
+    else:
+        resp = make_response(redirect('/web/login'))
+    unset_jwt_cookies(resp)
+    return resp, 301
+@config.jwtM.expired_token_loader
+def expired_token_callback(callback):
+    # Expired auth header
+    print("expired token" * 1000)
+	response =  users.refresh()
+	resp = make_response(redirect(request.url))
+	unset_access_cookies(resp)    
+	resp.headers.setlist('Set-Cookie', response.headers.getlist('Set-Cookie'))
+    return resp, 302
 
 @connex_app.app.context_processor
 @jwt_optional
@@ -149,6 +170,6 @@ def upload_file():
 
 # If we're running in stand alone mode, run the application
 if __name__ == '__main__':
-	connex_app.run(host='0.0.0.0', port=5000, debug=True, ssl_context='adhoc')
+	connex_app.run(host='0.0.0.0', port=5000, debug=True, ssl_context=('cert.pem', 'key.pem'))
 
 
