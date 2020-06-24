@@ -56,3 +56,10 @@ def login(user):
         else:
             status_code = Response(status=401)
         return status_code
+
+@jwt_required
+def logout():
+    resp = jsonify({'logout': True})
+    unset_jwt_cookies(resp)
+    return resp
+
