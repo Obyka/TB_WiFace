@@ -24,31 +24,31 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 @config.jwtM.unauthorized_loader
 def unauthorized_loader_handler(error):
-    print("unauthorized token" * 1000)
-    if request.path.startswith('/api/'):
-        return jsonify(err="missing JWT"), 401
-    else:
-        return redirect('/web/login')
+	print("unauthorized token" * 1000)
+	if request.path.startswith('/api/'):
+		return jsonify(err="missing JWT"), 401
+	else:
+		return redirect('/web/login')
 
 @config.jwtM.invalid_token_loader
 def invalid_token_callback(callback):
-    print("invalid token" * 1000)
-    # Invalid Fresh/Non-Fresh Access token in auth header
-    if request.path.startswith('/api/'):
-        resp = make_response(jsonify(err="invalid JWT"))
-    else:
-        resp = make_response(redirect('/web/login'))
-    unset_jwt_cookies(resp)
-    return resp, 301
+	print("invalid token" * 1000)
+	# Invalid Fresh/Non-Fresh Access token in auth header
+	if request.path.startswith('/api/'):
+		resp = make_response(jsonify(err="invalid JWT"))
+	else:
+		resp = make_response(redirect('/web/login'))
+	unset_jwt_cookies(resp)
+	return resp, 301
 @config.jwtM.expired_token_loader
 def expired_token_callback(callback):
-    # Expired auth header
-    print("expired token" * 1000)
+	# Expired auth header
+	print("expired token" * 1000)
 	response =  users.refresh()
 	resp = make_response(redirect(request.url))
 	unset_access_cookies(resp)    
 	resp.headers.setlist('Set-Cookie', response.headers.getlist('Set-Cookie'))
-    return resp, 302
+	return resp, 302
 
 @connex_app.app.context_processor
 @jwt_optional
@@ -57,11 +57,11 @@ def inject_identity():
 
 @connex_app.app.context_processor
 def inject_counters():
-    return dict(probe_count=probes.count(), mac_count=macs.count(), id_count=identities.count(), pic_cout=pictures.count(), mac_random=macs.count_random())
+	return dict(probe_count=probes.count(), mac_count=macs.count(), id_count=identities.count(), pic_cout=pictures.count(), mac_random=macs.count_random())
 
 @connex_app.app.context_processor
 def inject_path():
-    return dict(picture_path=config.app.config['UPLOAD_FOLDER'])
+	return dict(picture_path=config.app.config['UPLOAD_FOLDER'])
 
 @connex_app.route('/web/logout', methods=['GET', 'POST'])
 @jwt_optional
@@ -128,18 +128,18 @@ def pictures_front():
 	return render_template('pictures.html')
 
 def verbose_timedelta(delta):
-    d = delta.days
-    h, s = divmod(delta.seconds, 3600)
-    m, s = divmod(s, 60)
-    labels = ['day', 'hour', 'minute', 'second']   
-    dhms = ['%s %s%s' % (i, lbl, 's' if i != 1 else '') for i, lbl in zip([d, h, m, s], labels)]
-    for start in range(len(dhms)):
-        if not dhms[start].startswith('0'):
-            break
-    for end in range(len(dhms)-1, -1, -1):
-        if not dhms[end].startswith('0'):
-            break  
-    return ', '.join(dhms[start:end+1])
+	d = delta.days
+	h, s = divmod(delta.seconds, 3600)
+	m, s = divmod(s, 60)
+	labels = ['day', 'hour', 'minute', 'second']   
+	dhms = ['%s %s%s' % (i, lbl, 's' if i != 1 else '') for i, lbl in zip([d, h, m, s], labels)]
+	for start in range(len(dhms)):
+		if not dhms[start].startswith('0'):
+			break
+	for end in range(len(dhms)-1, -1, -1):
+		if not dhms[end].startswith('0'):
+			break  
+	return ', '.join(dhms[start:end+1])
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
