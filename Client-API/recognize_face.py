@@ -10,7 +10,7 @@ from Picture import Picture
 from Auth import User
 
 
-def detectFace(frame,face_cascade):
+def detectFace(frame):
     """OpenCV face detection using pre-trained cascade
     
     Arguments:
@@ -20,28 +20,53 @@ def detectFace(frame,face_cascade):
     Returns:
         [face_detected] -- [Does the image contain a face?]
         [string] -- [Path of the saved image]
-    """  
-    face_detected = False
-    faces = face_cascade.detectMultiScale(frame,
-        scaleFactor=1.1,
-        minNeighbors=5,
-        minSize=(30, 30),
-        flags = cv.CASCADE_SCALE_IMAGE)
-    print("Found {0} faces!".format(len(faces)))
+    """
+    
     timestr = time.strftime("%Y%m%d-%H%M%S")
-    image = '{0}/image_{1}.png'.format(directory, timestr)
-    if len(faces) > 0 :
-        cv.imwrite(image,frame) 
-        print('Your image was saved to {}'.format(image))
-        face_detected = True
-    return face_detected, image
+    image_list = []
+    i = 0
+
+    face_cascade_list = [
+        '/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascade_frontalface_alt2.xml',
+        '/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascade_frontalface_alt_tree.xml',
+        '/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascade_frontalface_alt.xml',
+        '/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascade_frontalface_default.xml',
+        '/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascade_profileface.xml'
+    ]
+
+    for x in face_cascade_list:
+        face_cascade = cv.CascadeClassifier()
+        #Load the cascades
+        if not face_cascade.load(cv.samples.findFile(x)):
+            print('--(!)Error loading face cascade ' + str(x))
+            continue
+
+        gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(frame,
+            scaleFactor=1.1,
+            minNeighbors=5,
+            minSize=(30, 30),
+            flags = cv.CASCADE_SCALE_IMAGE)
+        print("Found {0} faces!".format(len(faces)) + " - " + str(x))
+
+        for (x, y, w, h) in faces:
+            roi_color = frame[y:y + h, x:x + w]
+            print("[INFO] Object found. Saving locally.")
+            image = '{0}/image_{1}_{2}.png'.format(directory, timestr, i)
+            cv.imwrite(image, roi_color)
+            cv.rectangle(frame, (int(x - 0.1*w), int(y - 0.1*h)), (int(x + w + 0.1*w), int(y + h + 0.1*h)), (0, 255, 0), -1)
+            image_list.append(image)
+            i+=1
+    if i > 0:
+        image = '{0}/complete_image_{1}.png'.format(directory, timestr)
+        cv.imwrite(image, frame)
+    return image_list
 def main():
     #get args
     parser = argparse.ArgumentParser(description='Facial recognition')
-    parser.add_argument('--collection', help='Collection Name', default='wiface-faces')
-    parser.add_argument('--face_cascade', help='Path to face cascade.', default='/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascade_frontalface_alt2.xml')
     parser.add_argument('--camera', help='Camera device number.', type=int, default=0)
     parser.add_argument('--api', help='Base address for the API')
+    parser.add_argument('--frame', help='Picture path if you do not want to use the cam')
 
     args = parser.parse_args()
     username = os.environ['wiface_username']
@@ -49,49 +74,42 @@ def main():
     creds = User(username,password)
     MyAPI = API(creds, args.api)
 
+    if args.frame is not None:
+        frame = cv.imread(args.frame)
+        image_list = detectFace(frame)
+        print(len(image_list))
+        for im in image_list:
+            print(im)
+    else:
+        camera_device = args.camera
+        #Read the video stream
+        cam = cv.VideoCapture(camera_device)
+        #setting the buffer size and frames per second, to reduce frames in buffer
+        cam.set(cv.CAP_PROP_BUFFERSIZE, 1)
+        cam.set(cv.CAP_PROP_FPS, 2)
 
-    #intialize opencv face detection
-    face_cascade_name = args.face_cascade
-    face_cascade = cv.CascadeClassifier()
+        if not cam.isOpened:
+            print('--(!)Error opening video capture')
+            exit(0)
 
-    #Load the cascades
-    if not face_cascade.load(cv.samples.findFile(face_cascade_name)):
-        print('--(!)Error loading face cascade')
-        exit(0)
+        while True:
+            frame = {}
+            #calling read() twice as a workaround to clear the buffer.
+            cam.read()
+            cam.read()
+            ret, frame = cam.read()         
+            if frame is None:
+                print('--(!) No captured frame -- Break!')
+                break
 
-    camera_device = args.camera
+            image_list = detectFace(frame)
 
-    #Read the video stream
-    cam = cv.VideoCapture(camera_device)
-    #setting the buffer size and frames per second, to reduce frames in buffer
-    cam.set(cv.CAP_PROP_BUFFERSIZE, 1)
-    cam.set(cv.CAP_PROP_FPS, 2)
+            for image in image_list:
+                MyAPI.postFile(image)
 
-    if not cam.isOpened:
-        print('--(!)Error opening video capture')
-        exit(0)
-
-    while True:
-        frame = {}
-        #calling read() twice as a workaround to clear the buffer.
-        cam.read()
-        cam.read()
-        ret, frame = cam.read()         
-        if frame is None:
-            print('--(!) No captured frame -- Break!')
-            break
-
-        face_detected, image = detectFace(frame,face_cascade)
-
-        if (face_detected):
-            MyAPI.postFile(image)
-
-        if cv.waitKey(20) & 0xFF == ord('q'):
-            break
-
-    # When everything done, release the capture
-    cam.release()
-    cv.destroyAllWindows()
+        # When everything done, release the capture
+        cam.release()
+        cv.destroyAllWindows()
 
 dirname = os.path.dirname(__file__)
 directory = os.path.join(dirname, 'faces')
