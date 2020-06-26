@@ -3,13 +3,25 @@ from models import (
     Identities,
     IdentitiesSchema,
     Represents,
-    RepresentsSchema
+    RepresentsSchema,
+    Pictures, 
+    PicturesSchema
 )
 from flask import abort, make_response
 from flask_jwt_extended import jwt_required
 
 def count():
     return Identities.query.count()
+
+@jwt_required
+def read_gender(id_identity):
+    gender = Pictures.query\
+        .with_entities(Pictures.gender)\
+        .join(Represents, Pictures.id==Represents.fk_picture) \
+        .filter(Represents.fk_identity == id_identity) \
+        .all()
+
+    return gender
 
 @jwt_required
 def read_pictures(id_identity):
