@@ -30,7 +30,7 @@ def recognizeFace(client,image_name,collection):
             face_matched = True
         return face_matched, response
 
-def add_face_collection(collection, image_name, face_identity, client, picture):
+def add_face_collection(collection, image_name, face_identity, client):
     """Index the face contained in an image and add it in a collection
     
     Arguments:
@@ -50,10 +50,7 @@ def handle_picture(picture_file, picture_name):
         #initialize reckognition sdk
         client = boto3.client('rekognition', aws_access_key_id=app.config['aws_access_key_id'],aws_secret_access_key=app.config['aws_secret_access_key'])
 
-        face_matched, response = recognizeFace(client, picture_path , collection)
-        p = Pictures(picPath=picture_name, timestamp=datetime.utcnow(), fk_place=1)
-        db.session.add(p)
-        db.session.flush()  
+        face_matched, response = recognizeFace(client, picture_path , collection) 
         print('Face detected!')
         if (face_matched):
             print(response['FaceMatches'][0]['Face'])
@@ -70,11 +67,37 @@ def handle_picture(picture_file, picture_name):
             face_identity = Identities(uuid=faceUUID)
             db.session.add(face_identity)
             db.session.flush()
+
+         
+        fullFaceResponse = add_face_collection(collection, picture_path, face_identity, client)
+        faceDetails = fullFaceResponse['FaceRecords'][0]['FaceDetail']
+
+        p = constructPictureObject(faceDetails, picture_name, 1)
+        db.session.add(p)
+        db.session.flush()
         r = Represents(probability=confidence, fk_identity=face_identity.id, fk_picture=p.id)
         db.session.add(r)
-        db.session.flush()  
-        fullFaceResponse = add_face_collection(collection, picture_path, face_identity, client, p)
-        print(fullFaceResponse)
+        db.session.flush()
         db.session.commit()
 
+def constructPictureObject(faceDetails, picture_name, fk_place):
+    booleanAttr = ['Eyeglasses', 'Sunglasses', 'Beard', 'Mustache']
+    parsedDict = dict()
+    for attribute in booleanAttr:
+        attributeDetails = faceDetails[attribute]
+        parsedDict[attribute.lower()] = attributeDetails['Confidence'] if attributeDetails['Value'] else -attributeDetails['Confidence']
 
+    parsedDict['ageMin'] = faceDetails['AgeRange']['Low']
+    parsedDict['ageMax'] = faceDetails['AgeRange']['High']
+    parsedDict['gender'] = faceDetails['Gender']['Confidence'] if faceDetails['Gender']['Value'] == 'Female' else -faceDetails['Gender']['Confidence']
+
+    for emotion in faceDetails['Emotions']:
+        parsedDict[emotion['Type'].lower()] = emotion['Confidence']
+
+    parsedDict['fk_place'] = fk_place
+    parsedDict['picPath'] = picture_name
+    parsedDict['timestamp'] = datetime.utcnow()
+
+    return Pictures(**parsedDict)
+
+    

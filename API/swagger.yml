@@ -719,17 +719,9 @@ paths:
           description: Successfully read pictures list operation
           schema:
             type: array
-            items:
-              properties:
-                id:
-                  type: integer
-                timestamp:
-                  type: string
-                picPath:
-                  type: string
-                fk_place:
-                  type: integer
-                  description: ID of the place where the picture was sniffed
+            items: 
+              $ref: '#/definitions/Picture'
+              
     post:
       operationId: pictures.create
       tags:
@@ -742,17 +734,7 @@ paths:
           description: Picture to create
           required: True
           schema:
-            type: object
-            properties:
-                id:
-                  type: integer
-                timestamp:
-                  type: string
-                picPath:
-                  type: string
-                fk_place:
-                  type: integer
-                  description: ID of the place where the picture was sniffed
+            $ref: '#/definitions/Picture'
       responses:
         201:
           description: Successfully created picture
@@ -774,16 +756,8 @@ paths:
         200:
           description: Successfully read one picture
           schema:
-            properties:
-                id:
-                  type: integer
-                timestamp:
-                  type: string
-                picPath:
-                  type: string
-                fk_place:
-                  type: integer
-                  description: ID of the place where the picture was sniffed
+            $ref: '#/definitions/Picture'
+
     delete:
       operationId: pictures.delete
       tags:
@@ -880,3 +854,94 @@ paths:
             headers: 
               Set-Cookie:
                 type: string
+
+definitions:
+  Picture:
+    properties:
+      id:
+        type: integer
+      timestamp:
+        type: string
+      picPath:
+        type: string
+      fk_place:
+        type: integer
+        description: ID of the place where the picture was sniffed
+      eyeglasses:
+        type: number
+        description: Does the subject on the picture wear eyeglasses ? Yes = positive value
+        minimum: -1.0
+        maximum: 1.0
+      sunglasses:
+        type: number
+        description: Does the subject on the picture wear sunglasses ? Yes = positive value
+        minimum: 0.0
+        maximum: 1.0
+      gender:
+        type: number
+        description: >
+          What gender does the subject on appear to be on this picture
+          based on the physical appearance of a face in a particular image ? 
+          This kind of prediction is not designed to categorize a person’s gender identity.
+          Female = positive value
+        minimum: -1.0
+        maximum: 1.0
+      beard:
+        type: number
+        description: Does the subject on the picture has a beard ? Yes = positive value
+        minimum: -1.0
+        maximum: 1.0
+      mustache:
+        type: number
+        description: Does the subject on the picture has a mustache ? Yes = positive value
+        minimum: -1.0
+        maximum: 1.0
+      ageMin:
+        type: integer
+        description: Minimum value for estimated subject age range.
+        minimum: 0
+      ageMax:
+        type: integer
+        description: Maximum value for estimated subject age range.
+      calm:
+        type: number
+        description: Does the subject seem calm ?
+        minimum: 0
+        maximum: 1.0
+      sad:
+        type: number
+        description: Does the subject seem sad ?
+        minimum: 0
+        maximum: 1.0
+      surprised:
+        type: number
+        description: Does the subject seem surprised ?
+        minimum: 0
+        maximum: 1.0
+      angry:
+        type: number
+        description: Does the subject seem angry ?
+        minimum: 0
+        maximum: 1.0
+      happy:
+        type: number
+        description: Does the subject seem happy ?
+        minimum: 0
+        maximum: 1.0
+      confused:
+        type: number
+        description: Does the subject seem confused ?
+        minimum: 0
+        maximum: 1.0
+      fear:
+        type: number
+        description: Does the subject seem afraid ?
+        minimum: 0
+        maximum: 1.0
+      disgusted:
+        type: number
+        description: Does the subject seem disgusted ?
+        minimum: 0
+        maximum: 1.0
+
+      
