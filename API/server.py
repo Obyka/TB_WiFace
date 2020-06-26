@@ -45,7 +45,7 @@ def expired_token_callback(callback):
 	# Expired auth header
 	print("expired token" * 1000)
 	response =  users.refresh()
-	resp = make_response(redirect(request.url))
+	resp = make_response(request.url)
 	unset_access_cookies(resp)    
 	resp.headers.setlist('Set-Cookie', response.headers.getlist('Set-Cookie'))
 	return resp, 302

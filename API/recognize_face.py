@@ -23,14 +23,14 @@ def recognizeFace(client,image_name,collection):
     """
     face_matched = False
     with open(image_name, 'rb') as file:
-            response = client.search_faces_by_image(CollectionId=collection, Image={'Bytes': file.read()}, MaxFaces=1, FaceMatchThreshold=85)
-            if (not response['FaceMatches']):
-                face_matched = False
-            else:
-                face_matched = True
-            return face_matched, response
+        response = client.search_faces_by_image(CollectionId=collection, Image={'Bytes': file.read()}, MaxFaces=1, FaceMatchThreshold=85)
+        if (not response['FaceMatches']):
+            face_matched = False
+        else:
+            face_matched = True
+        return face_matched, response
 
-def add_face_collection(collection, image_name, name, client, picture):
+def add_face_collection(collection, image_name, face_identity, client, picture):
     """Index the face contained in an image and add it in a collection
     
     Arguments:
@@ -39,15 +39,8 @@ def add_face_collection(collection, image_name, name, client, picture):
         name {[type]} -- [identity UUID linked to the face]
     """
     with open(image_name, mode='rb') as file:
-            response = client.index_faces(Image={'Bytes': file.read()}, CollectionId=collection, ExternalImageId=name, DetectionAttributes=['ALL'])
-    print("name to put in database: ", name)
-
-    i = Identities(uuid=name)
-    db.session.add(i)
-    db.session.flush()
-    r = Represents(probability=100.0, fk_identity=i.id, fk_picture=picture.id)
-    db.session.add(r)
-    db.session.commit()
+        response = client.index_faces(Image={'Bytes': file.read()}, CollectionId=collection, ExternalImageId=face_identity.uuid, DetectionAttributes=['ALL'])
+    return response
 
 def handle_picture(picture_file, picture_name):
         picture_path = os.path.join(app.config['UPLOAD_FOLDER'], picture_name)
@@ -63,18 +56,25 @@ def handle_picture(picture_file, picture_name):
         db.session.flush()  
         print('Face detected!')
         if (face_matched):
+            print(response['FaceMatches'][0]['Face'])
             confidence = round(response['FaceMatches'][0]['Face']['Confidence'], 2)
             faceUUID = response['FaceMatches'][0]['Face']['ExternalImageId']
             similarity = round(response['FaceMatches'][0]['Similarity'], 1)
-            foundIdentity = read_one_by_uuid(faceUUID)
-            r = Represents(probability=confidence, fk_identity=foundIdentity.get('id'), fk_picture=p.id)
-            db.session.add(r)
-            db.session.flush()  
+            get_identity = read_one_by_uuid(faceUUID)
+            face_identity = Identities(id=get_identity['id'],uuid=get_identity['uuid'])
             print('Identity matched {} with {} similarity and {} confidence...'.format(faceUUID, similarity, confidence))
         else:
             print('Unknown Human Detected!')
-            add_face_collection(collection, picture_path, str(uuid.uuid4()), client, p)
-            time.sleep(5)
+            confidence=100
+            faceUUID = str(uuid.uuid4())
+            face_identity = Identities(uuid=faceUUID)
+            db.session.add(face_identity)
+            db.session.flush()
+        r = Represents(probability=confidence, fk_identity=face_identity.id, fk_picture=p.id)
+        db.session.add(r)
+        db.session.flush()  
+        fullFaceResponse = add_face_collection(collection, picture_path, face_identity, client, p)
+        print(fullFaceResponse)
         db.session.commit()
 
 

@@ -1,4 +1,4 @@
-from picamera import PiCamera
+#from picamera import PiCamera
 import cv2 as cv
 import argparse
 import time
@@ -9,6 +9,8 @@ from Identity import Identity, Represents
 from Picture import Picture
 from Auth import User
 
+def TestWithoutOpenCV(image_path, MyAPI):
+    MyAPI.postFile(image_path)
 
 def detectFace(frame):
     """OpenCV face detection using pre-trained cascade
@@ -26,12 +28,13 @@ def detectFace(frame):
     image_list = []
     i = 0
 
+    base_cascade_path = cv.data.haarcascades
     face_cascade_list = [
-        '/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascade_frontalface_alt2.xml',
-        '/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascade_frontalface_alt_tree.xml',
-        '/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascade_frontalface_alt.xml',
-        '/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascade_frontalface_default.xml',
-        '/usr/local/lib/python3.7/dist-packages/cv2/data/haarcascade_profileface.xml'
+        os.path.join(base_cascade_path, 'haarcascade_frontalface_alt2.xml'),
+        os.path.join(base_cascade_path, 'haarcascade_frontalface_alt_tree.xml'),
+        os.path.join(base_cascade_path, 'haarcascade_frontalface_alt.xml'),
+        os.path.join(base_cascade_path, 'haarcascade_frontalface_default.xml'),
+        os.path.join(base_cascade_path, 'haarcascade_profileface.xml')
     ]
 
     for x in face_cascade_list:
@@ -67,6 +70,7 @@ def main():
     parser.add_argument('--camera', help='Camera device number.', type=int, default=0)
     parser.add_argument('--api', help='Base address for the API')
     parser.add_argument('--frame', help='Picture path if you do not want to use the cam')
+    parser.add_argument('--debug', help='Boolean if you want to send hardcoded picture to test the server handling', action='store_true')
 
     args = parser.parse_args()
     username = os.environ['wiface_username']
@@ -74,12 +78,17 @@ def main():
     creds = User(username,password)
     MyAPI = API(creds, args.api)
 
+    if args.debug and args.frame is not None:
+        TestWithoutOpenCV(args.frame, MyAPI)
+        return
+
     if args.frame is not None:
         frame = cv.imread(args.frame)
         image_list = detectFace(frame)
         print(len(image_list))
         for im in image_list:
             print(im)
+            MyAPI.postFile(im)
     else:
         camera_device = args.camera
         #Read the video stream
