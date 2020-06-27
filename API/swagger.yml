@@ -1,8 +1,8 @@
 swagger: "2.0"
 info:
-  description: This is the swagger file that goes with our server code
+  description: This is the swagger specification which goes with WiFace API.
   version: "1.0.0"
-  title: Swagger ReST Article
+  title: WiFace API
 consumes:
   - application/json
 produces:
@@ -29,13 +29,7 @@ paths:
           200:
             description: Successfully read one vendor
             schema:
-              properties:
-                name:
-                  type: string
-                oui:
-                  type: string
-
-
+              $ref: '#/definitions/Vendor'
   /identities/{id_identity}/pictures:
     get:
       operationId: identities.read_pictures
@@ -51,17 +45,11 @@ paths:
         required: True
       responses:
         200:
-          description: Successfully read pictures list 
+          description: Successfully read Represent relationships 
           schema:
             type: array
             items:
-              properties:
-                fk_identity:
-                  type: integer
-                fk_picture:
-                  type: integer
-                probability:
-                  type: integer
+              $ref: '#/definitions/Represent'           
   /represents/{id_picture}/{id_identity}:
     delete:
       operationId: represents.delete
@@ -81,7 +69,6 @@ paths:
       responses:
         200:
           description: Successfully deleted the relationship
-
     get:
       operationId: represents.read_relationship
       tags:
@@ -101,14 +88,7 @@ paths:
         200:
           description: Successfully read relationship Identities - Pictures
           schema:
-            type: object
-            properties:
-              id_picture:
-                type: integer
-              id_identity:
-                type: integer
-              probability:
-                type: number
+            $ref: '#/definitions/Represent'
   /represents:
     post:
       operationId: represents.create
@@ -122,26 +102,10 @@ paths:
           description: Relationship to create
           required: True
           schema:
-            type: object
-            properties:
-              probability:
-                type: number
-              fk_identity:
-                type: integer
-              fk_picture:
-                type: integer
+            $ref: '#/definitions/Represent'
       responses:
-        200:
+        201:
           description: Successfully created the relationship
-          schema:
-            type: object
-            properties:
-              probability:
-                type: number
-              fk_picture:
-                type: string
-              fk_identity:
-                type: integer
   /probes:
     get:
       operationId: probes.read_all
@@ -166,19 +130,7 @@ paths:
           schema:
             type: array
             items:
-              properties:
-                id:
-                  type: integer
-                timestamp:
-                  type: string
-                ssid:
-                  type: string
-                fk_place:
-                  type: integer
-                  description: ID of the place where the probe was sniffed
-                fk_mac:
-                  type: string
-                  description: ID of the MAC contained in the probe
+              $ref: '#/definitions/Probe'
     post:
       operationId: probes.create
       tags:
@@ -191,24 +143,11 @@ paths:
           description: Probe to create
           required: True
           schema:
-            type: object
-            properties:
-              timestamp:
-                type: string
-                description: When the probe was sniffed
-              ssid:
-                type: string
-                description: What ssid was the device searching for
-              fk_place:
-                type: integer
-                description: ID of the place where the probe was sniffed
-              fk_mac:
-                type: string
-                description: ID of the MAC contained in the probe
+            $ref: '#/definitions/Probe'
+
       responses:
         201:
           description: Successfully created probe
-
   /probes/{id}:
     get:
       operationId: probes.read_one
@@ -226,19 +165,8 @@ paths:
         200:
           description: Successfully read one probe
           schema:
-            properties:
-              id:
-                type: integer
-              timestamp:
-                type: string
-              ssid:
-                type: string
-              fk_place:
-                type: integer
-                description: ID of the place where the probe was sniffed
-              fk_mac:
-                type: integer
-                description: ID of the MAC contained in the prob
+            $ref: '#/definitions/Probe'
+
     delete:
       operationId: probes.delete
       tags:
@@ -275,14 +203,9 @@ paths:
         200:
           description: Successfully read mac adresses list operation
           schema:
-            type: object
-            properties:
-              address:
-                type: integer
-              isRandom:
-                type: boolean
-              fk_vendor:
-                type: string
+            type: array
+            items:
+              $ref: '#/definitions/MACAddress'
     post:
       operationId: macs.create
       tags:
@@ -295,14 +218,7 @@ paths:
           description: MAC address to create
           required: True
           schema:
-            type: object
-            properties:
-              address:
-                type: string
-              isRandom:
-                type: boolean
-              fk_vendor:
-                type: string
+            $ref: '#/definitions/MACAddress'
       responses:
         201:
           description: Successfully created MAC Adress
@@ -325,13 +241,7 @@ paths:
           schema:
             type: array
             items:
-              properties:
-                fk_mac:
-                  type: string
-                fk_identity:
-                  type: integer
-                probability:
-                  type: integer
+              $ref: '#/definitions/BelongTo'
   /belongsto/{address}/{id}:
     delete:
       operationId: belongsto.delete
@@ -351,7 +261,6 @@ paths:
       responses:
         200:
           description: Successfully deleted the relationship
-
     get:
       operationId: belongsto.read_identities
       tags:
@@ -371,24 +280,23 @@ paths:
           required: True
       responses:
         200:
-          description: Successfully read pictures list operation
+          description: Successfully read one belongsTo relationship
           schema:
-            type: object
-            properties:
-              fk_mac:
-                type: string
-              fk_identity:
-                type: integer
-              probability:
-                type: integer
+            $ref: '#/definitions/BelongTo'
   /belongsto:
     get:
+      summary: Successfully read belongsTo relationships
+      description: Read all belongsTo relationships
       operationId: belongsto.read_all
       tags:
         - MAC Address - Identities
       responses:
         200:
-          description: Successfully created the relationship
+          description: Successfully read all belongsTo relationships
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/BelongTo'
     post:
       operationId: belongsto.create
       tags:
@@ -401,27 +309,12 @@ paths:
           description: Relationship to create
           required: True
           schema:
-            type: object
-            properties:
-              probability:
-                type: integer
-              fk_mac:
-                type: string
-              fk_identity:
-                type: integer
+            $ref: '#/definitions/BelongTo'
       responses:
         200:
           description: Successfully created the relationship
           schema:
-            type: object
-            properties:
-              probability:
-                type: integer
-              fk_mac:
-                type: string
-              fk_identity:
-                type: integer
-    
+            $ref: '#/definitions/BelongTo'
   /macs/{address}:
     get:
       operationId: macs.read_one
@@ -439,13 +332,8 @@ paths:
         200:
           description: Successfully read one MAC Address
           schema:
-              properties:
-                address:
-                  type: integer
-                isRandom:
-                  type: boolean
-                fk_vendor:
-                  type: string
+            $ref: '#/definitions/MACAddress'
+
         409:
           description: The ressource already exists
     delete:
@@ -462,7 +350,6 @@ paths:
       responses:
         200:
           description: Successfully deleted a MAC Address
-
   /places:
       get:
         operationId: places.read_all
@@ -485,16 +372,10 @@ paths:
           200:
             description: Successfully read places list operation
             schema:
-              type: object
-              properties:
-                id:
-                  type: integer
-                name:
-                  type: string
-                longitude:
-                  type: number
-                latitude:
-                  type: number
+              type: array
+              items:
+                $ref: '#/definitions/Place'
+
       post:
         operationId: places.create
         tags:
@@ -507,20 +388,11 @@ paths:
             description: Place to create
             required: True
             schema:
-              type: object
-              properties:
-                id:
-                  type: integer
-                name:
-                  type: string
-                longitude:
-                  type: number
-                latitude:
-                  type: number
+              $ref: '#/definitions/Place'
+
         responses:
           201:
             description: Successfully created the place
-  
   /places/{id}:
       get:
         operationId: places.read_one
@@ -538,15 +410,7 @@ paths:
           200:
             description: Successfully read one place
             schema:
-              properties:
-                id:
-                  type: integer
-                name:
-                  type: string
-                longitude:
-                  type: number
-                latitude:
-                  type: number
+              $ref: '#/definitions/Place'
       delete:
         operationId: places.delete
         tags:
@@ -561,69 +425,47 @@ paths:
         responses:
           200:
             description: Successfully deleted a place
-
   /identities:
-        get:
-          operationId: identities.read_all
-          tags:
-            - Identities
-          summary: Read the entire list of identities
-          description: Read the list of identities
-          parameters:
-            - name: length
-              in: query
-              type: integer
-              description: Number of identities to get
-              required: false
-            - name: offset
-              in: query
-              type: integer
-              description: Offset from beginning of list where to start gathering identities
-              required: false
-          responses:
-            200:
-              description: Successfully read identities list operation
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  firstname:
-                    type: string
-                  lastname:
-                    type: string
-                  mail:
-                    type: string
-                  uuid:
-                    type: string
-        post:
-          operationId: identities.create
-          tags:
-            - Identities
-          summary: Create an identitiy
-          description: Create an identitiy
-          parameters:
-            - name: identitiy
-              in: body
-              description: identitiy to create
-              required: True
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  firstname:
-                    type: string
-                  lastname:
-                    type: string
-                  mail:
-                    type: string
-                  uuid:
-                    type: string
-          responses:
-            201:
-              description: Successfully created the identitiy
-  
+    get:
+      operationId: identities.read_all
+      tags:
+        - Identities
+      summary: Read the entire list of identities
+      description: Read the list of identities
+      parameters:
+        - name: length
+          in: query
+          type: integer
+          description: Number of identities to get
+          required: false
+        - name: offset
+          in: query
+          type: integer
+          description: Offset from beginning of list where to start gathering identities
+          required: false
+      responses:
+        200:
+          description: Successfully read identities list operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Identity'
+    post:
+      operationId: identities.create
+      tags:
+        - Identities
+      summary: Create an identitiy
+      description: Create an identitiy
+      parameters:
+        - name: identitiy
+          in: body
+          description: identitiy to create
+          required: True
+          schema:
+            $ref: '#/definitions/Identity'
+      responses:
+        201:
+          description: Successfully created the identitiy
   /identities/uuid/{uuid}:
     get:
       operationId: identities.read_one_by_uuid
@@ -641,18 +483,7 @@ paths:
         200:
           description: Successfully read one identitiy
           schema:
-            properties:
-              id:
-                type: integer
-              firstname:
-                type: string
-              lastname:
-                type: string
-              mail:
-                type: string
-              uuid:
-                type: string
-
+            $ref: '#/definitions/Identity'
   /identities/{id}:
     get:
       operationId: identities.read_one
@@ -670,17 +501,8 @@ paths:
         200:
           description: Successfully read one identitiy
           schema:
-            properties:
-              id:
-                type: integer
-              firstname:
-                type: string
-              lastname:
-                type: string
-              mail:
-                type: string
-              uuid:
-                type: string
+            $ref: '#/definitions/Identity'
+
     delete:
       operationId: identities.delete
       tags:
@@ -695,7 +517,6 @@ paths:
       responses:
         200:
           description: Successfully deleted an identitiy
-
   /pictures:
     get:
       operationId: pictures.read_all
@@ -738,7 +559,6 @@ paths:
       responses:
         201:
           description: Successfully created picture
-
   /pictures/{id}:
     get:
       operationId: pictures.read_one
@@ -772,7 +592,6 @@ paths:
       responses:
         200:
           description: Successfully deleted a picture
-
   /register:
     post:
         operationId: users.create
@@ -786,16 +605,10 @@ paths:
             description: user to create
             required: True
             schema:
-              type: object
-              properties:
-                  email:
-                    type: string
-                  password:
-                    type: string
+              $ref: '#/definitions/User'
         responses:
           201:
             description: Successfully created the user
-
   /refresh:
     post:
       operationId: users.refresh
@@ -810,8 +623,7 @@ paths:
             The new access and refresh JWTTokens are returned in a cookie. You need to include this cookie in subsequent requests.
           headers: 
             Set-Cookie:
-              type: string
-  
+              type: string 
   /logout:
     post:
       operationId: users.logout
@@ -837,15 +649,10 @@ paths:
         parameters:
           - name: user
             in: body
-            description: user to create
+            description: User to authenticate
             required: True
             schema:
-              type: object
-              properties:
-                  email:
-                    type: string
-                  password:
-                    type: string
+              $ref: '#/definitions/User'
         responses:
           '200':
             description: >
@@ -856,6 +663,78 @@ paths:
                 type: string
 
 definitions:
+  BelongTo:
+    properties:
+      fk_mac:
+        type: string
+      fk_identity:
+        type: integer
+      probability:
+        type: integer
+  Represent:
+    properties:
+      probability:
+        type: number
+      fk_identity:
+        type: integer
+      fk_picture:
+        type: integer
+  Probe:
+    properties:
+      id:
+        type: integer
+      timestamp:
+        type: string
+      ssid:
+        type: string
+      fk_place:
+        type: integer
+        description: ID of the place where the probe was sniffed
+      fk_mac:
+        type: string
+        description: ID of the MAC contained in the probe
+  Vendor:
+    properties:
+      name:
+        type: string
+      oui:
+        type: string
+  MACAddress:
+    properties:
+      address:
+        type: integer
+      isRandom:
+        type: boolean
+      fk_vendor:
+        type: string
+  Place:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      longitude:
+        type: number
+      latitude:
+        type: number
+  Identity:
+    properties:
+      id:
+        type: integer
+      firstname:
+        type: string
+      lastname:
+        type: string
+      mail:
+        type: string
+      uuid:
+        type: string
+  User:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
   Picture:
     properties:
       id:
@@ -943,5 +822,3 @@ definitions:
         description: Does the subject seem disgusted ?
         minimum: 0
         maximum: 1.0
-
-      
