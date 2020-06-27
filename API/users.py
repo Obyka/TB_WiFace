@@ -19,22 +19,17 @@ def create(user):
     schema = UserSchema()
     new_user = schema.load(user, session=db.session)
     new_user.password = User.hash(new_user.password)
-
     userDB = User.query \
         .filter(User.email==new_user.email) \
         .one_or_none()
 
     if userDB is not None:
         abort(409, 'user {email} already exist'.format(email=new_user.email))
-
     db.session.add(new_user)
     db.session.commit()
-    status_code = Response(status=201)
-
     access_token = create_access_token(identity = new_user.email)
     refresh_token = create_refresh_token(identity = new_user.email)
-
-    return access_token, 201
+    return schema.dump(new_user), 201
 
 def login(user):
     schema = UserSchema()

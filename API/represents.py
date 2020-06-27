@@ -40,7 +40,7 @@ def delete(id_picture, id_identity):
     if represent is not None:
         db.session.delete(represent)
         db.session.commit()
-        return return '', 204
+        return '', 204
     else:
         abort(
             404,

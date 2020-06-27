@@ -108,6 +108,8 @@ paths:
       responses:
         201:
           description: Successfully created the relationship
+          schema:
+            $ref: '#/definitions/Represent'
   /probes:
     get:
       operationId: probes.read_all
@@ -146,10 +148,11 @@ paths:
           required: True
           schema:
             $ref: '#/definitions/Probe'
-
       responses:
         201:
           description: Successfully created probe
+          schema:
+            $ref: '#/definitions/Probe'
   /probes/{id}:
     get:
       operationId: probes.read_one
@@ -224,7 +227,11 @@ paths:
             $ref: '#/definitions/MACAddress'
       responses:
         201:
-          description: Successfully created MAC Adress
+          description: Successfully created MAC Address.
+          schema:
+            $ref: '#/definitions/MACAddress'
+        409:
+          description: The MAC Address already exists.
   /macs/{address}/identities:
     get:
       operationId: macs.read_identities
@@ -316,7 +323,7 @@ paths:
           schema:
             $ref: '#/definitions/BelongTo'
       responses:
-        200:
+        201:
           description: Successfully created the relationship
           schema:
             $ref: '#/definitions/BelongTo'
@@ -338,9 +345,6 @@ paths:
           description: Successfully read one MAC Address
           schema:
             $ref: '#/definitions/MACAddress'
-
-        409:
-          description: The ressource already exists
     delete:
       operationId: macs.delete
       tags:
@@ -395,10 +399,11 @@ paths:
             required: True
             schema:
               $ref: '#/definitions/Place'
-
         responses:
           201:
-            description: Successfully created the place
+            description: Successfully created the place.
+            schema:
+              $ref: '#/definitions/Place'
   /places/{id}:
       get:
         operationId: places.read_one
@@ -473,7 +478,9 @@ paths:
             $ref: '#/definitions/Identity'
       responses:
         201:
-          description: Successfully created the identitiy
+          description: Successfully created the identitiy.
+          schema:
+            $ref: '#/definitions/Identity'
   /identities/uuid/{uuid}:
     get:
       operationId: identities.read_one_by_uuid
@@ -567,6 +574,8 @@ paths:
       responses:
         201:
           description: Successfully created picture
+          schema:
+            $ref: '#/definitions/Picture'
   /pictures/{id}:
     get:
       operationId: pictures.read_one
@@ -618,6 +627,10 @@ paths:
         responses:
           201:
             description: Successfully created the user
+            schema:
+              $ref: '#/definitions/User'
+          409:
+            description: The mail address is already taken.            
   /refresh:
     post:
       operationId: users.refresh
@@ -641,7 +654,7 @@ paths:
       summary: Log out an user
       description: Log out an user
       responses:
-        '200':
+        200:
           description: >
             Successfully deauthenticated.
             The access and refresh JWTTokens are returned empty in a cookie.
@@ -663,7 +676,7 @@ paths:
             schema:
               $ref: '#/definitions/User'
         responses:
-          '200':
+          200:
             description: >
               Successfully authenticated.
               The access and refresh JWTTokens are returned in a cookie. You need to include this cookie in subsequent requests.

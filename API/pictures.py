@@ -90,8 +90,6 @@ def delete(id):
         db.session.delete(picture)
         db.session.commit()
         return '', 204
-
-
     else:
         abort(
             404,
