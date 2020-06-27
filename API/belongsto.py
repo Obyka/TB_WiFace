@@ -60,10 +60,7 @@ def delete(address, id):
     if belongsTo is not None:
         db.session.delete(belongsTo)
         db.session.commit()
-        return make_response(
-            "Relationship {address} - {id} deleted".format(id=id, address=address), 200
-        )
-
+        return '', 204
     else:
         abort(
             404,

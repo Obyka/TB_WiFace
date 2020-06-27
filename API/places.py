@@ -45,9 +45,7 @@ def delete(id):
     if place is not None:
         db.session.delete(place)
         db.session.commit()
-        return make_response(
-            "Place with the id {id} deleted".format(id=id), 200
-        )
+        return '', 204
 
     else:
         abort(

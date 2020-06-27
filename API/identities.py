@@ -101,9 +101,8 @@ def delete(id):
     if identity is not None:
         db.session.delete(identity)
         db.session.commit()
-        return make_response(
-            "identity with the id {id} deleted".format(id=id), 200
-        )
+        return '', 204
+
 
     else:
         abort(

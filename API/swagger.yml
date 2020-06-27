@@ -67,8 +67,10 @@ paths:
           type: integer
           required: True
       responses:
-        200:
+        204:
           description: Successfully deleted the relationship
+        404:
+          description: The relationship was not found.
     get:
       operationId: represents.read_relationship
       tags:
@@ -166,7 +168,6 @@ paths:
           description: Successfully read one probe
           schema:
             $ref: '#/definitions/Probe'
-
     delete:
       operationId: probes.delete
       tags:
@@ -179,8 +180,10 @@ paths:
           type: integer
           required: True
       responses:
-        200:
-          description: Successfully deleted a probe
+        204:
+          description: Successfully deleted the probe request.
+        404:
+          description: The probe request was not found. 
   /macs:
     get:
       operationId: macs.read_all
@@ -259,8 +262,10 @@ paths:
           type: integer
           required: True
       responses:
-        200:
-          description: Successfully deleted the relationship
+        204:
+          description: Successfully deleted the relationship.
+        404:
+          description: The relationship was not found.
     get:
       operationId: belongsto.read_identities
       tags:
@@ -348,8 +353,10 @@ paths:
           type: string
           required: True
       responses:
-        200:
-          description: Successfully deleted a MAC Address
+        204:
+          description: Successfully deleted a MAC Address.
+        404:
+          description: The MAC Address was not found.
   /places:
       get:
         operationId: places.read_all
@@ -375,7 +382,6 @@ paths:
               type: array
               items:
                 $ref: '#/definitions/Place'
-
       post:
         operationId: places.create
         tags:
@@ -423,8 +429,10 @@ paths:
             type: integer
             required: True
         responses:
-          200:
-            description: Successfully deleted a place
+          204:
+            description: Successfully deleted the place.
+          404:
+            description: The place was not found.
   /identities:
     get:
       operationId: identities.read_all
@@ -502,7 +510,6 @@ paths:
           description: Successfully read one identitiy
           schema:
             $ref: '#/definitions/Identity'
-
     delete:
       operationId: identities.delete
       tags:
@@ -515,8 +522,10 @@ paths:
           type: integer
           required: True
       responses:
-        200:
-          description: Successfully deleted an identitiy
+        204:
+          description: Successfully deleted the identitiy.
+        404:
+          description: The identity was not found.
   /pictures:
     get:
       operationId: pictures.read_all
@@ -541,8 +550,7 @@ paths:
           schema:
             type: array
             items: 
-              $ref: '#/definitions/Picture'
-              
+              $ref: '#/definitions/Picture'           
     post:
       operationId: pictures.create
       tags:
@@ -577,7 +585,6 @@ paths:
           description: Successfully read one picture
           schema:
             $ref: '#/definitions/Picture'
-
     delete:
       operationId: pictures.delete
       tags:
@@ -590,8 +597,10 @@ paths:
           type: integer
           required: True
       responses:
-        200:
-          description: Successfully deleted a picture
+        204:
+          description: Successfully deleted the picture.
+        404:
+          description: The picture was not found.
   /register:
     post:
         operationId: users.create

@@ -63,9 +63,7 @@ def delete(id):
     if probe is not None:
         db.session.delete(probe)
         db.session.commit()
-        return make_response(
-            "Probe {probe_id} deleted".format(probe_id=id), 200
-        )
+        return '', 204
 
     else:
         abort(

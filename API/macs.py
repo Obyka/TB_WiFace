@@ -88,9 +88,8 @@ def delete(address):
     if mac is not None:
         db.session.delete(mac)
         db.session.commit()
-        return make_response(
-            "MAC Address {address} deleted".format(address=address), 200
-        )
+        return '', 204
+
 
     else:
         abort(

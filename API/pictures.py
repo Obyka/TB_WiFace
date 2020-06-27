@@ -89,9 +89,8 @@ def delete(id):
     if picture is not None:
         db.session.delete(picture)
         db.session.commit()
-        return make_response(
-            "Picture with the id {id} deleted".format(id=id), 200
-        )
+        return '', 204
+
 
     else:
         abort(

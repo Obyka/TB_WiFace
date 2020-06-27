@@ -40,10 +40,7 @@ def delete(id_picture, id_identity):
     if represent is not None:
         db.session.delete(represent)
         db.session.commit()
-        return make_response(
-            "Relationship {id_picture} - {id_identity} deleted".format(id_picture=id_picture, id_identity=id_identity), 200
-        )
-
+        return return '', 204
     else:
         abort(
             404,
