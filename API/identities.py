@@ -9,9 +9,23 @@ from models import (
 )
 from flask import abort, make_response
 from flask_jwt_extended import jwt_required
+import functools
 
 def count():
     return Identities.query.count()
+
+@jwt_required
+def read_age_range(id_identity):
+    age_List = db.session.query(Pictures.ageMin, Pictures.ageMax)\
+            .join(Represents, Pictures.id==Represents.fk_picture) \
+            .filter(Represents.fk_identity == id_identity) \
+            .all()
+    
+    age_List = [(r, s) for (r,s,) in age_List if r is not None and s is not None]
+    if len(age_List) == 0:
+        return None
+    age_mean = (int(sum(i for i, j in age_List if i) / len(age_List)), int(sum(j for i, j in age_List if j) / len(age_List)))
+    return age_mean
 
 @jwt_required
 def read_gender(id_identity):
@@ -21,7 +35,9 @@ def read_gender(id_identity):
         .filter(Represents.fk_identity == id_identity) \
         .all()
 
-    return gender
+    gender_result = [r for (r, ) in gender if r is not None]
+    return functools.reduce(lambda a,b : a+b,gender_result) if len(gender_result) > 0 else None
+
 
 @jwt_required
 def read_pictures(id_identity):

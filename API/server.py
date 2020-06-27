@@ -1,5 +1,4 @@
 import connexion
-import functools
 import config
 import mariage
 import os
@@ -105,14 +104,14 @@ def identities_front():
 	if 'id' in request.args:
 		identity = identities.read_one(request.args.get('id'))
 		macs = belongsto.read_by_identity(identity.get('id'))
-		gender_result = [r for (r, ) in identities.read_gender(identity.get('id'))]
-		gender_result = functools.reduce(lambda a,b : a+b if a is not None and b is not None else None,gender_result)
+		age_range = identities.read_age_range(identity.get('id'))
+		gender_result = identities.read_gender(identity.get('id'))
 		best_pic = pictures.read_best_pic(identity.get('id'))
 		
 		best_macs = mariage.best_fit(macs) if macs else []
 		
 		best_pic_path = os.path.join(config.app.config['UPLOAD_FOLDER'], best_pic['picPath'])
-		return render_template('identity_details.html', identity=identity, best_pic=best_pic_path, best_macs=best_macs, gender=gender_result)
+		return render_template('identity_details.html', age_range=age_range,identity=identity, best_pic=best_pic_path, best_macs=best_macs, gender=gender_result)
 	identitiy_list = identities.read_all()
 	return render_template('identities.html', identitiy_list=identitiy_list)
 

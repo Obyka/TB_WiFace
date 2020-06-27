@@ -46,12 +46,14 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
      <h4 class="w3-center">{{identity.uuid}}</h4>
      <p class="w3-center"><img src="/{{best_pic}}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
      <hr>
-     {% if gender %}
-     {% if gender < 0 %}
+     {% if gender and gender < 0 %}
      <p class="w3-center w3-xlarge"><i class="fa fa-mars fa-fw"></i> Male</p>
-     {% else %}
+     {% elif gender%}
      <p class="w3-center w3-xlarge"><i class="fa fa-venus fa-fw"></i> Female</p>
      {% endif %}
+
+     {% if age_range %}
+     <p class="w3-center w3-xlarge"><i class="fa fa-birthday-cake fa-fw"></i> Estimated Age: {{age_range[0]}} - {{age_range[1]}}</p>
      {% endif %}
 
      {% if identity.firstname or identity.lastname%}
@@ -62,10 +64,12 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     {% if identity.mail %}
      <p class="w3-center w3-xlarge"><i class="fa fa-envelope fa-fw"></i> {{identity.mail}}</p>
      {% endif %}
+     {% if best_macs%}
      <p class="w3-center w3-xlarge"><i class="fa fa-mobile  fa-fw"></i> MAC: 
       {% for mac in best_macs %}
       <a href="{{ url_for('macs_front', id=mac.fk_mac) }}">{{mac.fk_mac}}</a>
       {% endfor %}
+      {% endif %}
     </div>
   </div>
 
