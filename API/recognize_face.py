@@ -8,7 +8,6 @@ import os
 from config import db, app
 import uuid
 
-
 def recognizeFace(client,image_name,collection):
     """[Check in an Amazon Rekognition collection if a given image contains one of its faces]
     
@@ -49,8 +48,10 @@ def handle_picture(picture_file, picture_name):
 
         #initialize reckognition sdk
         client = boto3.client('rekognition', aws_access_key_id=app.config['aws_access_key_id'],aws_secret_access_key=app.config['aws_secret_access_key'])
-
-        face_matched, response = recognizeFace(client, picture_path , collection) 
+        try:
+            face_matched, response = recognizeFace(client, picture_path , collection)
+        except client.exceptions.InvalidParameterException  as e:
+            raise ValueError
         print('Face detected!')
         if (face_matched):
             print(response['FaceMatches'][0]['Face'])

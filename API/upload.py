@@ -27,6 +27,10 @@ def upload():
 		file.save(os.path.join(config.app.config['UPLOAD_FOLDER'], filename))
 		try:
 			handle_picture(file, filename)
+		except ValueError:
+			resp = jsonify({'message' : 'No face was found in the picture.'})
+			resp.status_code = 500
+			return resp
 		except:
 			resp = jsonify({'message' : 'An error occured while handling the picture'})
 			resp.status_code = 500
