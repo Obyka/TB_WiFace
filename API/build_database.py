@@ -130,10 +130,6 @@ def main():
         u = User(email=user['email'], password=user['password'], admin=user['admin'])
         db.session.add(u)
 
-    """ for vendor in VENDORS:
-        v = Vendors(oui=vendor['oui'], name=vendor['name'])
-        db.session.add(v) """
-
     for mac in MACS:
         m = MacAddress(address=mac['address'], isRandom=mac['isRandom'], fk_vendor=mac['fk_vendor'])
         db.session.add(m)

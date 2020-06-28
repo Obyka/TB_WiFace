@@ -15,6 +15,7 @@ connex_app = connexion.App(__name__, specification_dir=basedir)
 # Get the underlying Flask app instance
 app = connex_app.app
 
+
 log = logging.getLogger('werkzeug')
 log.disabled = False
 
@@ -25,7 +26,7 @@ sqlite_url = "sqlite:////" + os.path.join(basedir, "probes.db")
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SQLALCHEMY_DATABASE_URI"] = sqlite_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config['UPLOAD_FOLDER'] = "static/images"
+app.config['UPLOAD_FOLDER'] = "web/static/images"
 app.config['COLLECTION_NAME'] = "wiface-faces"
 app.config['aws_access_key_id'] = "***REMOVED***"
 app.config['aws_secret_access_key'] = "***REMOVED***"

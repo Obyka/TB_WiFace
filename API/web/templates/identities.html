@@ -14,8 +14,8 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <!-- Top container -->
 <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
   <button class="w3-bar-item w3-button w3-hide-large w3-hover-none w3-hover-text-light-grey" onclick="w3_open();"><i class="fa fa-bars"></i>  Menu</button>
-  <span class="w3-bar-item w3-right"><i class="fa fa-sign-out" aria-hidden="true"></i> <a href="{{ url_for('logout_front') }}" style="text-decoration: none;">TB Wiface - {{current_user}}</a> 
-  </div>
+  <span class="w3-bar-item w3-right"><i class="fa fa-sign-out" aria-hidden="true"></i> <a href="{{ url_for('web_bp.logout_front') }}" style="text-decoration: none;">TB Wiface - {{current_user}}</a> 
+</div>
 
 <!-- Sidebar/menu -->
 <nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
@@ -24,9 +24,9 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   </div>
   <div class="w3-bar-block">
     <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
-    <a href="{{ url_for('statistics_front') }}" class="w3-bar-item w3-button w3-padding"><i class="fa fa-line-chart fa-fw"></i>  Statistics</a>
-    <a href="{{ url_for('identities_front') }}" class="w3-bar-item w3-button w3-padding"><i class="fa fa-user fa-fw"></i>  Identities</a>
-    <a href="{{ url_for('macs_front') }}" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-mobile  fa-fw"></i>  MAC address</a>
+    <a href="{{ url_for('web_bp.statistics_front') }}" class="w3-bar-item w3-button w3-padding"><i class="fa fa-line-chart fa-fw"></i>  Statistics</a>
+    <a href="{{ url_for('web_bp.identities_front') }}" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-user fa-fw"></i>  Identities</a>
+    <a href="{{ url_for('web_bp.macs_front') }}" class="w3-bar-item w3-button w3-padding"><i class="fa fa-mobile  fa-fw"></i>  MAC address</a>
   </div>
 </nav>
 
@@ -39,39 +39,33 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
   <!-- Header -->
   <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-user"></i> Detailled profile</b></h5>
+    <h5><b><i class="fa fa-user"></i> List of identities</b></h5>
   </header>
-  <div class="w3-card w3-round w3-white" style="margin:30px;">
-    <div class="w3-container">
-     <h4 class="w3-center">{{identity.uuid}}</h4>
-     <p class="w3-center"><img src="/{{best_pic}}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
-     <hr>
-     {% if gender and gender < 0 %}
-     <p class="w3-center w3-xlarge"><i class="fa fa-mars fa-fw"></i> Male</p>
-     {% elif gender%}
-     <p class="w3-center w3-xlarge"><i class="fa fa-venus fa-fw"></i> Female</p>
-     {% endif %}
 
-     {% if age_range %}
-     <p class="w3-center w3-xlarge"><i class="fa fa-birthday-cake fa-fw"></i> Estimated Age: {{age_range[0]}} - {{age_range[1]}}</p>
-     {% endif %}
-
-     {% if identity.firstname or identity.lastname%}
-     <p class="w3-center w3-xlarge">
-       <i class="fa fa-user fa-fw"></i> {{identity.firstname}} {{identity.lastname}}
-    </p>
-    {% endif %}
-    {% if identity.mail %}
-     <p class="w3-center w3-xlarge"><i class="fa fa-envelope fa-fw"></i> {{identity.mail}}</p>
-     {% endif %}
-     {% if best_macs%}
-     <p class="w3-center w3-xlarge"><i class="fa fa-mobile  fa-fw"></i> MAC: 
-      {% for mac in best_macs %}
-      <a href="{{ url_for('macs_front', id=mac.fk_mac) }}">{{mac.fk_mac}}</a>
-      {% endfor %}
-      {% endif %}
+  <div class="w3-panel">
+    <div class="w3-row-padding" style="margin:0 -16px">
+      <div class="w3">
+        <table class="w3-table w3-striped w3-white">
+            <tr>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Mail address</th>
+                <th>UUID</th>
+            </tr>
+          {% for identity in identitiy_list %}
+          <tr>
+            <td><i>{{identity.firstname}}</i></td>
+            <td><i>{{identity.lastname}}</i></td>
+            <td><i>{{identity.mail}}</i></td>
+            <td><i><a href="{{ url_for('web_bp.identities_front', id=identity.id) }}">{{identity.uuid}}</a></i></td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
     </div>
   </div>
+  <hr>
+
 
   <!-- Footer -->
   <footer class="w3-container w3-padding-16 w3-light-grey">
@@ -109,14 +103,3 @@ function w3_close() {
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-

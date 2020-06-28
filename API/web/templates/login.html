@@ -31,7 +31,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   {% if error %}
     Error while login
   {% endif %}
-  <form action="{{ url_for('login_front') }}" method = "POST" class="w3-container w3-card-4" style="width: 60%; text-align: center; display: inline-block;">
+  <form action="{{ url_for('web_bp.login_front') }}" method = "POST" class="w3-container w3-card-4" style="width: 60%; text-align: center; display: inline-block;">
 
     <p>
     <label class="w3-label w3-validate">Email</label></p>
