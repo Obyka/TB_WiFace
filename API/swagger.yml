@@ -683,7 +683,25 @@ paths:
             headers: 
               Set-Cookie:
                 type: string
-
+  /upload:
+    post:
+      consumes: 
+        - multipart/form-data
+      operationId: upload.upload
+      tags:
+        - File
+      summary: Upload a picture to the server
+      description: Upload a picture to the server
+      parameters:
+        - name: file
+          in: formData
+          type: file
+          description: file to upload
+      responses:
+          201:
+            description: Picture successfully uploaded.
+          400:
+            description: Bad request (No file part, bad extension).
 definitions:
   BelongTo:
     properties:
