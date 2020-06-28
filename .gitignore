@@ -3,6 +3,7 @@
 # Edit at https://www.gitignore.io/?templates=python
 *.db
 Client-API/faces
+**/face_upload_*
 env/
 envAPI/
 envClient/
