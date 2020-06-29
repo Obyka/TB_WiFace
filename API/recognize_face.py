@@ -55,7 +55,7 @@ def handle_picture(picture_file, picture_name):
 
     # initialize reckognition sdk
     client = boto3.client(
-        'rekognition', aws_access_key_id=app.config['aws_access_key_id'], aws_secret_access_key=app.config['aws_secret_access_key'])
+        'rekognition', aws_access_key_id=app.config['aws_access_key_id'], aws_secret_access_key=app.config['aws_secret_access_key'], region_name='us-east-1')
     try:
         face_matched, response = recognizeFace(client, picture_path, collection)
     except client.exceptions.InvalidParameterException as e:

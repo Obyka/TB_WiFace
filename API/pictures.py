@@ -3,7 +3,6 @@ import os
 
 from flask import abort, make_response, request
 from flask_jwt_extended import jwt_required
-from flask_restful import reqparse
 from sqlalchemy import literal
 
 from config import db
@@ -28,9 +27,6 @@ def feed():
 
 @jwt_required
 def upload():
-    #parser = reqparse.RequestParser()
-    #parser.add_argument('upfile', type=FileStorage, location='files',help=parser_help1, required=True)
-    #args = parser.parse_args()
     UPLOAD_DIRECTORY = './'
     with open(os.path.join(UPLOAD_DIRECTORY, "test.png"), "wb") as fp:
         fp.write(request.data)

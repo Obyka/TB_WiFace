@@ -156,5 +156,5 @@ def main():
 
 if __name__ == "__main__":
     client = boto3.client(
-        'rekognition', aws_access_key_id=app.config['aws_access_key_id'], aws_secret_access_key=app.config['aws_secret_access_key'])
+        'rekognition', aws_access_key_id=app.config['aws_access_key_id'], aws_secret_access_key=app.config['aws_secret_access_key'], region_name='us-east-1')
     main()
