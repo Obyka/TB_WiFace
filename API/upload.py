@@ -28,15 +28,18 @@ def upload():
         return resp
     if file and allowed_file(file.filename):
         filename = secure_filename('face_upload_%s.%s' % (time.strftime("%Y%m%d-%H%M%S"), file.filename.split('.')[-1]))
-    # save data to file system
-        file.save(os.path.join(config.app.config['UPLOAD_FOLDER'], filename))
+        # save data to file system
+        complete_file_name = os.path.join(config.app.config['UPLOAD_FOLDER'], filename)
+        file.save(os.path.join(complete_file_name))
         try:
             handle_picture(file, filename)
         except ValueError:
+            os.remove(complete_file_name)
             resp = jsonify({'message': 'No face was found in the picture.'})
             resp.status_code = 500
             return resp
         except Exception:
+            os.remove(complete_file_name)
             resp = jsonify({'message': 'An error occured while handling the picture'})
             resp.status_code = 500
             return resp
