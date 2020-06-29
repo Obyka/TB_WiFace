@@ -34,6 +34,14 @@ class API:
         self.session.verify = False
 
     def refresh(self):
+        """Call the refresh route, tokens must be set in cookies
+
+        Raises:
+            APIErrorBadAuth Invalid login
+
+        Returns:
+            response : response containing the new tokens
+        """
         api_url = '{0}refresh'.format(self.api_url_base)
         response = self.session.post(api_url)
         if response.status_code == 401:

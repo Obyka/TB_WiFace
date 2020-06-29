@@ -13,6 +13,12 @@ from Picture import Picture
 
 
 def TestWithoutOpenCV(image_path, MyAPI):
+    """This function allows to send an image without OpenCV processing
+
+    Args:
+        image_path (string): the path of the image to send
+        MyAPI (API): API instance to use the post method
+    """
     MyAPI.postFile(image_path)
 
 
@@ -20,12 +26,12 @@ def detectFace(frame):
     """OpenCV face detection using pre-trained cascade
 
     Arguments:
-        frame {[file]} -- [image which may contain a face]
-        face_cascade {[file]} -- [pre-trained cascade to detect face]
+        frame (file) -- [image which may contain a face]
+        face_cascade (file) -- [pre-trained cascade to detect face]
 
     Returns:
-        [face_detected] -- [Does the image contain a face?]
-        [string] -- [Path of the saved image]
+        (face_detected) -- [Does the image contain a face?]
+        (string) -- [Path of the saved image]
     """
 
     timestr = time.strftime("%Y%m%d-%H%M%S")

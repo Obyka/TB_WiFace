@@ -30,12 +30,26 @@ mac_dic = dict()
 
 
 def estimateDistance(RSSI, txPower):
+    """Estimate the distance of the device based on the RSSI
+
+    Args:
+        RSSI ([number]): AntSignal of the frame
+        txPower ([type]): Estimated signal strength at 1 meter
+
+    Returns:
+        number: distance estimation
+    """
     # [1.5;5] grandit avec le nombre d'obstacles
     n = 2.4
     return math.pow(10, (txPower - RSSI) / (10 * n))
 
 
 def analyzePacket(packet):
+    """Callback when sniffing a packet. This function send the relevant probes to the WiFace API
+
+    Args:
+        packet : sniffed packet
+    """
     # Le paquet possede-t-il la couche 802.11
     if packet.haslayer(Dot11) or packet.haslayer(Dot11FCS):
         # print(packet.show())
