@@ -1,18 +1,11 @@
-from config import db
-from models import (
-    Pictures,
-    PicturesSchema,
-    MacAddress,
-    MacAddressSchema,
-    BelongsTo,
-    BelongsToSchema,
-    Identities
-)
-from flask import jsonify
 import json
-from flask import abort, make_response
+
+from flask import Response, abort
 from flask_jwt_extended import jwt_required
-from flask import Response
+
+from config import db
+from models import BelongsTo, BelongsToSchema, Identities
+
 
 @jwt_required
 def read_all():

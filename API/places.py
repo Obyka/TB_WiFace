@@ -1,10 +1,9 @@
-from config import db
-from models import (
-    Places,
-    PlacesSchema,
-)
 from flask import abort, make_response
 from flask_jwt_extended import jwt_required
+
+from config import db
+from models import Places, PlacesSchema
+
 
 @jwt_required
 def read_all():
@@ -13,6 +12,7 @@ def read_all():
     # Serialize the data for the response
     places_scheme = PlacesSchema(many=True)
     return places_scheme.dump(places)
+
 
 @jwt_required
 def create(place):
@@ -26,6 +26,7 @@ def create(place):
     # Serialize and return the newly created person in the response
     return schema.dump(new_place), 201
 
+
 @jwt_required
 def read_one(id):
     place = Places.query \
@@ -38,6 +39,7 @@ def read_one(id):
     else:
         abort(404, 'Place with the id {id} not found'.format(id=id))
 
+
 @jwt_required
 def delete(id):
     place = Places.query.filter(Places.id == id).one_or_none()
@@ -48,7 +50,4 @@ def delete(id):
         return '', 204
 
     else:
-        abort(
-            404,
-            "Place with the id {id} not found".format(id=id),
-        )
+        abort(404, "Place with the id {id} not found".format(id=id))

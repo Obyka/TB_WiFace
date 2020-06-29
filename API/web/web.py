@@ -1,17 +1,21 @@
-import config
-import mariage
-import os
-from flask import abort, make_response, request, render_template, redirect, Blueprint
-import probes
-import macs
-import identities
-import belongsto
-import pictures
-import users
-from dateutil.relativedelta import relativedelta
-from flask_jwt_extended import get_jwt_identity, jwt_optional, jwt_required, get_raw_jwt, unset_access_cookies, unset_jwt_cookies
 import datetime
+import os
 
+from dateutil.relativedelta import relativedelta
+from flask import (Blueprint, abort, make_response, redirect, render_template,
+                   request)
+from flask_jwt_extended import (get_jwt_identity, get_raw_jwt, jwt_optional,
+                                jwt_required, unset_access_cookies,
+                                unset_jwt_cookies)
+
+import belongsto
+import config
+import identities
+import macs
+import mariage
+import pictures
+import probes
+import users
 
 # Blueprint Configuration
 web_bp = Blueprint('web_bp', __name__, template_folder='templates', static_folder='static')
@@ -111,4 +115,3 @@ def verbose_timedelta(delta):
 		if not dhms[end].startswith('0'):
 			break  
 	return ', '.join(dhms[start:end+1])
-

@@ -1,6 +1,9 @@
 from datetime import datetime
-from config import db, ma
+
 from passlib.hash import pbkdf2_sha256
+
+from config import db, ma
+
 
 class User(db.Model):
     """ User Model for storing user related details """
@@ -155,4 +158,3 @@ class PlacesSchema(ma.ModelSchema):
         model = Places
         sqla_session = db.session
         include_fk = True
-

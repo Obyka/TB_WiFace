@@ -1,11 +1,12 @@
+import logging
 import os
+from os import environ
+
 import connexion
 from flask import Flask
-import logging
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
 from flask_jwt_extended import JWTManager
-from os import environ
+from flask_marshmallow import Marshmallow
+from flask_sqlalchemy import SQLAlchemy
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 

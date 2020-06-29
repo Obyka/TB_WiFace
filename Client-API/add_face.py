@@ -1,8 +1,9 @@
-from picamera import PiCamera
 import argparse
-import boto3
-import time
 import os
+import time
+
+import boto3
+from picamera import PiCamera
 
 #get args from client
 parser = argparse.ArgumentParser(description='Capture image and add to collection.')

@@ -1,14 +1,13 @@
-from config import db
-from models import (
-    Probes,
-    ProbesSchema,
-)
-from flask import abort, make_response
-from flask import request
+from flask import abort, make_response, request
 from flask_jwt_extended import jwt_required
+
+from config import db
+from models import Probes, ProbesSchema
+
 
 def count():
     return Probes.query.count()
+
 
 @jwt_required
 def read_all():
@@ -23,6 +22,7 @@ def read_all():
     # Serialize the data for the response
     probes_scheme = ProbesSchema(many=True)
     return probes_scheme.dump(probes)
+
 
 @jwt_required
 def create(probe):
@@ -44,6 +44,7 @@ def create(probe):
     # Serialize and return the newly created person in the response
     return schema.dump(new_probe), 201
 
+
 @jwt_required
 def read_one(id):
     probe = Probes.query \
@@ -56,6 +57,7 @@ def read_one(id):
     else:
         abort(404, 'Probe not found for Id: {probe_id}'.format(probe_id=id))
 
+
 @jwt_required
 def delete(id):
     probe = Probes.query.filter(Probes.id == id).one_or_none()
@@ -66,7 +68,4 @@ def delete(id):
         return '', 204
 
     else:
-        abort(
-            404,
-            "Probe not found for Id: {probe_id}".format(probe_id=id),
-        )
+        abort(404, "Probe not found for Id: {probe_id}".format(probe_id=id))

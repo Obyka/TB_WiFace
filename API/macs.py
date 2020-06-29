@@ -1,19 +1,20 @@
-from config import db
-from models import (
-    MacAddress,
-    MacAddressSchema,
-    BelongsTo,
-    BelongsToSchema
-)
-from flask_jwt_extended import jwt_required
 from flask import abort, make_response
-import vendors, probes, places
+from flask_jwt_extended import jwt_required
+
+import places
+import probes
+import vendors
+from config import db
+from models import BelongsTo, BelongsToSchema, MacAddress, MacAddressSchema
+
 
 def count_random():
     return MacAddress.query.filter(MacAddress.isRandom == True).count()
-    
+
+
 def count():
     return MacAddress.query.count()
+
 
 def get_mac_infos(mac):
     vendor = vendors.read_by_oui(mac['fk_vendor'])
@@ -30,16 +31,18 @@ def get_mac_infos(mac):
         mac['places'].append(places.read_one(place))
     return mac
 
+
 @jwt_required
 def read_identities(address):
     belongs_to = BelongsTo.query\
-            .filter(BelongsTo.fk_mac==address).all()
+        .filter(BelongsTo.fk_mac == address).all()
 
     if belongs_to is not None:
         belongs_to_scheme = BelongsToSchema(many=True)
         return belongs_to_scheme.dump(belongs_to)
     else:
         abort(404, "No identities found for the address {address}".format(address=address))
+
 
 @jwt_required
 def read_all():
@@ -49,14 +52,14 @@ def read_all():
     macs_scheme = MacAddressSchema(many=True)
     return macs_scheme.dump(macs)
 
+
 @jwt_required
 def create(mac):
-
     schema = MacAddressSchema()
     new_mac = schema.load(mac, session=db.session)
 
     macDB = MacAddress.query \
-        .filter(MacAddress.address==new_mac.address) \
+        .filter(MacAddress.address == new_mac.address) \
         .one_or_none()
 
     if macDB is not None:
@@ -69,10 +72,11 @@ def create(mac):
     # Serialize and return the newly created person in the response
     return schema.dump(new_mac), 201
 
+
 @jwt_required
 def read_one(address):
     mac = MacAddress.query \
-        .filter(MacAddress.address== address) \
+        .filter(MacAddress.address == address) \
         .one_or_none()
 
     if mac is not None:
@@ -80,6 +84,7 @@ def read_one(address):
         return probe_schema.dump(mac)
     else:
         abort(404, 'MAC {address} not found'.format(address=address))
+
 
 @jwt_required
 def delete(address):
@@ -90,9 +95,5 @@ def delete(address):
         db.session.commit()
         return '', 204
 
-
     else:
-        abort(
-            404,
-            "MAC Address {address} not found".format(probe_id=id),
-        )
+        abort(404, "MAC Address {address} not found".format(probe_id=id))

@@ -1,16 +1,18 @@
 import argparse
-from scapy.all import *
-import json
-from json import JSONEncoder
 import datetime
+import json
+import math
+import os
+import time
+from json import JSONEncoder
+
+from scapy.all import *
+
+from API import *
+from Auth import User
 from MAC import MAC
 from Place import Place
 from Probe import Probe
-from Auth import User
-from API import *
-import time
-import os
-import math 
 
 parser = argparse.ArgumentParser(description="Scan for probes request")
 parser.add_argument('-i', help="interface wifi en monitor")
@@ -25,15 +27,18 @@ MyAPI = API(creds, args.api)
 mac_dic = dict()
 
 # source : https://pdfs.semanticscholar.org/f690/3910e7256946b138bf50b8dff8e9c8e73526.pdf
+
+
 def estimateDistance(RSSI, txPower):
     # [1.5;5] grandit avec le nombre d'obstacles
     n = 2.4
     return math.pow(10, (txPower - RSSI) / (10 * n))
 
+
 def analyzePacket(packet):
     # Le paquet possede-t-il la couche 802.11
     if packet.haslayer(Dot11) or packet.haslayer(Dot11FCS):
-        #print(packet.show())
+        # print(packet.show())
         # Le paquet est-il un paquet de management et est une probe request
         if packet.type == 0 and packet.subtype == 4:
             # Puissance de la probe request
@@ -56,14 +61,11 @@ def analyzePacket(packet):
                     return
             except APIError:
                 return
-            
+
             probe = Probe(packet.info.decode('utf-8'), 1, ret_mac.address)
             MyAPI.postProbeRequest(probe)
             print("SSID: ", packet.addr2)
             print("ESSID : ", packet.info.decode('utf-8'))
 
+
 sniff(iface=args.i, prn=analyzePacket)
-
-
-
-
