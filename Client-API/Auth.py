@@ -8,6 +8,7 @@ class User:
     email: str
     password: str
 
+
 @dataclass
 class Token:
     """Simple dataclass to represent a token
