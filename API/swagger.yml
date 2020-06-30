@@ -862,3 +862,13 @@ definitions:
         description: Does the subject seem disgusted ?
         minimum: 0
         maximum: 1.0
+      brightness:
+        type: number
+        description: How bright the picture is
+        minimum: 0
+        maximum: 1.0
+      sharpness:
+        type: number
+        description: How sharp the picture is
+        minimum: 0
+        maximum: 1.0

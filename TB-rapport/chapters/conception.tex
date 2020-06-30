@@ -54,7 +54,7 @@ identité est maintenant « pondérée » par une probabilité.
 	\centering
 	\includegraphics[width=12cm]{images/proto-2.png}
 	\caption{Deuxième version entité-association}
-	\label{fig:arealytics}
+	\label{fig:model-ea-2}
 \end{figure}
 
 Nouveau problème : Dans ce schéma, il est possible d’obtenir une identité sans image. Or, d’après les
@@ -66,11 +66,24 @@ spécifications, ce n’est pas possible puisque c’est grâce à la recherche 
 	\centering
 	\includegraphics[width=12cm]{images/proto-3.png}
 	\caption{Troisième version entité-association}
-	\label{fig:arealytics}
+	\label{fig:model-ea-3}
 \end{figure}
 
 Le problème susmentionné a été résolu en détachant l’identité de l’adresse MAC. Seul la photo y est attachée, et
 c’est maintenant le lien entre une adresse et une image qui est pondéré.
+
+\subsubsection{Quatrième version – Détails d'une image}
+
+À mi-chemin du projet, il a été remarqué que les données renvoyées par l'API Amazon Rekognition étaient très utiles 
+pour implémenter plusieurs fonctionnalités. Ces attribtus ont donc été rajoutés à la table Picture.
+Ils servent notamment à cibler l'utilisateur (âge, genre, émotions) ou à déterminer la qualité de la photo (sharpness et brightness)
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=12cm]{images/database_4.png}
+	\caption{Quatrième version entité-association}
+	\label{fig:model-ea-4}
+\end{figure}
 
 \section{API rest}
 

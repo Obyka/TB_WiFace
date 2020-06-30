@@ -135,6 +135,9 @@ class Pictures(db.Model):
     confused = db.Column(db.Numeric(1,10))
     fear = db.Column(db.Numeric(1,10))
     disgusted = db.Column(db.Numeric(1,10))
+    brightness = db.Column(db.Numeric(1,10))
+    sharpness = db.Column(db.Numeric(1,10))
+
     fk_place = db.Column(db.Integer, db.ForeignKey('places.id'))
     Represents = db.relationship('Represents', backref='picture')
 

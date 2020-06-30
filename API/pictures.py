@@ -12,6 +12,11 @@ from models import Pictures, PicturesSchema, Probes, ProbesSchema, Represents
 def count():
     return Pictures.query.count()
 
+def count_by_id(id):
+    return Pictures.query\
+        .join(Represents, Pictures.id == Represents.fk_picture) \
+        .filter(Represents.fk_identity == id) \
+        .count()
 
 def first(elem):
     return elem[0]
@@ -73,7 +78,7 @@ def read_best_pic(id_identity):
     picture = Pictures.query\
         .join(Represents, Pictures.id == Represents.fk_picture) \
         .filter(Represents.fk_identity == id_identity) \
-        .order_by(Represents.probability) \
+        .order_by(Pictures.sharpness) \
         .first()
 
     if picture is not None:

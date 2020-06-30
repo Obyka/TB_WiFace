@@ -61,6 +61,13 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
        <i class="fa fa-user fa-fw"></i> {{identity.firstname}} {{identity.lastname}}
     </p>
     {% endif %}
+
+    {% if nb_picture %}
+    <p class="w3-center w3-xlarge">
+      <i class="fa fa-picture-o fa-fw"></i> Number of taken pictures: {{nb_picture}}
+    </p>
+    {% endif %}
+
     {% if identity.mail %}
      <p class="w3-center w3-xlarge"><i class="fa fa-envelope fa-fw"></i> {{identity.mail}}</p>
      {% endif %}

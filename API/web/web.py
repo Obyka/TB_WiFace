@@ -73,6 +73,7 @@ def statistics_front():
 def identities_front():
 	if 'id' in request.args:
 		identity = identities.read_one(request.args.get('id'))
+		nb_picture = pictures.count_by_id(identity.get('id'))
 		macs = belongsto.read_by_identity(identity.get('id'))
 		age_range = identities.read_age_range(identity.get('id'))
 		gender_result = identities.read_gender(identity.get('id'))
@@ -82,7 +83,7 @@ def identities_front():
 		
 		best_pic_path = best_pic['picPath']
 		print(best_pic_path + ' ' * 1000)
-		return render_template('identity_details.html', age_range=age_range,identity=identity, best_pic=best_pic_path, best_macs=best_macs, gender=gender_result)
+		return render_template('identity_details.html',nb_picture=nb_picture, age_range=age_range,identity=identity, best_pic=best_pic_path, best_macs=best_macs, gender=gender_result)
 	identitiy_list = identities.read_all()
 	return render_template('identities.html', identitiy_list=identitiy_list)
 

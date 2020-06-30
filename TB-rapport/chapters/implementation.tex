@@ -26,6 +26,135 @@ Les données sont sérialisées à l’aide de \textbf{marshmallow}.
 La gestion de l’authentification se fait à l’aide de token JWT et du module correspondant \textbf{flask-jwt} et \textbf{pyjwt}
 La spécification est écrite à l’aide de swagger, qui propose également une documentation automatique.
 
+\section{La reconnaissance faciale et attribution des identitiés}
+
+La reconnaissance faciale a été implémentée à l'aide d'OpenCV (sur le client Raspberry Pi), de l'API AWS Rekognition et de l'API WiFace
+afin de faire le lien entre les deux autres éléments. 
+
+Voici le worflow permettant, depuis une image capturée par la PiCamera, d'attribuer une identité et diverses propriétés.
+
+\clearpage
+\newpage
+
+\thispagestyle{empty}
+\begin{landscape}
+    \centering
+\thispagestyle{empty}
+\begin{figure}%[htb]
+     \includegraphics[width=\linewidth]{images/facial_reco/facial_recognition_flow.png}
+     \caption{Worflow de la reconnaissance faciale}
+     \label{fig:worflow-reco}
+\end{figure}
+\end{landscape}
+
+Quelques explications concernant les inputs, outputs et processus de ce diagramme.
+
+Raspberry Pi et OpenCV:
+Le but de cette partie est de filter les images intéressantes (contenant un visage). En effet,
+cela permet de ne pas avoir à envoyer des milliers d'images à l'API d'Amazon qui possède un quota.
+\begin{itemize}
+    \item \textbf{La PiCamera prend des photos} en boucle tant que le programme est en activité et qu'une reconnaissance n'est pas en cours.
+    \item \textbf{Initialiser la prochaine cascade}: Les cascades de Haar d'OpenCV ont été utilisée. Les pertinentes sont celles pré-entraînée pour de la reconnaissance frontale et de profil.
+    \item \textbf{Détecter les visages}: Les visages sont détectés grâce à la fonction \textbf{detectMultiScale} qui renvoie les coordonnées de chaque visage détecté.
+    \item \textbf{Recouvrir le visage sur la frame}: Afin de ne pas redétecter les mêmes visages avec les prochaines cascades, nous utilisons les coordonnées obtenus et remplaçons le visage par un rectange sur la frame original, le visage est sauvegardé avant.
+\end{itemize}
+
+WiFace API et Amazon rekognition:
+L'API WiFace reçoit alors les images rognées de visage. 
+C'est elle qui va communiquer avec Rekognition et mettre à jour la base de donnée.
+Rekognition se chargera d'éliminer les faux-positifs d'OpenCV et de faire la vraie reconnaissance de visage,
+afin de savoir si ce dernier se trouve dans notre collection.
+\begin{itemize}
+    \item \textbf{Search face by image}~\ref{text:SearchFacesByImage}
+    \item \textbf{Correspondance ?}: Selon la réponse de Rekognition, deux scénarios existent. Si le visage a été reconnu, il faut associer l'image à l'identité existante, sinon en créer une nouvelle.
+    \item \textbf{Face details}: Cette output de Rekognition contient des données intéressantes que nous allons associer à l'image (et donc à l'identité). Parmi ces données, nous trouvons:
+    \begin{itemize}
+        \item Le genre (Homme / Femme) du sujet
+        \item Une fourchette d'âge probable du sujet
+        \item Une liste de plusieurs émotions que le sujet pourrait exprimer (triste, heureux, effrayé..)
+        \item La présence, ou non, de certains accessoires ou caractéristiques (lunettes, barbe,..)
+    \end{itemize} 
+\end{itemize} 
+
+\subsection{Exemple du processus}
+Voyons avec une image de test, comment les différents acteurs de ce Worflow se comportent.
+L'image en question comporte deux visages nets, un homme et une femme.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=12cm]{images/facial_reco/scott.jpg}
+    \caption{Deux visages}
+    \source{Scott pilgrim vs the world}
+	\label{fig:scott}
+\end{figure}
+
+Cependant, d'autres visages sont aussi présents sur l'image, mais flous. 
+Une fois passé au travers d'OpenCV, voici les résultats:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=12cm]{images/facial_reco/hidden_face.png}
+    \caption{Les visages détectés}
+	\label{fig:hidden_face}
+\end{figure}
+
+Les deux visages principaux ont été détectés, mais également ceux dans le fond.
+Un dessin qui ressemble vaguement à un visage a également été détecté, il s'agit d'un \textbf{faux-positif}.
+Cependant, comme Rekognition va à nouveau analyser les images, il est souhaitable qu'OpenCV
+soit "trop" sensible, afin de ne pas manquer de potentiels visages.
+
+Voici les deux visages principaux rognés par OpenCV et envoyé à WiFace:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=6cm]{images/facial_reco/ramona.png}
+    \caption{Visage rogné de Ramona}
+	\label{fig:hidden_face_ramona}
+\end{figure}
+
+D'après Rekognition:
+\begin{itemize}
+    \item Genre: Femme
+    \item Age: [8 - 18]
+    \item Émotion principale: Calme 
+\end{itemize}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=6cm]{images/facial_reco/scott_hidden.png}
+    \caption{Visage rogné de Scott}
+	\label{fig:hidden_face_scott}
+\end{figure}
+
+D'après Rekognition:
+\begin{itemize}
+    \item Genre: Homme
+    \item Age: [14 - 26]
+    \item Émotion principale: Confus 
+\end{itemize}
+
+Les données reçus sont plutôt correctes, bien que les estimations d'âge soit très vague.
+
+Si nous envoyons une deuxième image, nous voyons alors que les deux sujets ont à nouveau été reconnus, malgré des changements d'apparence (couleur de cheveux).
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=12cm]{images/facial_reco/scott2.png}
+    \caption{Deuxième image des sujets}
+	\label{fig:scott2}
+\end{figure}
+
+La figure ~\ref{fig:ramona_profile} montre le profil de l'identité sur le front-end de WiFace.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=6cm]{images/facial_reco/ramona_profile.png}
+    \caption{L'image a été associée au profil existant}
+	\label{fig:ramona_profile}
+\end{figure}
+
+Les estimations d'âge ont été mises à jour, car il s'agit de la moyenne des données extraites sur toutes les photos d'une identitié.
+Le genre est aussi déterminé via la majorité, sur toutes les photos du sujet. 
+La photo est séléctionnée comme étant la meilleure (qualité)
 \section{Le client Raspberry}
 
 \section{Algorithme PP2I}

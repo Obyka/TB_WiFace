@@ -102,6 +102,7 @@ class API:
         Arguments:
             picture {[file]} -- File to send
         """
+        self.getTokens()
         headers = {'Content-Type': None}
         api_url = '{0}upload'.format(self.api_url_base)
         files = {'file': open(picture, 'rb')}
@@ -121,6 +122,7 @@ class API:
         Returns:
             [Identity] -- [Identity created on the server]
         """
+        self.getTokens()
         api_url = '{0}identities'.format(self.api_url_base)
         identity_json = {'firstname': identity.firstname,
                          'lastname': identity.lastname, 'mail': identity.mail, 'uuid': identity.uuid}
@@ -144,6 +146,7 @@ class API:
         Returns:
             [Represent] -- [Represent created on the server]
         """
+        self.getTokens()
         api_url = '{0}represents'.format(self.api_url_base)
         represents_json = {'fk_picture': represent.fk_picture,
                            'fk_identity': represent.fk_identity, 'probability': represent.probability}
@@ -167,6 +170,8 @@ class API:
         Returns:
             [MAC] -- [MAC created on the server]
         """
+
+        self.getTokens()
         api_url = '{0}macs'.format(self.api_url_base)
         mac_json = {'address': mac.address, 'isRandom': mac.isRandom, 'fk_vendor': mac.fk_vendor}
         response = self.session.post(api_url, json=mac_json)
@@ -185,6 +190,7 @@ class API:
         Returns:
             [MAC] -- [MAC created on the server]
         """
+        self.getTokens()
         address = address.upper()
         api_url = '{0}macs/{1}'.format(self.api_url_base, address)
         response = self.session.get(api_url)
@@ -209,6 +215,7 @@ class API:
         Returns:
             [Probe] -- [Probe created on the server]
         """
+        self.getTokens()
         api_url = '{0}probes'.format(self.api_url_base)
         probe_json = {'fk_mac': probe.fk_mac, 'fk_place': probe.fk_place, 'ssid': probe.ssid}
         response = self.session.post(api_url, json=probe_json)
@@ -225,6 +232,7 @@ class API:
         Returns:
             [Picture] -- [Picture created on the server]
         """
+        self.getTokens()
         api_url = '{0}pictures'.format(self.api_url_base)
         picture_json = {'timestamp': picture.timestamp, 'picPath': picture.picPath, "fk_place": picture.fk_place}
         response = self.session.post(api_url, json=picture_json)
@@ -243,6 +251,7 @@ class API:
         Returns:
             [Vendor] -- [vendor details]
         """
+        self.getTokens()
         api_url = '{0}vendors/{1}'.format(self.api_url_base, OUI)
         response = self.session.get(api_url)
         return response.status_code == 200

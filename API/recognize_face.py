@@ -47,7 +47,6 @@ def add_face_collection(collection, image_name, face_identity, client):
                                       ExternalImageId=face_identity.uuid, DetectionAttributes=['ALL'])
     return response
 
-
 def handle_picture(picture_file, picture_name):
     picture_path = os.path.join(app.config['UPLOAD_FOLDER'], picture_name)
     # get args
@@ -62,11 +61,15 @@ def handle_picture(picture_file, picture_name):
         raise ValueError
     print('Face detected!')
     if (face_matched):
+        print('Face matched!')
         print(response['FaceMatches'][0]['Face'])
         confidence = round(response['FaceMatches'][0]['Face']['Confidence'], 2)
         faceUUID = response['FaceMatches'][0]['Face']['ExternalImageId']
         similarity = round(response['FaceMatches'][0]['Similarity'], 1)
-        get_identity = read_one_by_uuid(faceUUID)
+        try:
+            get_identity = read_one_by_uuid(faceUUID)
+        except Exception as e:
+            print(e)
         face_identity = Identities(id=get_identity['id'], uuid=get_identity['uuid'])
         print('Identity matched {} with {} similarity and {} confidence...'.format(faceUUID, similarity, confidence))
     else:
@@ -96,6 +99,9 @@ def constructPictureObject(faceDetails, picture_name, fk_place):
         attributeDetails = faceDetails[attribute]
         parsedDict[attribute.lower()] = attributeDetails['Confidence'] if attributeDetails['Value'] else - \
             attributeDetails['Confidence']
+
+    parsedDict['brightness'] = faceDetails['Quality']['Brightness']
+    parsedDict['sharpness'] = faceDetails['Quality']['Sharpness']
 
     parsedDict['ageMin'] = faceDetails['AgeRange']['Low']
     parsedDict['ageMax'] = faceDetails['AgeRange']['High']

@@ -3,6 +3,7 @@ import time
 
 from dateutil.relativedelta import relativedelta
 from flask import jsonify, redirect, request
+from flask_jwt_extended import jwt_required
 from werkzeug.utils import secure_filename
 
 import config
@@ -14,7 +15,7 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
+@jwt_required
 def upload():
     # check if the post request has the file part
     if 'file' not in request.files:
