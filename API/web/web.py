@@ -74,16 +74,18 @@ def identities_front():
 	if 'id' in request.args:
 		identity = identities.read_one(request.args.get('id'))
 		nb_picture = pictures.count_by_id(identity.get('id'))
-		macs = belongsto.read_by_identity(identity.get('id'))
+		mac_addresses = belongsto.read_by_identity(identity.get('id'))
 		age_range = identities.read_age_range(identity.get('id'))
 		gender_result = identities.read_gender(identity.get('id'))
 		best_pic = pictures.read_best_pic(identity.get('id'))
-		
-		best_macs = mariage.best_fit(macs) if macs else []
+		pictures_place = pictures.get_picture_place_by_identity(identity.get('id')) 
+		best_macs = mariage.best_fit(mac_addresses) if mac_addresses else []
+		mac_datas = []
+		for mac in best_macs:
+			mac_datas.append(macs.get_mac_infos(macs.read_one(mac.get('fk_mac'))))
 		
 		best_pic_path = best_pic['picPath']
-		print(best_pic_path + ' ' * 1000)
-		return render_template('identity_details.html',nb_picture=nb_picture, age_range=age_range,identity=identity, best_pic=best_pic_path, best_macs=best_macs, gender=gender_result)
+		return render_template('identity_details.html',pictures_place=pictures_place, nb_picture=nb_picture, age_range=age_range,identity=identity, best_pic=best_pic_path, best_macs=best_macs, gender=gender_result, mac_datas=mac_datas)
 	identitiy_list = identities.read_all()
 	return render_template('identities.html', identitiy_list=identitiy_list)
 

@@ -41,7 +41,7 @@ Voici le worflow permettant, depuis une image capturée par la PiCamera, d'attri
     \centering
 \thispagestyle{empty}
 \begin{figure}%[htb]
-     \includegraphics[width=\linewidth]{images/facial_reco/facial_recognition_flow.png}
+     \includegraphics[width=\linewidth]{images/facial_reco/facial_recognition_flow_v2.png}
      \caption{Worflow de la reconnaissance faciale}
      \label{fig:worflow-reco}
 \end{figure}
@@ -56,6 +56,8 @@ cela permet de ne pas avoir à envoyer des milliers d'images à l'API d'Amazon q
     \item \textbf{La PiCamera prend des photos} en boucle tant que le programme est en activité et qu'une reconnaissance n'est pas en cours.
     \item \textbf{Initialiser la prochaine cascade}: Les cascades de Haar d'OpenCV ont été utilisée. Les pertinentes sont celles pré-entraînée pour de la reconnaissance frontale et de profil.
     \item \textbf{Détecter les visages}: Les visages sont détectés grâce à la fonction \textbf{detectMultiScale} qui renvoie les coordonnées de chaque visage détecté.
+    \item \textbf{Cascade de profil et image pas retournée?}: Condition qui exprime si la cascade actuelle est celle qui détecte les visages de profil, et si l'image n'a pas déjà été retournée.
+    \item \textbf{Retourner l'image}: Consiste à faire une symétrie axiale en Y de l'image. Les cascades d'OpenCV sont entraînées pour un seul des deux profils. Nous maximisons les chances de détection ainsi
     \item \textbf{Recouvrir le visage sur la frame}: Afin de ne pas redétecter les mêmes visages avec les prochaines cascades, nous utilisons les coordonnées obtenus et remplaçons le visage par un rectange sur la frame original, le visage est sauvegardé avant.
 \end{itemize}
 
@@ -154,7 +156,7 @@ La figure ~\ref{fig:ramona_profile} montre le profil de l'identité sur le front
 
 Les estimations d'âge ont été mises à jour, car il s'agit de la moyenne des données extraites sur toutes les photos d'une identitié.
 Le genre est aussi déterminé via la majorité, sur toutes les photos du sujet. 
-La photo est séléctionnée comme étant la meilleure (qualité)
+La photo est séléctionnée comme étant la meilleure (selon les indices de qualité renvoyés par Rekognition)
 \section{Le client Raspberry}
 
 \section{Algorithme PP2I}

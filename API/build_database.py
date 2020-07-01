@@ -79,7 +79,7 @@ def main():
         {"id": 1, "picPath": "batman.jpg", "timestamp": batman_time, "fk_place": 1},
         {"id": 2, "picPath": "superman.jpg", "timestamp": superman_time, "fk_place": 1},
         {"id": 3, "picPath": "ironman.jpg", "timestamp": ironman_time, "fk_place": 1},
-        {"id": 4, "picPath": "wonderwoman.jpg", "timestamp": wonderwoman, "fk_place": 1},
+        {"id": 4, "picPath": "wonderwoman.jpg", "timestamp": wonderwoman, "fk_place": 2},
         {"id": 5, "picPath": "batman_no_mac.jpg", "timestamp": batman_time + timedelta(hours=1), "fk_place": 1},
     ]
 

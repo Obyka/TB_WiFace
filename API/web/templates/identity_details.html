@@ -41,7 +41,15 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   <header class="w3-container" style="padding-top:22px">
     <h5><b><i class="fa fa-user"></i> Detailled profile</b></h5>
   </header>
-  <div class="w3-card w3-round w3-white" style="margin:30px;">
+
+  <div class="w3-card w3-round w3-white w3-third" style="margin-right: 10px;">
+    <div class="w3-container">
+    <div id="googleMap" style="width:100%;height:400px;"></div>
+    </div>
+  </div>
+
+
+  <div class="w3-card w3-round w3-white w3-rest">
     <div class="w3-container">
      <h4 class="w3-center">{{identity.uuid}}</h4>
      <p class="w3-center"><img src="{{ url_for('web_bp.static', filename='images/'+best_pic) }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
@@ -79,6 +87,66 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
       {% endif %}
     </div>
   </div>
+
+
+  <script>
+    function myMap() {
+      var mapProp= {
+        center: {lat: -34.397, lng: 150.644},
+        zoom:5
+   };
+
+   arrayMarker = []
+   {% for picture_place in pictures_place%}
+    var contentString = '{{picture_place.name}}<br>' + 'Latitude: ' + '{{picture_place.latitude}}<br>' + 'Longitude: ' +'{{picture_place.longitude}}<br>';
+    var marker = new google.maps.Marker({
+      icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+      position: new google.maps.LatLng({{picture_place.latitude}}, {{picture_place.longitude}}),
+      map: map,
+      title: "{{picture_place.name}}"
+  });
+
+  google.maps.event.addListener(marker, 'click', function(content) {
+    infowindow = new google.maps.InfoWindow();
+    return function(){
+        infowindow.setContent(content);
+        infowindow.open(map,this);
+    }
+    }(contentString));
+
+  arrayMarker.push(marker)
+   {% endfor %}
+   {% for mac_data in mac_datas %}
+   {% for place in mac_data.places %}
+   var contentString = '{{place.name}}<br>' + 'Latitude: ' + '{{place.latitude}}<br>' + 'Longitude: ' +'{{place.longitude}}<br>';
+   var marker = new google.maps.Marker({
+    icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+    position: new google.maps.LatLng({{place.latitude}}, {{place.longitude}}),
+    map: map,
+    title: "{{place.name}}"
+  });
+
+  google.maps.event.addListener(marker, 'click', function(content) {
+    infowindow = new google.maps.InfoWindow();
+    return function(){
+        infowindow.setContent(content);
+        infowindow.open(map,this);
+    }
+    }(contentString));
+
+  arrayMarker.push(marker)
+  {% endfor %}
+  mapProp.center = new google.maps.LatLng({{pictures_place[0].latitude}}, {{pictures_place[0].longitude}});
+  {% endfor %}
+
+   var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+   arrayMarker.forEach(function(element){
+    element.setMap(map);
+   });
+  }
+    </script>
+ 
+ <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNgwbDiCLi_-4w3R0vPxRVhtUuqvALti0&callback=myMap"></script>
 
   <!-- Footer -->
   <footer class="w3-container w3-padding-16 w3-light-grey">

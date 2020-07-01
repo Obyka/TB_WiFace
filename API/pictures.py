@@ -6,8 +6,8 @@ from flask_jwt_extended import jwt_required
 from sqlalchemy import literal
 
 from config import db
-from models import Pictures, PicturesSchema, Probes, ProbesSchema, Represents
-
+from models import Pictures, PicturesSchema, Probes, ProbesSchema, Represents, Places
+import places
 
 def count():
     return Pictures.query.count()
@@ -28,6 +28,23 @@ def feed():
     pictures.extend(probes)
     pictures.sort(key=first)
     return pictures
+
+def get_picture_place_by_identity(identity_id):
+    place_list = []
+    picture_list = Pictures.query\
+        .join(Represents, Pictures.id == Represents.fk_picture) \
+        .filter(Represents.fk_identity == identity_id) \
+        .all()
+
+    places_set = set()
+    for pic in picture_list:
+        places_set.add(pic.fk_place)
+
+    for place in places_set:
+        place_list.append(places.read_one(place))
+    return place_list
+
+
 
 
 @jwt_required
