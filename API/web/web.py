@@ -103,7 +103,15 @@ def macs_front():
 @web_bp.route('/pictures')
 @jwt_required
 def pictures_front():
-	return render_template('pictures.html')
+	if 'id' not in request.args:
+		abort(404)
+	id = request.args.get('id')
+	emotions = ['happy', 'surprised', 'fear', 'confused', 'sad', 'calm', 'disgusted', 'angry']
+	current_pic = pictures.read_one(id)
+	# retire les trois expressions principales de la photo et les trie
+	main_emotions = sorted([(emotion, current_pic.get(emotion)) for count, emotion in enumerate(emotions) if current_pic.get(emotion) and abs(current_pic.get(emotion)) >= 1 and count < 3], key=lambda emotion: emotion[1], reverse=True)
+	return render_template('pictures.html', current_pic=current_pic, main_emotions=main_emotions)
+
 
 def verbose_timedelta(delta):
 	d = delta.days
