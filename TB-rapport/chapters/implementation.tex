@@ -31,7 +31,7 @@ La spécification est écrite à l’aide de swagger, qui propose également une
 La reconnaissance faciale a été implémentée à l'aide d'OpenCV (sur le client Raspberry Pi), de l'API AWS Rekognition et de l'API WiFace
 afin de faire le lien entre les deux autres éléments. 
 
-Voici le worflow permettant, depuis une image capturée par la PiCamera, d'attribuer une identité et diverses propriétés.
+La figure~\ref{fig:worflow-reco} présente le worflow permettant, depuis une image capturée par la PiCamera, d'attribuer une identité et diverses propriétés.
 
 \clearpage
 \newpage
@@ -79,19 +79,20 @@ afin de savoir si ce dernier se trouve dans notre collection.
 \end{itemize} 
 
 \subsection{Exemple du processus}
-Voyons avec une image de test, comment les différents acteurs de ce Worflow se comportent.
+Voyons avec une image de test (figure~\ref{fig:scott}), comment les différents acteurs de ce Worflow se comportent.
 L'image en question comporte deux visages nets, un homme et une femme.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=12cm]{images/facial_reco/scott.jpg}
     \caption{Deux visages}
-    \source{Scott pilgrim vs the world}
+    \source{\cite{SCOTT}}
 	\label{fig:scott}
 \end{figure}
 
 Cependant, d'autres visages sont aussi présents sur l'image, mais flous. 
-Une fois passé au travers d'OpenCV, voici les résultats:
+Une fois passé au travers d'OpenCV, nous pouvons voir la frame de base recouverte de plusieurs rectangles verts.
+Chaque rectangle présent sur la figure~\ref{fig:hidden_face} a été "découpé" et envoyé.
 
 \begin{figure}[H]
 	\centering
@@ -105,7 +106,7 @@ Un dessin qui ressemble vaguement à un visage a également été détecté, il 
 Cependant, comme Rekognition va à nouveau analyser les images, il est souhaitable qu'OpenCV
 soit "trop" sensible, afin de ne pas manquer de potentiels visages.
 
-Voici les deux visages principaux rognés par OpenCV et envoyé à WiFace:
+Les figures~\ref{fig:hidden_face_ramona} et~\ref{fig:hidden_face_scott} montrent les deux visages principaux rognés par OpenCV et envoyé à Rekognition:
 
 \begin{figure}[H]
 	\centering
@@ -137,7 +138,7 @@ D'après Rekognition:
 
 Les données reçus sont plutôt correctes, bien que les estimations d'âge soit très vague.
 
-Si nous envoyons une deuxième image, nous voyons alors que les deux sujets ont à nouveau été reconnus, malgré des changements d'apparence (couleur de cheveux).
+Si nous envoyons une deuxième image (figure~\ref{fig:scott2}), nous voyons alors que les deux sujets ont à nouveau été reconnus, malgré des changements d'apparence (couleur de cheveux).
 
 \begin{figure}[H]
 	\centering

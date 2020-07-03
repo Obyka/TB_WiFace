@@ -32,14 +32,14 @@ quelques-unes de ces relations.
 Une entité « vendor » peut n’avoir délivré aucune adresse MAC puisqu’ils seront tous insérés dans la base de donnée
 à sa création.
 
-Dans ce modèle, une « Identity » est reliée à aucune ou plusieurs MACAddress et photo. (L’individu peut posséder
+Dans ce modèle, visible sur la figure ~\ref{fig:model-ea-1}, une « Identity » est reliée à aucune ou plusieurs MACAddress et photo. (L’individu peut posséder
 plusieurs appareils et plusieurs photos ont pu être prises)
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=12cm]{images/proto-1.png}
+	\includegraphics[width=12cm]{images/database_1.png}
 	\caption{Première version entité-association}
-	\label{fig:arealytics}
+	\label{fig:model-ea-1}
 \end{figure}
 
 Problème : Dans cette conception, il n y a aucune notion de probabilité. Quand une identité a été reliée à une
@@ -48,7 +48,7 @@ peu d'occurences où la certitude est présente. Il faut donc modéliser cette p
 
 \subsubsection{Deuxième version – Modélisation des probabilités}
 Des relations intermédiaires ont été ajoutées. L’association entre une adresse MAC ou une photo avec une
-identité est maintenant « pondérée » par une probabilité.
+identité est maintenant « pondérée » par une probabilité. Cette deuxième itération est visible sur la figure ~\ref{fig:model-ea-2}
 
 \begin{figure}[H]
 	\centering
@@ -69,14 +69,15 @@ spécifications, ce n’est pas possible puisque c’est grâce à la recherche 
 	\label{fig:model-ea-3}
 \end{figure}
 
-Le problème susmentionné a été résolu en détachant l’identité de l’adresse MAC. Seul la photo y est attachée, et
+Le problème susmentionné a été résolu sur la figure ~\ref{fig:model-ea-3} en détachant l’identité de l’adresse MAC. Seul la photo y est attachée, et
 c’est maintenant le lien entre une adresse et une image qui est pondéré.
 
 \subsubsection{Quatrième version – Détails d'une image}
 
 À mi-chemin du projet, il a été remarqué que les données renvoyées par l'API Amazon Rekognition étaient très utiles 
 pour implémenter plusieurs fonctionnalités. Ces attribtus ont donc été rajoutés à la table Picture.
-Ils servent notamment à cibler l'utilisateur (âge, genre, émotions) ou à déterminer la qualité de la photo (sharpness et brightness)
+Ils servent notamment à cibler l'utilisateur (âge, genre, émotions) ou à déterminer la qualité de la photo (sharpness et brightness).
+Les nouveaux champs ont été ajoutés sur la figure ~\ref{fig:model-ea-4}
 
 \begin{figure}[H]
 	\centering
@@ -115,7 +116,7 @@ Afin qu'un opérateur puisse observer les données récoltées, les données re�
 
 Les pages présentes sont les suivantes : 
 
-Statistiques: Diverses informations générales, fil d'événement, pourcentages
+Statistiques~\ref{fig:dashboard_stats}: Diverses informations générales, fil d'événement, pourcentages
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=16cm]{images/dashboard/stats.png}
@@ -123,7 +124,7 @@ Statistiques: Diverses informations générales, fil d'événement, pourcentages
 	\label{fig:dashboard_stats}
 \end{figure}
 
-Liste des identités: Aggrégation des identités connues (Prénom, nom, adresse mail, UUID)
+Liste des identités~\ref{fig:dashboard_list_identities}: Aggrégation des identités connues (Prénom, nom, adresse mail, UUID)
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=16cm]{images/dashboard/list-identities.png}
@@ -131,20 +132,20 @@ Liste des identités: Aggrégation des identités connues (Prénom, nom, adresse
 	\label{fig:dashboard_list_identities}
 \end{figure}
 
-Détails sur une identité: Toutes les informations concernant une identité spécifique. Liste des adresses MAC probablement associées. 
+Détails sur une identité~\ref{fig:identity_details}: Toutes les informations concernant une identité spécifique. Liste des adresses MAC probablement associées. 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=16cm]{images/dashboard/identity.png}
 	\caption{Page de détails sur une identité}
-	\label{fig:dashboard_stats}
+	\label{fig:identity_details}
 \end{figure}
 
-Liste des adresses MAC: Aggrégation des adresses MAC connues (Adresse, constructeur, Randomness, Nombre d'occurrences dans les probes request)
+Liste des adresses MAC~\ref{fig:list_mac}: Aggrégation des adresses MAC connues (Adresse, constructeur, Randomness, Nombre d'occurrences dans les probes request)
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=16cm]{images/dashboard/list-macs.png}
 	\caption{Page listant les adresses MAC}
-	\label{fig:dashboard_stats}
+	\label{fig:list_mac}
 \end{figure}
 
 \section{Algorithme PP2I}

@@ -79,8 +79,10 @@ def handle_picture(picture_file, picture_name):
         face_identity = Identities(uuid=faceUUID)
         db.session.add(face_identity)
         db.session.flush()
-
-    fullFaceResponse = add_face_collection(collection, picture_path, face_identity, client)
+    try:
+        fullFaceResponse = add_face_collection(collection, picture_path, face_identity, client)
+    except Exception as e:
+        print(e)
     faceDetails = fullFaceResponse['FaceRecords'][0]['FaceDetail']
 
     p = constructPictureObject(faceDetails, picture_name, 1)

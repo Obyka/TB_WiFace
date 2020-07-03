@@ -8,8 +8,8 @@ comprendre les bases et les implications de cette technologie.
 
 \subsection{Une petite touche de théorie}
 La reconnaissance faciale utilise la technologie du Machine Learning, et plus précisement du Deep Learning.
-Le principe consite à l’extraction de données intéressantes d’une image (les caractérstiques) afin de lier une
-« empreinte biométrique » à un visage. Par exemple en mesurant l’écartement des yeux, la longeur du nez, la
+Le principe consite à l’extraction de données intéressantes d’une image (les caractérstiques) afin de créer ou lier une
+« empreinte biométrique » à un visage. Ce processus est exemplifié dans la figure ~\ref{fig:reco-process} . Par exemple en mesurant l’écartement des yeux, la longeur du nez, la
 profondeur des orbites, on obtient des données uniques qui permettront d’identifier la même personne sur une
 image différente.
 
@@ -27,12 +27,13 @@ En voici une liste non-exhaustive :
 	\centering
 	\includegraphics[width=12cm]{images/proto-5.png}
 	\caption{Processus de reconnaissance faciale}
-	\label{fig:arealytics}
+	\label{fig:reco-process}
 \end{figure}
 
 \section{Choix de la solution}
 
 À l'aide de quelques valeurs clés (précision, rappel, nombre de faux-positifs, ...) nous allons comparer plusieurs solutions existantes et "clés en main" de reconnaissance faciale.
+La figure ~\ref{fig:tab-comparatif-reco} ci-dessous énumère les fonctionnalités offertes par les diverses solutions du marché.
 
 \begin{figure}[H]
 	\centering
@@ -188,7 +189,7 @@ si le paramètre vaut 2, seulement les 2 plus grand visages seront ajoutés à l
 une collection donnée si ce visage est reconnu. Si c’est le cas, on peut alors inférer que l’image représente la même
 personne que les métadonnées correspondantes.
 
-Voici un workflow détaillé d’Amazon Rekognition
+La figure~\ref{fig:reko-workflow} présente un workflow détaillé d’Amazon Rekognition
 
 \begin{figure}[H]
 	\centering

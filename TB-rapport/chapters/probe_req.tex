@@ -22,7 +22,7 @@ UAA (Universally Administered Address), BIA (Burned-In Address), MAC-48 ou EUI-4
 
 \subsection{Format}
 
-Les 48 bits d'une adresse sont formatés comme suit :
+Les 48 bits d'une adresse sont schématisés sur la figure ~\ref{fig:macstruct} et formatés comme suit :
 
 \begin{figure}[H]
 	\centering
@@ -77,13 +77,13 @@ La première consiste simplement à contrôler le bit \textbf{b1}, si ce dernier
 dire avec de grandes chances que l'adresse est aléatoire. Cependant, ce n'est pas totalement vrai, c'est pourquoi
 d'autres techniques sont employées en concert avec celle-ci. 
 
-Dans un corpus datant de fin 2015, l'étude ~\cite{ASMARMD} a demontré les statistiques suivantes: 
+Dans un corpus datant de fin 2015, l'étude ~\cite{ASMARMD} a demontré les statistiques visibles sur la figure~\ref{fig:locally_stats}: 
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=10cm]{images/probe/stats_locally_assigned.png}
 	\caption{Statistiques sur la randomisation - Locally Assigned bit}
-	\label{fig:macstruct}
+	\label{fig:locally_stats}
 \end{figure}
 
 Près de 99\% des adresses assignées localement étaient également aléatoires. La consultation
@@ -146,7 +146,7 @@ Un autre avantage des probe request est que ces dernières sont envoyées très 
 afin de permettre à l'appareil de trouver rapidement les WiFi disponibles. Elles sont même envoyées en rafale ("burst") afin de couvrir
 un maximum de canaux 802.11.
 
-Voici un exemple de Probe request dirigée capturée avec Wireshark :
+Une capture de probe request dirigée peut être observée sur la capture~\ref{fig:directedprobe} :
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=14cm]{images/probe/directed_probe.png}
@@ -157,12 +157,12 @@ Voici un exemple de Probe request dirigée capturée avec Wireshark :
 On y trouve le sous-type de la trame de management qui identifie les Probe requests (4), l'adresse de destination (broadcast)
 , l'adresse source (un téléphone Honor 8) et différentes informations dont le \textbf{SSID} recherché : "L'Ether-net"
 
-Les même informations sont disponibles pour une null probe request, mais le SSID est remplacé par un wildcard:
+Les même informations sont disponibles pour une null probe request (figure~\ref{fig:nulldprobe}), mais le SSID est remplacé par un wildcard:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=14cm]{images/probe/null_probe_cropped.png}
 	\caption{null-probe request}
-	\label{fig:directedprobe}
+	\label{fig:nulldprobe}
 \end{figure}
 
 Il est intéressant de noter que des informations peuvent parfois être déduites des probes requests dirigées.
