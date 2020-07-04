@@ -37,7 +37,10 @@ def process_frame(frame, MyAPI):
         if "haarcascade_profileface" in x:
             image_list_faces, frame = detectFace(frame, x)
             image_list.extend(image_list_faces)
-            
+    
+    image = '{0}/image_{1}_complete.png'.format(directory, time.strftime("%Y%m%d-%H%M%S"))
+    cv.imwrite(image, frame)
+
     for im in image_list:
         MyAPI.postFile(im)
 
@@ -81,16 +84,34 @@ def detectFace(frame, cascade):
                                             flags=cv.CASCADE_SCALE_IMAGE)
     print("Found {0} faces!".format(len(faces)) + " - " + str(cascade))
 
-    for i, (x, y, w, h) in enumerate(faces):
-        roi_color = frame[y:y + h, x:x + w]
-        image = '{0}/image_{1}_{2}.png'.format(directory, timestr, i)
-        cv.imwrite(image, roi_color)
-        cv.rectangle(frame, (int(x - 0.1*w), int(y - 0.1*h)),
-                        (int(x + w + 0.1*w), int(y + h + 0.1*h)), (0, 255, 0), -1)
+
+    m = 0.2
+    # Ici, on recouvre les tous les visages sauf 1 à chaque fois, et on enregistre l'image
+    for it, _ in enumerate(faces):
+        copy_frame = frame.copy()
+        for i, (x, y, w, h) in enumerate(faces):
+            start_y = int(max(0, y-m*h))
+            end_y = int(min(y + h + m*h, frame.shape[0]))
+            start_x = int(max(0, x-m*w))
+            end_x = int(min(x + w + m*h, frame.shape[1]))
+
+            if i != it:
+                roi_color = copy_frame[start_y:end_y, start_x:end_x]
+                cv.rectangle(copy_frame, (start_x, start_y),
+                                (end_x, end_y), (0, 255, 0), -1)
+        image = '{0}/image_{1}_{2}_{3}.png'.format(directory, timestr, i, it)
+        cv.imwrite(image, copy_frame)
         image_list.append(image)
-    if len(faces) > 0:
-        image = '{0}/complete_image_{1}.png'.format(directory, timestr)
-        cv.imwrite(image, frame)
+    
+    # Ici, on recouvre les tous les visages trouvé par la cascade sur la frame originale
+    for i, (x, y, w, h) in enumerate(faces):
+        start_y = int(max(0, y-m*h))
+        end_y = int(min(y + h + m*h, frame.shape[0]))
+        start_x = int(max(0, x-m*w))
+        end_x = int(min(x + w + m*h, frame.shape[1]))
+
+        roi_color = frame[start_y:end_y, start_x:end_x]
+        cv.rectangle(frame, (start_x, start_y), (end_x, end_y), (0, 255, 0), -1)
     return image_list, frame
 
 
