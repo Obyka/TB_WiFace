@@ -16,6 +16,7 @@ import mariage
 import pictures
 import probes
 import users
+import avatar
 
 # Blueprint Configuration
 web_bp = Blueprint('web_bp', __name__, template_folder='templates', static_folder='static')
@@ -108,9 +109,10 @@ def pictures_front():
 	id = request.args.get('id')
 	emotions = ['happy', 'surprised', 'fear', 'confused', 'sad', 'calm', 'disgusted', 'angry']
 	current_pic = pictures.read_one(id)
+	avatar_path = avatar.draw_avatar(current_pic)
 	# retire les trois expressions principales de la photo et les trie
-	main_emotions = sorted([(emotion, current_pic.get(emotion)) for count, emotion in enumerate(emotions) if current_pic.get(emotion) and abs(current_pic.get(emotion)) >= 1 and count < 3], key=lambda emotion: emotion[1], reverse=True)
-	return render_template('pictures.html', current_pic=current_pic, main_emotions=main_emotions)
+	main_emotions = sorted([(emotion, current_pic.get(emotion)) for count, emotion in enumerate(emotions) if current_pic.get(emotion) and abs(current_pic.get(emotion)) >= 10], key=lambda emotion: emotion[1], reverse=True)[:3]
+	return render_template('pictures.html', current_pic=current_pic, main_emotions=main_emotions,avatar_path=avatar_path)
 
 
 def verbose_timedelta(delta):

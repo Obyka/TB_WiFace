@@ -95,6 +95,7 @@ def handle_picture(picture_file, picture_name):
 
 
 def constructPictureObject(faceDetails, picture_name, fk_place):
+    print(faceDetails)
     booleanAttr = ['Eyeglasses', 'Sunglasses', 'Beard', 'Mustache']
     parsedDict = dict()
     for attribute in booleanAttr:

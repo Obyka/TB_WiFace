@@ -43,12 +43,19 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   </header>
   <div class="w3-card w3-round w3-white" style="margin:30px;">
     <div class="w3-container">
-     <h4 class="w3-center">Picture - {{main_emotions}}</h4>
-     <p class="w3-center"><img src="{{ url_for('web_bp.static', filename='images/'+current_pic.picPath) }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
-     <hr>
+     <h4 class="w3-center">Picture - {{avatar_path}}</h4>
+     <p class="w3-center" style="display:none" id="picture"><img src="{{ url_for('web_bp.static', filename='images/'+current_pic.picPath) }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
+     <p class="w3-center" id="avatar"><img src="{{ url_for('web_bp.static', filename='images/'+avatar_path) }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar">
+    </p>
+     
+     <p class="w3-center"><button id="buttonPicture" class="w3-red w3-btn w3-round-xxlarge" onclick="switchPhoto()">Show picture</button></p>>
+     <h2 class="w3-center">The subject appears to be</h2>
      {% for emotion in main_emotions %}
-     <p class="w3-center w3-xlarge"><i class="fa fa-check fa-fw"></i> {{emotion[0]}}</p>
+      <div class="w3-center w3-light-grey w3-round w3-large">
+      <div class="w3-container w3-round w3-blue" style="width:{{(emotion[1]) |int}}%">{{emotion[0]}} {{emotion[1] |int}}%</div>
+    </div>
      {% endfor %}
+    </p>
     </div>
   </div>
 
@@ -60,7 +67,30 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
   <!-- End page content -->
 </div>
+<script>
+  function switchPhoto() {
+  // Get the checkbox
+  var buttonPicture = document.getElementById("buttonPicture");
+  // Get the output text
+  var avatar = document.getElementById("avatar");
+  var picture = document.getElementById("picture");
 
+  // If the checkbox is checked, display the output text
+  if (picture.style.display == "none"){
+    var result = confirm("You are going to display an original picture. It raises privacy issues. Are you sure?");
+    if(!result){
+      return
+    }
+    picture.style.display = "block";
+    avatar.style.display = "none"
+    buttonPicture.textContent = "Show avatar"
+  } else {
+    avatar.style.display = "block";
+    picture.style.display = "none"
+    buttonPicture.textContent = "Show picture"
+  }
+} 
+</script>
 <script>
 // Get the Sidebar
 var mySidebar = document.getElementById("mySidebar");
