@@ -2,11 +2,13 @@ import logging
 import os
 from os import environ
 
+
 import connexion
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
+import boto3
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -41,6 +43,8 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 600
 
 # Create the SqlAlchemy db instance
 db = SQLAlchemy(app)
+
+boto_client = boto3.client('rekognition', aws_access_key_id=app.config['aws_access_key_id'], aws_secret_access_key=app.config['aws_secret_access_key'], region_name='us-east-1')
 
 # Initialize Marshmallow
 ma = Marshmallow(app)

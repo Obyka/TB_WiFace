@@ -2,10 +2,9 @@ import os
 from datetime import datetime, timedelta
 from xml.dom import minidom
 
-import boto3
 from botocore.exceptions import ClientError
 
-from config import app, db
+from config import app, db, boto_client
 from models import (Identities, MacAddress, Pictures, Places,
                     Probes, Represents, User, Vendors)
 
@@ -155,6 +154,5 @@ def main():
 
 
 if __name__ == "__main__":
-    client = boto3.client(
-        'rekognition', aws_access_key_id=app.config['aws_access_key_id'], aws_secret_access_key=app.config['aws_secret_access_key'], region_name='us-east-1')
+    client = boto_client
     main()

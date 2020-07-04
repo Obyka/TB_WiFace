@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 import boto3
 
-from config import app, db
+from config import app, db, boto_client
 from identities import read_one_by_uuid
 from models import BelongsTo, Identities, Pictures, Places, Represents
 
@@ -53,8 +53,7 @@ def handle_picture(picture_file, picture_name):
     collection = app.config['COLLECTION_NAME']
 
     # initialize reckognition sdk
-    client = boto3.client(
-        'rekognition', aws_access_key_id=app.config['aws_access_key_id'], aws_secret_access_key=app.config['aws_secret_access_key'], region_name='us-east-1')
+    client = boto_client
     try:
         face_matched, response = recognizeFace(client, picture_path, collection)
     except client.exceptions.InvalidParameterException as e:
