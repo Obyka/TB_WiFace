@@ -28,21 +28,21 @@ def process_frame(frame, MyAPI):
         os.path.join(base_cascade_path, 'haarcascade_profileface.xml')
     ]
 
-    image_list = []
-
     for x in face_cascade_list:
-        image_list_faces, frame = detectFace(frame, x)
-        image_list.extend(image_list_faces)
+        if(detectFace(frame, x)):
+            image = '{0}/image_{1}_complete.png'.format(directory, time.strftime("%Y%m%d-%H%M%S"))
+            cv.imwrite(image, frame)
+            MyAPI.postFile(image)
+            return 
 
         if "haarcascade_profileface" in x:
-            image_list_faces, frame = detectFace(frame, x)
-            image_list.extend(image_list_faces)
+            flipped_frame = cv.flip(frame, 1)
+            if(detectFace(flipped_frame, x)):
+                image = '{0}/image_{1}_complete.png'.format(directory, time.strftime("%Y%m%d-%H%M%S"))
+                cv.imwrite(image, frame)
+                MyAPI.postFile(image)
+                return 
     
-    image = '{0}/image_{1}_complete.png'.format(directory, time.strftime("%Y%m%d-%H%M%S"))
-    cv.imwrite(image, frame)
-
-    for im in image_list:
-        MyAPI.postFile(im)
 
 def TestWithoutOpenCV(image_path, MyAPI):
     """This function allows to send an image without OpenCV processing
@@ -84,35 +84,7 @@ def detectFace(frame, cascade):
                                             flags=cv.CASCADE_SCALE_IMAGE)
     print("Found {0} faces!".format(len(faces)) + " - " + str(cascade))
 
-
-    m = 0.2
-    # Ici, on recouvre les tous les visages sauf 1 à chaque fois, et on enregistre l'image
-    for it, _ in enumerate(faces):
-        copy_frame = frame.copy()
-        for i, (x, y, w, h) in enumerate(faces):
-            start_y = int(max(0, y-m*h))
-            end_y = int(min(y + h + m*h, frame.shape[0]))
-            start_x = int(max(0, x-m*w))
-            end_x = int(min(x + w + m*h, frame.shape[1]))
-
-            if i != it:
-                roi_color = copy_frame[start_y:end_y, start_x:end_x]
-                cv.rectangle(copy_frame, (start_x, start_y),
-                                (end_x, end_y), (0, 255, 0), -1)
-        image = '{0}/image_{1}_{2}_{3}.png'.format(directory, timestr, i, it)
-        cv.imwrite(image, copy_frame)
-        image_list.append(image)
-    
-    # Ici, on recouvre les tous les visages trouvé par la cascade sur la frame originale
-    for i, (x, y, w, h) in enumerate(faces):
-        start_y = int(max(0, y-m*h))
-        end_y = int(min(y + h + m*h, frame.shape[0]))
-        start_x = int(max(0, x-m*w))
-        end_x = int(min(x + w + m*h, frame.shape[1]))
-
-        roi_color = frame[start_y:end_y, start_x:end_x]
-        cv.rectangle(frame, (start_x, start_y), (end_x, end_y), (0, 255, 0), -1)
-    return image_list, frame
+    return len(faces) > 0
 
 
 def main():

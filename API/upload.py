@@ -7,7 +7,8 @@ from flask_jwt_extended import jwt_required
 from werkzeug.utils import secure_filename
 
 import config
-from recognize_face import handle_picture
+#from recognize_face import handle_picture
+from aws_process import handle_picture
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
@@ -32,19 +33,7 @@ def upload():
         # save data to file system
         complete_file_name = os.path.join(config.app.config['UPLOAD_FOLDER'], filename)
         file.save(os.path.join(complete_file_name))
-        try:
-            handle_picture(file, filename)
-        except ValueError:
-            os.remove(complete_file_name)
-            resp = jsonify({'message': 'No face was found in the picture.'})
-            resp.status_code = 500
-            return resp
-        except Exception:
-            os.remove(complete_file_name)
-            resp = jsonify({'message': 'An error occured while handling the picture'})
-            resp.status_code = 500
-            return resp
-
+        nb_faces_found = handle_picture(complete_file_name)
         resp = jsonify({'message': 'File successfully uploaded'})
         resp.status_code = 201
         return resp
