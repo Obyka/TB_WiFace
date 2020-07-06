@@ -69,6 +69,17 @@ def statistics_front():
 	test = [((verbose_timedelta(datetime.datetime.utcnow() - i[0])), i[1]) for i in test]
 	return render_template('statistics.html', message=mariage.mariage(), test=test)
 
+@web_bp.route('/represents')
+@jwt_required
+def represents_front():
+	if 'id' in request.args:
+		identity = identities.read_one(request.args.get('id'))
+		represents_datas = identities.read_pictures(identity.get('id'))
+		pictures_list = []
+		for represents_data in represents_datas:
+			pictures_list.append(pictures.read_one(represents_data.get('fk_picture')))
+		return render_template('represents.html', pictures_list=pictures_list, identity=identity)
+
 @web_bp.route('/identities')
 @jwt_required
 def identities_front():

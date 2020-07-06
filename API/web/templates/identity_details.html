@@ -77,7 +77,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
     {% if nb_picture %}
     <p class="w3-center w3-xlarge">
-      <i class="fa fa-picture-o fa-fw"></i> Number of taken pictures: {{nb_picture}}
+      <i class="fa fa-picture-o fa-fw"></i> <a href="{{url_for('web_bp.represents_front', id=identity.id)}}" >Number of taken pictures: {{nb_picture}}</a>
     </p>
     {% endif %}
 
