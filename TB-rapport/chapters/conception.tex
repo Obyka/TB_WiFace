@@ -148,6 +148,30 @@ Liste des adresses MAC~\ref{fig:list_mac}: Aggrégation des adresses MAC connues
 	\label{fig:list_mac}
 \end{figure}
 
+\section{Architecture générale}
+
+L'interaction entre les différents éléments du projet est schématisée sur
+la figure~\ref{fig:diag_archi}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=16cm]{images/conception/diagram_archi.png}
+	\caption{Diagramme de l'architecture générale}
+	\label{fig:diag_archi}
+\end{figure}
+
+Les \textbf{sensors} (Client Raspberry Pi, antenne et caméra) s'occupe de récolter les données physique et de les communiquer à l'API.
+
+Le \textbf{client front-end} peut consulter et gérer les différentes données engrangées par les sensors.
+
+Le point d'entrée de \textbf{l'API WiFace} est \textbf{l'application Flask}. Cette dernière traitera les requêtes
+et interagira avec la base de donnée ou le service Amazon Rekognition si nécessaire.
+
+La\textbf{base de donnée} permet la persistance des différents éléments (Identités, Utilisateurs, Probe requests récoltées..)
+
+Le \textbf{client "boto"} facilite grandement la communication avec l'API d'Amazon Rekognition, utilisée pour la reconnaissance faciale.
+
+
 \section{Algorithme PP2I}
 L'algorithme PP2I (Probe requests and Pictures to Identity) a la responsabilité d'associer une ou plusieurs adresses MAC à une identité. 
 
