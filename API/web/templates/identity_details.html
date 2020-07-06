@@ -10,6 +10,7 @@
 html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 </style>
 <body class="w3-light-grey">
+<script type="text/javascript" src="{{url_for('web_bp.static', filename='js/switchPicture.js')}}"></script>
 
 <!-- Top container -->
 <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
@@ -52,7 +53,11 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   <div class="w3-card w3-round w3-white w3-rest">
     <div class="w3-container">
      <h4 class="w3-center">{{identity.uuid}}</h4>
-     <p class="w3-center"><img src="{{ url_for('web_bp.static', filename='images/'+best_pic) }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
+     <p class="w3-center" style="display:none" id="picture"><a href="{{url_for('web_bp.pictures_front', id=best_pic.id)}}"><img src="{{ url_for('web_bp.static', filename='images/'+best_pic.picPath) }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></a></p>
+     <p class="w3-center" id="avatar"><a href="{{url_for('web_bp.pictures_front', id=best_pic.id)}}"><img src="{{ url_for('web_bp.static', filename='images/'+avatar_path) }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></a></p>
+    
+      <p class="w3-center"><button id="buttonPicture" class="w3-red w3-btn w3-round-xxlarge" onclick="switchPhoto()">Show picture</button></p>
+
      <hr>
      {% if gender and gender < 0 %}
      <p class="w3-center w3-xlarge"><i class="fa fa-mars fa-fw"></i> Male</p>
@@ -100,7 +105,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
    {% for picture_place in pictures_place%}
     var contentString = '{{picture_place.name}}<br>' + 'Latitude: ' + '{{picture_place.latitude}}<br>' + 'Longitude: ' +'{{picture_place.longitude}}<br>';
     var marker = new google.maps.Marker({
-      icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+      icon: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
       position: new google.maps.LatLng({{picture_place.latitude}}, {{picture_place.longitude}}),
       map: map,
       title: "{{picture_place.name}}"
@@ -120,7 +125,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
    {% for place in mac_data.places %}
    var contentString = '{{place.name}}<br>' + 'Latitude: ' + '{{place.latitude}}<br>' + 'Longitude: ' +'{{place.longitude}}<br>';
    var marker = new google.maps.Marker({
-    icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+    icon: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
     position: new google.maps.LatLng({{place.latitude}}, {{place.longitude}}),
     map: map,
     title: "{{place.name}}"

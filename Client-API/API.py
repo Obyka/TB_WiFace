@@ -106,7 +106,6 @@ class API:
         headers = {'Content-Type': None}
         api_url = '{0}upload'.format(self.api_url_base)
         files = {'file': open(picture, 'rb')}
-        print(files['file'])
         response = self.session.post(api_url, files=files, headers=headers)
         print(response.text)
         return response.text

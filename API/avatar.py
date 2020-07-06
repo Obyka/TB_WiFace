@@ -5,8 +5,17 @@ from decimal import *
 import os
 
 # Tous les choix dependant du genre sont arbitraires et ont uniquement une valeur de différentiation statistique.
-def draw_avatar(base_picture):
+def check_if_defined(base_picture):
+    picture_attributes = ['happy', 'surprised', 'fear', 'confused', 'sad', 'calm', 'disgusted', 'angry', 'gender', 'eyeglasses', 'sunglasses', 'beard', 'mustache']
+    for picture_attribute in picture_attributes:
+        if base_picture.get(picture_attribute) is None:
+            return False
+    return True
 
+def draw_avatar(base_picture):
+    print(base_picture)
+    if(not check_if_defined(base_picture)):
+        return 'default_avatar.png'
     name, ext = os.path.splitext(base_picture['picPath'])
     avatar_name = "{name}_avatar.png".format(name=name)
     avatar_path = os.path.join(config.app.config['UPLOAD_FOLDER'], avatar_name)

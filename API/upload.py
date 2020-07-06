@@ -33,7 +33,7 @@ def upload():
         # save data to file system
         complete_file_name = os.path.join(config.app.config['UPLOAD_FOLDER'], filename)
         file.save(os.path.join(complete_file_name))
-        nb_faces_found = handle_picture(complete_file_name)
+        nb_faces_found = handle_picture(filename)
         resp = jsonify({'message': 'File successfully uploaded'})
         resp.status_code = 201
         return resp

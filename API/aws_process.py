@@ -21,7 +21,8 @@ def add_face_collection(collection, image_name, face_identity, client):
         image {[file]} -- [image to extract the face from]
         name {[type]} -- [identity UUID linked to the face]
     """
-    with open(image_name, mode='rb') as file:
+    face_path = os.path.join(app.config['UPLOAD_FOLDER'], image_name)
+    with open(face_path, mode='rb') as file:
         response = client.index_faces(Image={'Bytes': file.read()}, CollectionId=collection,
                                       ExternalImageId=face_identity.uuid, DetectionAttributes=['ALL'])
     return response
@@ -29,7 +30,8 @@ def add_face_collection(collection, image_name, face_identity, client):
 #This function request sends an image to Rekognition to detect faces in the image stored in S3
 #Function returns a JSON object containing details about detected faces.
 def detect_faces_from_image(sourceImage):
-    with open(sourceImage, 'rb') as file:
+    picture_path = os.path.join(app.config['UPLOAD_FOLDER'], sourceImage)
+    with open(picture_path, 'rb') as file:
         response = aws_rekognition_client.detect_faces(Image={'Bytes': file.read()})
         print(response)
     return response['FaceDetails']
@@ -38,14 +40,14 @@ def detect_faces_from_image(sourceImage):
 #This function creates cropped images from an image with multiple faces based on detected faces returned by Rekognition
 #It returns a list of names of those cropped images
 def create_cropped_images_of_detected_faces(detected_faces,sourceImage, size_of_border, image_format):
+        picture_path = os.path.join(app.config['UPLOAD_FOLDER'], sourceImage)
         try:
-            img = Image.open(sourceImage)
+            img = Image.open(picture_path)
         except Exception as e:
             print('Error while opening the image')
-        count_of_cropped_faces =0
         list_of_cropped_images=[]
         actual_image_width, actual_image_height = img.size
-        for face in detected_faces:
+        for count_of_cropped_faces, face in enumerate(detected_faces):
             print(face['BoundingBox'])
             x = int(face['BoundingBox']['Left']*actual_image_width)
             height = int(face['BoundingBox']['Height']*actual_image_height)
@@ -54,18 +56,19 @@ def create_cropped_images_of_detected_faces(detected_faces,sourceImage, size_of_
             print('x ' + str(x) + ' y ' + str(y) + 'height ' + str(height) + ' width ' + str(width))
             crop_rectangle = ( x, y, width+x, height+y )
             cropped_im = ImageOps.expand(img.crop(crop_rectangle), border=size_of_border)
-            name_of_cropped_image = os.path.join(app.config['UPLOAD_FOLDER'],"detected_face_" + str(count_of_cropped_faces) + '.png')
+            name_of_cropped_image = os.path.join("face_" + str(time.strftime("%Y%m%d-%H%M%S")) + str(count_of_cropped_faces)+ '.png')
             try:
-                cropped_im.save(name_of_cropped_image, image_format)
+                cropped_im.save(os.path.join(app.config['UPLOAD_FOLDER'], name_of_cropped_image), image_format)
             except Exception as e:
                 print(e)
             list_of_cropped_images.append(name_of_cropped_image)
-            count_of_cropped_faces += 1
         return list_of_cropped_images
 
 #Performs search of images using images on local drive against a collection of images
 def search_rekognition_for_matching_faces(face_to_search_for, collectionId, face_match_threshold, maximum_faces, image_format):
-    open_image = Image.open(face_to_search_for)
+    face_path = os.path.join(app.config['UPLOAD_FOLDER'], face_to_search_for)
+
+    open_image = Image.open(face_path)
     stream = io.BytesIO()
     open_image.save(stream,format=image_format)
     image_binary = stream.getvalue()
@@ -119,6 +122,7 @@ def constructPictureObject(faceDetails, picture_name, fk_place):
 
 #This is the part that actually runs the functions to achieve the desired result
 def handle_picture(picture_name):
+
     # get args
     image_format = 'PNG'
 
@@ -132,6 +136,7 @@ def handle_picture(picture_name):
     try:
         detected_faces = detect_faces_from_image(picture_name)
     except Exception as e:
+        print(e)
         return 0
     #Create cropped images and return list of there names, uses image in same location as script
     list_of_cropped_faces = create_cropped_images_of_detected_faces(
@@ -155,6 +160,7 @@ def handle_picture(picture_name):
                 )
         except boto_client.exceptions.InvalidParameterException as e:
             nb_face_found-=1
+            print(str(e)*10)
             continue
 
         if(response_search['FaceMatches']):
@@ -178,6 +184,7 @@ def handle_picture(picture_name):
             fullFaceResponse = add_face_collection(collection_id, cropped_face, face_identity, aws_rekognition_client)
         except Exception as e:
             print(e)
+            continue
         if len(fullFaceResponse['FaceRecords']) == 0:
             if new_identity:
                 db.session.delete(face_identity)
@@ -187,7 +194,7 @@ def handle_picture(picture_name):
         faceDetails = fullFaceResponse['FaceRecords'][0]['FaceDetail']
 
         print(fullFaceResponse)
-        p = constructPictureObject(faceDetails, picture_name, 1)
+        p = constructPictureObject(faceDetails, cropped_face, 1)
         db.session.add(p)
         db.session.flush()
         r = Represents(probability=confidence, fk_identity=face_identity.id, fk_picture=p.id)
