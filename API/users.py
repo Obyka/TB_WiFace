@@ -34,25 +34,23 @@ def create(user):
         .one_or_none()
 
     if userDB is not None:
-        abort(409, 'user {email} already exist'.format(email=new_user.email))
+        return Response(status=409)
     db.session.add(new_user)
     db.session.commit()
-    access_token = create_access_token(identity=new_user.email)
-    refresh_token = create_refresh_token(identity=new_user.email)
-    return schema.dump(new_user), 201
+    access_token = create_access_token(identity=new_user)
+    refresh_token = create_refresh_token(identity=new_user)
+    return Response(response=schema.dump(new_user), status=201, mimetype='application/json')
 
 
 def login(user):
-    schema = UserSchema()
-    user = schema.load(user, session=db.session)
     userDB = User.query\
-        .filter(User.email == user.email).one_or_none()
+        .filter(User.email == user.get('email')).one_or_none()
 
     if userDB is None:
         status_code = Response(status=404)
         return status_code
     else:
-        if User.verifyHash(user.password, userDB.password):
+        if User.verifyHash(user.get('password'), userDB.password):
             resp = jsonify({'login': True})
             access_token = create_access_token(identity=userDB)
             refresh_token = create_refresh_token(identity=userDB)

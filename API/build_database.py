@@ -45,8 +45,8 @@ def main():
     VendorsList = xmldoc.getElementsByTagName('VendorMapping')
 
     USERS = [
-        {"email": "Obyka", "password": User.hash("pass"), "admin": True},
-        {"email": "Raspberry", "password": User.hash("pass"), "admin": False}
+        {"email": "Obyka", "password": User.hash("pass"), "admin": True, "fk_place":1},
+        {"email": "Raspberry", "password": User.hash("pass"), "admin": False, "fk_place":2}
 
     ]
 
@@ -58,7 +58,7 @@ def main():
     ]
 
     PLACES = [
-        {"id": 1, "name": "BatCave", "longitude": 12.2, "latitude": 13.4},
+        {"id": 1, "name": "BatCave", "longitude": 6.869948, "latitude": 46.457080},
         {"id": 2, "name": "Toussaint", "longitude": 22, "latitude": 9},
         {"id": 3, "name": "Aperture Science", "longitude": 42, "latitude": 42}
     ]
@@ -117,10 +117,6 @@ def main():
         # print(vendor.attributes['mac_prefix'].value.upper())
         db.session.add(v)
 
-    for user in USERS:
-        u = User(email=user['email'], password=user['password'], admin=user['admin'])
-        db.session.add(u)
-
     for mac in MACS:
         m = MacAddress(
             address=mac['address'], isRandom=mac['isRandom'], fk_vendor=mac['fk_vendor'])
@@ -132,9 +128,12 @@ def main():
         db.session.add(p)
 
     for place in PLACES:
-        p = Places(id=place['id'], name=place['name'],
-                   latitude=place['latitude'], longitude=place['longitude'])
+        p = Places(id=place['id'], name=place['name'], latitude=place['latitude'], longitude=place['longitude'])
         db.session.add(p)
+
+    for user in USERS:
+        u = User(email=user['email'], password=user['password'], admin=user['admin'], fk_place=user['fk_place'])
+        db.session.add(u)
 
     for identity in IDENTITIES:
         i = Identities(id=identity['id'], firstname=identity['firstname'],

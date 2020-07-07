@@ -674,7 +674,7 @@ paths:
             description: User to authenticate
             required: True
             schema:
-              $ref: '#/definitions/User'
+              $ref: '#/definitions/Credentials'
         responses:
           200:
             description: >
@@ -769,12 +769,24 @@ definitions:
         type: string
       uuid:
         type: string
-  User:
+  Credentials:
     properties:
       email:
         type: string
       password:
         type: string
+  User:
+    allOf:
+    - $ref: '#/definitions/Credentials'
+    - type: object
+      required:
+      - admin
+        fk_place
+      properties:
+        admin:
+          type: boolean
+        fk_place:
+          type: integer
   Picture:
     properties:
       id:

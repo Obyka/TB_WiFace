@@ -15,10 +15,11 @@ class User(db.Model):
     admin = db.Column(db.Boolean, nullable=False, default=False)
     fk_place = db.Column(db.Integer, db.ForeignKey('places.id'))
 
-    def __init__(self, email, password, admin=False):
+    def __init__(self, email, password, admin, fk_place):
         self.email = email
         self.password = password
         self.admin = admin
+        self.fk_place = fk_place
     
     @staticmethod
     def hash(password):
@@ -30,6 +31,7 @@ class User(db.Model):
     
 class UserSchema(ma.ModelSchema):
     class Meta:
+        include_fk = True
         model = User
         sqla_session = db.session
 

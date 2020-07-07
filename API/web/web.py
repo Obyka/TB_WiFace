@@ -18,6 +18,7 @@ import pictures
 import probes
 import users
 import avatar
+import places
 
 # Blueprint Configuration
 web_bp = Blueprint('web_bp', __name__, template_folder='templates', static_folder='static')
@@ -48,6 +49,30 @@ def inject_counters():
 @web_bp.context_processor
 def inject_path():
 	return dict(picture_path=config.app.config['UPLOAD_FOLDER'])
+
+@web_bp.route('/register', methods=['GET', 'POST'])
+@admin_required
+def register_front():
+	all_places = places.read_all()
+	if request.method == 'POST':
+		if request.form['email'] == '' or request.form['password'] == '' or request.form['confirm_password'] == '' or request.form['admin'] == '' or request.form['fk_place'] == '':
+			error = "All fields must me completed."
+			return render_template('register.html', all_places=all_places, error=error)
+		user = {'email': request.form['email'], 'password': request.form['password'], 'admin': bool(request.form.get('admin')), 'fk_place': int(request.form['admin'])}
+		if request.form['password'] != request.form['confirm_password']:
+			error = "The passwords do not match."
+			return render_template('register.html', all_places=all_places, error=error)
+		response =  users.create(user)
+		if response.status_code == 409:
+			error = 'User {email} already exist'.format(email=request.form['email'])
+			return render_template('register.html', all_places=all_places, error=error)
+		elif response.status_code != 201:
+			error = "An unexpected error has occurred. Please try again later"
+			return render_template('register.html', all_places=all_places, error=error)
+		else:
+			return render_template('register.html', all_places=all_places, success=True)
+	else:
+		return render_template('register.html', all_places=all_places)
 
 @web_bp.route('/logout', methods=['GET', 'POST'])
 @jwt_optional
