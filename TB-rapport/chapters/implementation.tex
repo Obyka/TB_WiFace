@@ -29,6 +29,8 @@ La spécification est écrite à l’aide de swagger, qui propose également une
 La reconnaissance faciale a été implémentée à l'aide d'OpenCV (sur le client Raspberry Pi), de l'API AWS Rekognition et de l'API WiFace
 afin de faire le lien entre les deux autres éléments. 
 
+\subsection{Première version du workflow de reconnaissance}
+
 La figure~\ref{fig:worflow-reco} présente le worflow permettant, depuis une image capturée par la PiCamera, d'attribuer une identité et diverses propriétés.
 
 \clearpage
@@ -39,7 +41,7 @@ La figure~\ref{fig:worflow-reco} présente le worflow permettant, depuis une ima
     \centering
 \thispagestyle{empty}
 \begin{figure}%[htb]
-     \includegraphics[width=\linewidth]{images/facial_reco/facial_recognition_flow_v2.png}
+     \includegraphics[width=\linewidth]{images/facial_reco/flowchart_reco_v2.png}
      \caption{Worflow de la reconnaissance faciale}
      \label{fig:worflow-reco}
 \end{figure}
@@ -76,6 +78,44 @@ afin de savoir si ce dernier se trouve dans notre collection.
     \end{itemize} 
 \end{itemize} 
 
+\subsubsection{Problèmes de cette implémentation}\label{sec:probleme_workflow}
+Bien que le processus ait été implémenté et est fonctionnel,
+quelques problèmes méritent d'être résolu.
+
+En effet, lors de tests, il a été remarqué que la détection d'Amazon
+donnait de meilleurs résultats concernant les FaceDetails lorsque l'image d'une personne
+était envoyée au complet, au lieu d'être rognée. Il a donc été déduit que le traitement fait par OpenCV engendrait de la perte
+d'information pour le modèle d'Amazon.
+
+De plus, effectuer systèmatiquement les recherches et découpes de visages sur la Raspberry Pi pourrait résulter en des problèmes de
+performances, notamment pour un micro-ordinateur, autant laisser cette responsabilité à Rekognition. Cela a également comme conséquence de limiter
+le traffic HTTP entre les clients et l'API WiFace.
+
+\subsection{Deuxième version du worflow}
+Suite à ces deux observations, il a été décidé de revoir le worflow comme le montre la figure~\ref{fig:worflow-reco2}
+
+\clearpage
+\newpage
+
+\thispagestyle{empty}
+\begin{landscape}
+    \centering
+\thispagestyle{empty}
+\begin{figure}%[htb]
+     \includegraphics[width=\linewidth]{images/facial_reco/flowchart_reco_v3.png}
+     \caption{Deuxième version du worflow de la reconnaissance faciale}
+     \label{fig:worflow-reco2}
+\end{figure}
+\end{landscape}
+
+Les changements suivants ont donc été apportés:
+\begin{itemize}
+    \item Dès qu'OpenCV détecte un visage, la photo est envoyée en entier à l'API WiFace, sans continuer la recherches
+    \item Une nouvelle première étape permet, du côté de Rekognition, de détecter les visages et d'en extraire les coordonnées
+    \item L'API WiFace a maintenant la responsabilité de découper les visages et de les envoyer à Rekognition
+\end{itemize}
+
+Grâce à ces changements, les problèmes mentionnés dans la section \ref{sec:probleme_workflow} ont été résolus.
 \subsection{Exemple du processus}
 Voyons avec une image de test (figure~\ref{fig:scott}), comment les différents acteurs de ce Worflow se comportent.
 L'image en question comporte deux visages nets, un homme et une femme.
