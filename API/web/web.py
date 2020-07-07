@@ -1,10 +1,11 @@
 import datetime
 import os
+from functools import wraps
 
 from dateutil.relativedelta import relativedelta
 from flask import (Blueprint, abort, make_response, redirect, render_template,
-                   request)
-from flask_jwt_extended import (get_jwt_identity, get_raw_jwt, jwt_optional,
+                   request, jsonify)
+from flask_jwt_extended import (verify_jwt_in_request, get_jwt_identity, get_jwt_claims, get_raw_jwt, jwt_optional,
                                 jwt_required, unset_access_cookies,
                                 unset_jwt_cookies)
 
@@ -21,10 +22,24 @@ import avatar
 # Blueprint Configuration
 web_bp = Blueprint('web_bp', __name__, template_folder='templates', static_folder='static')
 
+# Here is a custom decorator that verifies the JWT is present in
+# the request, as well as insuring that this user has a role of
+# `admin` in the access token
+def admin_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        verify_jwt_in_request()
+        claims = get_jwt_claims()
+        if not claims['admin']:
+            return jsonify(msg='Admins only!'), 403
+        else:
+            return fn(*args, **kwargs)
+    return wrapper
+
 @web_bp.context_processor
 @jwt_optional
 def inject_identity():
-	return dict(current_user=get_jwt_identity())
+	return dict(current_user=get_jwt_identity(), current_role=get_jwt_claims())
 
 @web_bp.context_processor
 def inject_counters():
@@ -63,14 +78,14 @@ def login_front():
 	return render_template('login.html', csrf_token=(get_raw_jwt() or {}).get("csrf"))
 
 @web_bp.route('/statistics')
-@jwt_required
+@admin_required
 def statistics_front():
 	test = pictures.feed()
 	test = [((verbose_timedelta(datetime.datetime.utcnow() - i[0])), i[1]) for i in test]
 	return render_template('statistics.html', message=mariage.mariage(), test=test)
 
 @web_bp.route('/represents')
-@jwt_required
+@admin_required
 def represents_front():
 	if 'id' in request.args:
 		identity = identities.read_one(request.args.get('id'))
@@ -81,7 +96,7 @@ def represents_front():
 		return render_template('represents.html', pictures_list=pictures_list, identity=identity)
 
 @web_bp.route('/identities')
-@jwt_required
+@admin_required
 def identities_front():
 	if 'id' in request.args:
 		identity = identities.read_one(request.args.get('id'))
@@ -102,7 +117,7 @@ def identities_front():
 	return render_template('identities.html', identitiy_list=identitiy_list)
 
 @web_bp.route('/macs')
-@jwt_required
+@admin_required
 def macs_front():
 	if 'id' in request.args:
 		mac_data = macs.get_mac_infos(macs.read_one(request.args.get('id')))
@@ -113,7 +128,7 @@ def macs_front():
 	return render_template('macs.html', mac_list=mac_list)
 
 @web_bp.route('/pictures')
-@jwt_required
+@admin_required
 def pictures_front():
 	if 'id' not in request.args:
 		abort(404)

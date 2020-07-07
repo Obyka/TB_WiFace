@@ -21,6 +21,13 @@ connex_app.app.register_blueprint(web.web_bp, url_prefix='/web')
 # Read the swagger.yml file to configure the endpoints
 connex_app.add_api('swagger.yml')
 
+@config.jwtM.user_claims_loader
+def add_claims_to_access_token(user):
+    return {'admin': user.admin}
+
+@config.jwtM.user_identity_loader
+def user_identity_lookup(user):
+    return user.email
 
 @config.jwtM.unauthorized_loader
 def unauthorized_loader_handler(error):

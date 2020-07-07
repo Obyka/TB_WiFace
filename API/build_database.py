@@ -45,7 +45,9 @@ def main():
     VendorsList = xmldoc.getElementsByTagName('VendorMapping')
 
     USERS = [
-        {"email": "Obyka", "password": User.hash("pass"), "admin": 1}
+        {"email": "Obyka", "password": User.hash("pass"), "admin": True},
+        {"email": "Raspberry", "password": User.hash("pass"), "admin": False}
+
     ]
 
     MACS = [
@@ -116,8 +118,7 @@ def main():
         db.session.add(v)
 
     for user in USERS:
-        u = User(email=user['email'],
-                 password=user['password'], admin=user['admin'])
+        u = User(email=user['email'], password=user['password'], admin=user['admin'])
         db.session.add(u)
 
     for mac in MACS:

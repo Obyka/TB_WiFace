@@ -12,8 +12,11 @@ from models import User, UserSchema
 @jwt_refresh_token_required
 def refresh():
     # Create the new access token
-    current_user = get_jwt_identity()
-    access_token = create_access_token(identity=current_user)
+    current_identity = get_jwt_identity()
+    userDB = User.query\
+        .filter(User.email == current_identity).one_or_none()
+
+    access_token = create_access_token(identity=userDB)
 
     # Set the JWT access cookie in the response
     resp = make_response(jsonify({'refresh': True}), 200)
@@ -51,8 +54,8 @@ def login(user):
     else:
         if User.verifyHash(user.password, userDB.password):
             resp = jsonify({'login': True})
-            access_token = create_access_token(identity=user.email)
-            refresh_token = create_refresh_token(identity=user.email)
+            access_token = create_access_token(identity=userDB)
+            refresh_token = create_refresh_token(identity=userDB)
             set_access_cookies(resp, access_token)
             set_refresh_cookies(resp, refresh_token)
             return resp

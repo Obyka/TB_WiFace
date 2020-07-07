@@ -13,6 +13,7 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     admin = db.Column(db.Boolean, nullable=False, default=False)
+    fk_place = db.Column(db.Integer, db.ForeignKey('places.id'))
 
     def __init__(self, email, password, admin=False):
         self.email = email
