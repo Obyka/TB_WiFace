@@ -13,12 +13,14 @@ import belongsto
 import config
 import identities
 import macs
+import json
 import mariage
 import pictures
 import probes
 import users
 import avatar
 import places
+from .forms.registration_form import RegistrationForm
 
 # Blueprint Configuration
 web_bp = Blueprint('web_bp', __name__, template_folder='templates', static_folder='static')
@@ -54,25 +56,38 @@ def inject_path():
 @admin_required
 def register_front():
 	all_places = places.read_all()
+
+	form = RegistrationForm(request.form)
+	form.location.choices = [(place.get('id'), place.get('name')) for place in all_places]
+	form.location.choices.append((-1, "New place"))
+	attribute_places = {"location-"+str(i):{"latitude":place.get('latitude'), "longitude":place.get('longitude')} for i,place in enumerate(all_places)}
+
 	if request.method == 'POST':
-		if request.form['email'] == '' or request.form['password'] == '' or request.form['confirm_password'] == '' or request.form['admin'] == '' or request.form['fk_place'] == '':
-			error = "All fields must me completed."
-			return render_template('register.html', all_places=all_places, error=error)
-		user = {'email': request.form['email'], 'password': request.form['password'], 'admin': bool(request.form.get('admin')), 'fk_place': int(request.form['admin'])}
-		if request.form['password'] != request.form['confirm_password']:
-			error = "The passwords do not match."
-			return render_template('register.html', all_places=all_places, error=error)
-		response =  users.create(user)
-		if response.status_code == 409:
-			error = 'User {email} already exist'.format(email=request.form['email'])
-			return render_template('register.html', all_places=all_places, error=error)
-		elif response.status_code != 201:
-			error = "An unexpected error has occurred. Please try again later"
-			return render_template('register.html', all_places=all_places, error=error)
+		if form.validate():
+			location = form.location.data
+			# We will create a new place
+			if form.location.data == -1:
+				place = {"name": form.new_location_name.data, "longitude": 6.869948, "latitude": 46.457080}
+				response, status_code = places.create(place)
+				if status_code == 409:
+					error = 'Place {place} already exist'.format(place=place.get('name'))
+					return render_template('register.html' ,register_form=form,error=error,attribute_places=attribute_places)
+				if status_code == 201:
+					location = response['id']
+			user = {'email': form.email.data, 'password': form.password.data, 'admin': form.admin.data, 'fk_place': location}		
+			response =  users.create(user)
+			if response.status_code == 409:
+				error = 'User {email} already exist'.format(email=request.form['email'])
+				return render_template('register.html' ,register_form=form,error=error,attribute_places=attribute_places)
+			elif response.status_code != 201:
+				error = "An unexpected error has occurred. Please try again later"
+				return render_template('register.html', register_form=form,error=error,attribute_places=attribute_places)
+			else:
+				return render_template('register.html', register_form=form,success=True,attribute_places=attribute_places)
 		else:
-			return render_template('register.html', all_places=all_places, success=True)
+			return render_template('register.html',register_form=form, form_error=form.errors,attribute_places=attribute_places)
 	else:
-		return render_template('register.html', all_places=all_places)
+		return render_template('register.html', register_form=form, attribute_places=attribute_places)
 
 @web_bp.route('/logout', methods=['GET', 'POST'])
 @jwt_optional

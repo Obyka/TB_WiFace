@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<title>Login</title>
+<title>Register</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -55,74 +55,72 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     </script>
     </div>
     {% endif %}
-
     {% if error%}
     <div class="w3-panel w3-red">
       <h3>Error</h3>
       <p>{{error}}</p>
     </div> 
     {% endif %}
+    {% if form_error %}
+    <div class="w3-panel w3-red">
+      <h3>Error</h3>
+      <p>{% for field_name, field_errors in form_error|dictsort if field_errors %}
+        {% for error in field_errors %}
+            {{ register_form[field_name].label }}: {{ error }}<br>
+        {% endfor %}
+    {% endfor %}
+  </p>
+      </div> 
+    {% endif %}
     <p>
-    <label class="w3-label w3-validate">Email</label></p>
-    <input name="email" class="w3-input" type="text" style="width: 30%; text-align: center; display: inline-block;" required>
+    {{ register_form.email.label(class="w3-label w3-validate") }}</p>
+    {{ register_form.email(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
     <p>
-    <label class="w3-label w3-validate">Password</label></p>
-    <input name="password" class="w3-input" type="password" style="width: 30%; text-align: center; display: inline-block;" required>
+    {{ register_form.password.label(class="w3-label w3-validate") }}</p>
+    {{ register_form.password(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
     <p>
-    <label class="w3-label w3-validate">Confirm password</label></p>
-    <input name="confirm_password" class="w3-input" type="password" style="width: 30%; text-align: center; display: inline-block;" required>
+      {{ register_form.confirm_password.label(class="w3-label w3-validate") }}</p>
+      {{ register_form.confirm_password(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
     <p>
-    <label class="w3-label w3-validate">Client location</label></p>
-    </p>
-        <select id='place_select' onchange="showPlace()" class="w3-select" name="place_select" style="width: 30%; text-align: center; display: inline-block;" required>
-            <option value="" disabled selected>Choose your option</option>
-            {% for one_place in all_places %}
-            <option place_name={{one_place.name}} longitude={{one_place.longitude}} latitude={{one_place.latitude}} value="{{one_place.id}}">{{one_place.name}}</option>
-            {% endfor %}
-          </select>
+      {{ register_form.location.label(class="w3-label w3-validate") }}</p>
+      {{ register_form.location(option_attr=attribute_places, onchange="showPlace()",class="w3-select", style="width: 30%; text-align: center; display: inline-block;") }}
+      <div id="place_name_div" style="display: none;">
     <p>
+        {{ register_form.new_location_name.label(class="w3-label w3-validate") }}</p>        
+        {{ register_form.new_location_name(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
+      </div>
+      <p>
         <div id="containerMap" class="w3-container" style="display:none; width:50%;">
             <div class="w3-center" id="googleMap" style="width:100%;height:400px;"></div>
         </div>
-    <label>Admin ?</label>
-    <input name="admin" class="w3-check" type="checkbox"></p>
-    <p>
+        {{ register_form.admin.label(class="w3-label w3-validate") }}</p>
+        {{ register_form.admin(class="w3-check") }}
+        <p>
     <button class="w3-btn w3-section w3-teal w3-ripple"> Register </button></p>
     
     </form>
   <hr>
 
   <script>
-    var marker=null
+    var markers=[]
+    function removeMarkers(){
+      markers.forEach(marker => marker.setMap(null));
+      markers.splice(0, markers.length)
+    }
     function showPlace(){
-        if(marker)
-            marker.setMap(null);
-        var select_form = document.getElementById('place_select')
+        var place_name_div = document.getElementById('place_name_div')
+        var place_name_input = document.getElementById('new_location_name')
+        place_name_div.style.display = "none"
+        var select_form = document.getElementById('location')
         var latitude = select_form.options[select_form.selectedIndex].getAttribute('latitude');
         var longitude = select_form.options[select_form.selectedIndex].getAttribute('longitude');
         var place_name = select_form.options[select_form.selectedIndex].getAttribute('place_name');
 
-        var contentString = place_name + '<br>Latitude: ' + latitude +'<br>Longitude: ' + longitude + '<br>';
         current_pos = new google.maps.LatLng(latitude, longitude)
-        window.map.setCenter(current_pos)
-
-        marker = new google.maps.Marker({
-            position: current_pos,
-            map: window.map,
-            title: place_name
-        });
         var containerMap = document.getElementById('containerMap')
         containerMap.style.display = "block"
 
-        google.maps.event.addListener(marker, 'click', function(content) {
-        infowindow = new google.maps.InfoWindow();
-        return function(){
-            infowindow.setContent(content);
-            infowindow.open(window.map,this);
-        }
-        }(contentString));
-        marker.setMap(window.map);
-
+        placeMarkerAndPanTo(current_pos, window.map)
     }
 
     function myMap() {
@@ -130,6 +128,41 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         zoom:17
     };
   window.map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+  window.map.addListener('click', function(e) {
+    placeMarkerAndPanTo(e.latLng, map);
+    var select_form = document.getElementById('location')
+    var opts = select_form.options;
+    for (var opt, j = 0; opt = opts[j]; j++) {
+      if (opt.value == -1) {
+        select_form.selectedIndex = j;
+        opt.setAttribute("latitude", e.latLng.lat());
+        opt.setAttribute("longitude", e.latLng.lng());
+        var place_name_div = document.getElementById('place_name_div')
+        place_name_div.style.display = "block"
+        var place_name_input = document.getElementById('new_location_name')
+        break;
+      }
+    }
+  });
+ 
+    }
+    function placeMarkerAndPanTo(latLng, map) {
+    removeMarkers()
+    var marker = new google.maps.Marker({
+    position: latLng,
+    map: map
+  });
+  var contentString = 'Latitude: ' + marker.getPosition().lat() +'<br>Longitude: ' + marker.getPosition().lng() + '<br>';
+
+  google.maps.event.addListener(marker, 'click', function(content) {
+        infowindow = new google.maps.InfoWindow();
+        return function(){
+            infowindow.setContent(content);
+            infowindow.open(window.map,this);
+        }
+        }(contentString));
+  map.panTo(latLng);
+  markers.push(marker)
   }
     </script>
  

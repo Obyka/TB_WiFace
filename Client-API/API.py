@@ -59,7 +59,6 @@ class API:
             APIErrorBadAuth: Invalid login
         """
         if self.timestamp_token is None:
-            print('LOGIN '*10)
             self.timestamp_token = datetime.utcnow()
             api_url = '{0}login'.format(self.api_url_base)
             login_json = {'email': self.creds.email, 'password': self.creds.password}
@@ -68,7 +67,6 @@ class API:
             if response.status_code == 401:
                 raise APIErrorBadAuth(response.status_code)
         elif (datetime.utcnow() - self.timestamp_token) / timedelta(seconds=1) > 600:
-            print('REFRESH' *100)
             self.refresh()
         else:
             return

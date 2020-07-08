@@ -1,4 +1,4 @@
-from flask import abort, make_response
+from flask import abort, make_response, Response, jsonify
 from flask_jwt_extended import jwt_required
 
 from config import db
@@ -16,8 +16,16 @@ def read_all():
 
 @jwt_required
 def create(place):
+
     schema = PlacesSchema()
     new_place = schema.load(place, session=db.session)
+
+    check_place = Places.query \
+        .filter(Places.name == new_place.name) \
+        .one_or_none()
+
+    if check_place is not None:
+        return '', Response(status=409)
 
     # Add the person to the database
     db.session.add(new_place)
