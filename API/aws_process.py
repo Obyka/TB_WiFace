@@ -6,6 +6,8 @@ import os
 from config import boto_client, app, db
 from datetime import datetime, timedelta
 
+from flask_jwt_extended import (jwt_required, get_jwt_claims)
+
 import time
 import uuid
 from identities import read_one_by_uuid
@@ -95,7 +97,6 @@ def print_search_results(matched_faces, face_image_name):
 
 
 def constructPictureObject(faceDetails, picture_name, fk_place):
-    print(faceDetails)
     booleanAttr = ['Eyeglasses', 'Sunglasses', 'Beard', 'Mustache']
     parsedDict = dict()
     for attribute in booleanAttr:
@@ -121,6 +122,7 @@ def constructPictureObject(faceDetails, picture_name, fk_place):
     return Pictures(**parsedDict)
 
 #This is the part that actually runs the functions to achieve the desired result
+@jwt_required
 def handle_picture(picture_name):
 
     # get args
@@ -160,7 +162,6 @@ def handle_picture(picture_name):
                 )
         except boto_client.exceptions.InvalidParameterException as e:
             nb_face_found-=1
-            print(str(e)*10)
             continue
 
         if(response_search['FaceMatches']):
@@ -194,7 +195,7 @@ def handle_picture(picture_name):
         faceDetails = fullFaceResponse['FaceRecords'][0]['FaceDetail']
 
         print(fullFaceResponse)
-        p = constructPictureObject(faceDetails, cropped_face, 1)
+        p = constructPictureObject(faceDetails, cropped_face, get_jwt_claims()['fk_place'])
         db.session.add(p)
         db.session.flush()
         r = Represents(probability=confidence, fk_identity=face_identity.id, fk_picture=p.id)

@@ -23,7 +23,7 @@ connex_app.add_api('swagger.yml')
 
 @config.jwtM.user_claims_loader
 def add_claims_to_access_token(user):
-    return {'admin': user.admin}
+    return {'admin': user.admin, 'fk_place': user.fk_place}
 
 @config.jwtM.user_identity_loader
 def user_identity_lookup(user):

@@ -47,7 +47,6 @@ def main():
     USERS = [
         {"email": "Obyka", "password": User.hash("pass"), "admin": True, "fk_place":1},
         {"email": "Raspberry", "password": User.hash("pass"), "admin": False, "fk_place":2}
-
     ]
 
     MACS = [

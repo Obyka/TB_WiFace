@@ -1,5 +1,5 @@
 from flask import abort, make_response, request
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_claims
 
 from config import db
 from models import Probes, ProbesSchema
@@ -36,8 +36,11 @@ def create(probe):
     """
     schema = ProbesSchema()
     new_probe = schema.load(probe, session=db.session)
+    claims = get_jwt_claims()
+    fk_place = claims['fk_place']
+    new_probe.fk_place = fk_place
 
-    # Add the person to the database
+
     db.session.add(new_probe)
     db.session.commit()
 
