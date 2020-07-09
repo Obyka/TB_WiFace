@@ -4,37 +4,6 @@ from passlib.hash import pbkdf2_sha256
 
 from config import db, ma
 
-
-class User(db.Model):
-    """ User Model for storing user related details """
-    __tablename__ = "users"
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    email = db.Column(db.String(255), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
-    admin = db.Column(db.Boolean, nullable=False, default=False)
-    fk_place = db.Column(db.Integer, db.ForeignKey('places.id'))
-
-    def __init__(self, email, password, admin, fk_place):
-        self.email = email
-        self.password = password
-        self.admin = admin
-        self.fk_place = fk_place
-    
-    @staticmethod
-    def hash(password):
-        return pbkdf2_sha256.hash(password)
-
-    @staticmethod
-    def verifyHash(password, hash):
-        return pbkdf2_sha256.verify(password, hash)
-    
-class UserSchema(ma.ModelSchema):
-    class Meta:
-        include_fk = True
-        model = User
-        sqla_session = db.session
-
 class Probes(db.Model):
     __tablename__ = "probes"
     id = db.Column(db.Integer, primary_key=True)
@@ -164,3 +133,33 @@ class PlacesSchema(ma.ModelSchema):
         model = Places
         sqla_session = db.session
         include_fk = True
+
+class User(db.Model):
+    """ User Model for storing user related details """
+    __tablename__ = "users"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    admin = db.Column(db.Boolean, nullable=False, default=False)
+    fk_place = db.Column(db.Integer, db.ForeignKey('places.id'))
+
+    def __init__(self, email, password, admin, fk_place):
+        self.email = email
+        self.password = password
+        self.admin = admin
+        self.fk_place = fk_place
+    
+    @staticmethod
+    def hash(password):
+        return pbkdf2_sha256.hash(password)
+
+    @staticmethod
+    def verifyHash(password, hash):
+        return pbkdf2_sha256.verify(password, hash)
+    
+class UserSchema(ma.ModelSchema):
+    class Meta:
+        include_fk = True
+        model = User
+        sqla_session = db.session

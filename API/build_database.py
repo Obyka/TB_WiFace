@@ -44,11 +44,6 @@ def main():
     xmldoc = minidom.parse('vendors.xml')
     VendorsList = xmldoc.getElementsByTagName('VendorMapping')
 
-    USERS = [
-        {"email": "Obyka", "password": User.hash("pass"), "admin": True, "fk_place":1},
-        {"email": "Raspberry", "password": User.hash("pass"), "admin": False, "fk_place":2}
-    ]
-
     MACS = [
         {"address": "11:11:11:11:11:11", "isRandom": False, "fk_vendor": "DC:F0:90"},
         {"address": "22:22:22:22:22:22", "isRandom": True, "fk_vendor": "E0:02:A5"},
@@ -60,6 +55,11 @@ def main():
         {"id": 1, "name": "BatCave", "longitude": 6.869948, "latitude": 46.457080},
         {"id": 2, "name": "Toussaint", "longitude": 22, "latitude": 9},
         {"id": 3, "name": "Aperture Science", "longitude": 42, "latitude": 42}
+    ]
+
+    USERS = [
+        {"email": "Obyka", "password": User.hash("pass"), "admin": True, "fk_place":1},
+        {"email": "Raspberry", "password": User.hash("pass"), "admin": False, "fk_place":2}
     ]
 
     IDENTITIES = [

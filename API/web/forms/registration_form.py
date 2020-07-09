@@ -1,4 +1,4 @@
-from wtforms import Form, BooleanField, StringField, PasswordField, SelectField ,validators
+from wtforms import Form, BooleanField, StringField, PasswordField, SelectField, DecimalField, HiddenField,validators
 from markupsafe import Markup
 from wtforms.widgets.core import html_params
 from wtforms.validators import ValidationError
@@ -38,11 +38,13 @@ def new_place_validator(form, field):
 
 class RegistrationForm(Form):
     email = StringField('Email', [validators.InputRequired(), validators.Length(min=4, max=25)])
-    password = PasswordField('Password', [validators.InputRequired(), validators.Length(min=4, max=35)])
-    confirm_password = PasswordField('Confirm password', [validators.InputRequired(), validators.Length(min=4, max=35)])
+    password = PasswordField('Password', [validators.EqualTo('confirm_password', message='Passwords must match'), validators.Length(min=4, max=35)])
+    confirm_password = PasswordField('Confirm password', [])
     admin = BooleanField('Admin?', [])
     location = SelectField(u'Client location', coerce=int, widget=CustomSelect())
     new_location_name = StringField('New location name', [new_place_validator])
+    longitude = DecimalField('Longitude',[validators.NumberRange(min=-180, max=180)], places=None)
+    latitude = DecimalField('Latitude',[validators.NumberRange(min=-90, max=90)], places=None)
 
 
 

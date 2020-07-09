@@ -56,6 +56,7 @@ def inject_path():
 @admin_required
 def register_front():
 	all_places = places.read_all()
+	print(str(all_places) * 100)
 
 	form = RegistrationForm(request.form)
 	form.location.choices = [(place.get('id'), place.get('name')) for place in all_places]
@@ -67,7 +68,7 @@ def register_front():
 			location = form.location.data
 			# We will create a new place
 			if form.location.data == -1:
-				place = {"name": form.new_location_name.data, "longitude": 6.869948, "latitude": 46.457080}
+				place = {"name": form.new_location_name.data, "longitude": form.longitude.data, "latitude": form.latitude.data}
 				response, status_code = places.create(place)
 				if status_code == 409:
 					error = 'Place {place} already exist'.format(place=place.get('name'))
@@ -87,6 +88,7 @@ def register_front():
 		else:
 			return render_template('register.html',register_form=form, form_error=form.errors,attribute_places=attribute_places)
 	else:
+		form.location.data = -1
 		return render_template('register.html', register_form=form, attribute_places=attribute_places)
 
 @web_bp.route('/logout', methods=['GET', 'POST'])

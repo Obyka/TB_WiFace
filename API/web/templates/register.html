@@ -90,11 +90,14 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         {{ register_form.new_location_name(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
       </div>
       <p>
-        <div id="containerMap" class="w3-container" style="display:none; width:50%;">
+        <div id="containerMap" class="w3-container" style="width:50%;">
             <div class="w3-center" id="googleMap" style="width:100%;height:400px;"></div>
         </div>
         {{ register_form.admin.label(class="w3-label w3-validate") }}</p>
         {{ register_form.admin(class="w3-check") }}
+
+        {{register_form.latitude(type="hidden")}}
+        {{register_form.longitude(type="hidden")}}
         <p>
     <button class="w3-btn w3-section w3-teal w3-ripple"> Register </button></p>
     
@@ -118,14 +121,14 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
         current_pos = new google.maps.LatLng(latitude, longitude)
         var containerMap = document.getElementById('containerMap')
-        containerMap.style.display = "block"
-
+        window.map.setZoom(17)
         placeMarkerAndPanTo(current_pos, window.map)
     }
 
     function myMap() {
       var mapProp= {
-        zoom:17
+        center:  new google.maps.LatLng(0, 0),
+        zoom:1
     };
   window.map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
   window.map.addListener('click', function(e) {
@@ -147,6 +150,10 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
  
     }
     function placeMarkerAndPanTo(latLng, map) {
+      var input_latitude = document.getElementById('latitude')
+      input_latitude.value = latLng.lat()
+      var input_longitude = document.getElementById('longitude')
+      input_longitude.value = latLng.lng()
     removeMarkers()
     var marker = new google.maps.Marker({
     position: latLng,
