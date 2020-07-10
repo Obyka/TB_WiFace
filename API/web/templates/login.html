@@ -28,18 +28,31 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     <h5><b><i class="fa fa-id-card-o"></i> Login page {{identity}}</b></h5>
   </header>
 
-  {% if error %}
-    Error while login
-  {% endif %}
   <form action="{{ url_for('web_bp.login_front') }}" method = "POST" class="w3-container w3-card-4" style="width: 60%; text-align: center; display: inline-block;">
-
+    {% if error%}
+    <div class="w3-panel w3-red">
+      <h3>Error</h3>
+      <p>{{error}}</p>
+    </div> 
+    {% endif %}
+    {% if form_error %}
+    <div class="w3-panel w3-red">
+      <h3>Error</h3>
+      <p>{% for field_name, field_errors in form_error|dictsort if field_errors %}
+        {% for error in field_errors %}
+            {{ login_form[field_name].label }}: {{ error }}<br>
+        {% endfor %}
+    {% endfor %}
+  </p>
+      </div> 
+    {% endif %}
     <p>
-    <label class="w3-label w3-validate">Email</label></p>
-    <input name="email" class="w3-input" type="text" style="width: 30%; text-align: center; display: inline-block;" required>
+    {{ login_form.email.label(class="w3-label w3-validate") }}</p>
+    {{ login_form.email(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
     <p>
-    <label class="w3-label w3-validate">Password</label></p>
-    <input name="password" class="w3-input" type="password" style="width: 30%; text-align: center; display: inline-block;" required>
-    <p>
+      {{ login_form.password.label(class="w3-label w3-validate") }}</p>
+      {{ login_form.password(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
+      <p>
     <button class="w3-btn w3-section w3-teal w3-ripple"> Log in </button></p>
     
     </form>

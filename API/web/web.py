@@ -21,6 +21,7 @@ import users
 import avatar
 import places
 from .forms.registration_form import RegistrationForm
+from .forms.login_form import LoginForm
 
 # Blueprint Configuration
 web_bp = Blueprint('web_bp', __name__, template_folder='templates', static_folder='static')
@@ -56,7 +57,6 @@ def inject_path():
 @admin_required
 def register_front():
 	all_places = places.read_all()
-	print(str(all_places) * 100)
 
 	form = RegistrationForm(request.form)
 	form.location.choices = [(place.get('id'), place.get('name')) for place in all_places]
@@ -103,21 +103,26 @@ def logout_front():
 @web_bp.route('/login', methods=['GET', 'POST'])
 @jwt_optional
 def login_front():
+	login_form = LoginForm(request.form)
 	identity = get_jwt_identity()
 	if identity is not None:
 		return redirect('/web/statistics')
 
 	if request.method == 'POST':
-		user = {'email': request.form['email'], 'password': request.form['password']}
-		response =  users.login(user)
-		if response.status_code != 200:
-			return render_template('login.html', error=True)
+		if login_form.validate():
+			user = {'email': request.form['email'], 'password': request.form['password']}
+			response =  users.login(user)
+			if response.status_code != 200:
+				error = "Wrong credentials"
+				return render_template('login.html', login_form=login_form, error=error)
+			else:
+				# Since the login function returns a response, here is a convoluted way to copy tokens while serving a template
+				r = redirect('/web/statistics')
+				r.headers.setlist('Set-Cookie', response.headers.getlist('Set-Cookie'))
+				return r
 		else:
-			# Since the login function returns a response, here is a convoluted way to copy tokens while serving a template
-			r = redirect('/web/statistics')
-			r.headers.setlist('Set-Cookie', response.headers.getlist('Set-Cookie'))
-			return r
-	return render_template('login.html', csrf_token=(get_raw_jwt() or {}).get("csrf"))
+			return render_template('login.html', login_form=login_form, form_error=login_form.errors)
+	return render_template('login.html', login_form=login_form)
 
 @web_bp.route('/statistics')
 @admin_required
