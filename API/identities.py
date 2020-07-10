@@ -26,7 +26,6 @@ def read_age_range(id_identity):
                 int(sum(j for i, j in age_List if j) / len(age_List)))
     return age_mean
 
-
 @jwt_required
 def read_gender(id_identity):
     gender = Pictures.query\

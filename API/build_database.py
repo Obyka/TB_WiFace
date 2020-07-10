@@ -115,39 +115,47 @@ def main():
                     oui=vendor.attributes['mac_prefix'].value.upper())
         # print(vendor.attributes['mac_prefix'].value.upper())
         db.session.add(v)
+    db.session.flush()
 
     for mac in MACS:
         m = MacAddress(
             address=mac['address'], isRandom=mac['isRandom'], fk_vendor=mac['fk_vendor'])
         db.session.add(m)
+    db.session.flush()
+
+    for place in PLACES:
+        p = Places(id=place['id'], name=place['name'], latitude=place['latitude'], longitude=place['longitude'])
+        db.session.add(p)
+    db.session.flush()
 
     for probe in PROBES:
         p = Probes(ssid=probe['ssid'], timestamp=probe['timestamp'],
                    fk_mac=probe['fk_mac'], fk_place=probe['fk_place'])
         db.session.add(p)
-
-    for place in PLACES:
-        p = Places(id=place['id'], name=place['name'], latitude=place['latitude'], longitude=place['longitude'])
-        db.session.add(p)
+    db.session.flush()
 
     for user in USERS:
         u = User(email=user['email'], password=user['password'], admin=user['admin'], fk_place=user['fk_place'])
         db.session.add(u)
+    db.session.flush()
 
     for identity in IDENTITIES:
         i = Identities(id=identity['id'], firstname=identity['firstname'],
                        lastname=identity['lastname'], mail=identity['mail'], uuid=identity['uuid'])
         db.session.add(i)
+    db.session.flush()
 
     for picture in PICTURES:
         p = Pictures(id=picture['id'], picPath=picture['picPath'],
                      timestamp=picture['timestamp'], fk_place=picture['fk_place'])
         db.session.add(p)
+    db.session.flush()
 
     for represents in REPRENSENTS:
         r = Represents(probability=represents['probability'],
                        fk_identity=represents['fk_identity'], fk_picture=represents['fk_picture'])
         db.session.add(r)
+    db.session.flush()
 
     db.session.commit()
 

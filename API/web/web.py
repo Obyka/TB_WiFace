@@ -25,7 +25,6 @@ from .forms.login_form import LoginForm
 
 # Blueprint Configuration
 web_bp = Blueprint('web_bp', __name__, template_folder='templates', static_folder='static')
-
 # Here is a custom decorator that verifies the JWT is present in
 # the request, as well as insuring that this user has a role of
 # `admin` in the access token
@@ -52,6 +51,15 @@ def inject_counters():
 @web_bp.context_processor
 def inject_path():
 	return dict(picture_path=config.app.config['UPLOAD_FOLDER'])
+
+@web_bp.route('/places')
+@admin_required
+def places_front():
+	if 'id' in request.args:
+		place_data = places.get_place_infos(places.read_one(request.args.get('id')))
+		return render_template('place_details.html', place=place_data)
+	places_list = places.read_all()
+	return render_template('places.html', places_list=places_list)
 
 @web_bp.route('/register', methods=['GET', 'POST'])
 @admin_required
@@ -141,6 +149,9 @@ def represents_front():
 		for represents_data in represents_datas:
 			pictures_list.append(pictures.read_one(represents_data.get('fk_picture')))
 		return render_template('represents.html', pictures_list=pictures_list, identity=identity)
+	else:
+		r = redirect('/web/identities')
+		return r
 
 @web_bp.route('/identities')
 @admin_required

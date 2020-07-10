@@ -9,7 +9,7 @@ class Probes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ssid = db.Column(db.String(32))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    fk_place = db.Column(db.Integer)
+    fk_place = db.Column(db.Integer, db.ForeignKey('places.id'))
     fk_mac = db.Column(db.String(18), db.ForeignKey('macAddress.address'))
 
 class ProbesSchema(ma.ModelSchema):
@@ -127,6 +127,7 @@ class Places(db.Model):
     longitude = db.Column(db.Float)
     latitude = db.Column(db.Float)
     pictures = db.relationship('Pictures', backref='place')
+    probes = db.relationship('Probes', backref='place')
 
 class PlacesSchema(ma.ModelSchema):
     class Meta:

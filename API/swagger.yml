@@ -31,6 +31,26 @@ paths:
             schema:
               $ref: '#/definitions/Vendor'
   /identities/{id_identity}/pictures:
+  /represents/identities/{id_picture}:
+    get:
+      operationId: represents.read_identities_from_picture
+      tags:
+        - Identities - Pictures
+      summary: Get all identities represented on a picture
+      description: description:Get all identities represented on a picture
+      parameters:
+        - name: id_picture
+          in: path
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Represent'
+  /identities/{id_identity}/pictures:
     get:
       operationId: identities.read_pictures
       tags:

@@ -18,6 +18,13 @@ def create(represent):
     # Serialize and return the newly created person in the response
     return schema.dump(new_rep), 201
 
+@jwt_required
+def read_identities_from_picture(id_picture):
+    represents_data =  Represents.query\
+        .filter(Represents.fk_picture == id_picture).all()
+    # Serialize the data for the response
+    represent_scheme = RepresentsSchema(many=True)
+    return represent_scheme.dump(represents_data)
 
 @jwt_required
 def read_relationship(id_picture, id_identity):

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<title>MAC Addresses list</title>
+<title>Places</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -40,7 +40,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
   <!-- Header -->
   <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-id-card-o"></i> List of MAC address</b></h5>
+    <h5><b><i class="fa fa-id-card-o"></i> List of Places</b></h5>
   </header>
 
   <div class="w3-panel">
@@ -48,17 +48,15 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
       <div class="w3">
         <table class="w3-table w3-striped w3-white">
             <tr>
-                <th>MAC Address</th>
-                <th>Vendor name</th>
-                <th>Is random</th>
-                <th>Number of probes</th>
+                <th>Place name</th>
+                <th>Longitude</th>
+                <th>Latitude</th>
             </tr>
-          {% for mac in mac_list %}
+          {% for place in places_list %}
           <tr>
-            <td><i><a href="{{ url_for('web_bp.macs_front', id=mac.address) }}">{{mac.address}}</a></i></td>
-            <td><i>{{mac['vendor_name']}}</i></td>
-            <td><i>{{mac.isRandom}}</i></td>
-            <td><i>{{mac['nb_probes']}}</i></td>
+            <td><i><a href="{{ url_for('web_bp.places_front', id=place.id) }}">{{place.name}}</a></i></td>
+            <td><i>{{place.longitude}}</i></td>
+            <td><i>{{place.latitude}}</i></td>
 
           </tr>
           {% endfor %}

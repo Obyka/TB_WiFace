@@ -2,7 +2,7 @@ import os
 
 import connexion
 from dateutil.relativedelta import relativedelta
-from flask import jsonify, make_response, redirect, request
+from flask import jsonify, make_response, redirect, request, render_template
 from flask_jwt_extended import (get_jwt_identity, get_raw_jwt, jwt_optional,
                                 jwt_required, unset_access_cookies,
                                 unset_jwt_cookies)
@@ -20,6 +20,20 @@ connex_app.app.register_blueprint(web.web_bp, url_prefix='/web')
 
 # Read the swagger.yml file to configure the endpoints
 connex_app.add_api('swagger.yml')
+@config.app.errorhandler(404)
+@config.app.errorhandler(405)
+def _handle_api_error(ex):
+    if request.path.startswith('/web/'):
+        return render_template('404.html'), 404    
+    else:
+        return "Ressource not found.", 404
+@config.app.errorhandler(500)
+def handle_500(err):
+    if request.path.startswith('/web/'):
+        return render_template('500.html'), 500    
+    else:
+        return "Internal error", 404
+    
 
 @config.jwtM.user_claims_loader
 def add_claims_to_access_token(user):
