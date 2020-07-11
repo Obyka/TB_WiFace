@@ -21,8 +21,36 @@ Avantages de Flask :
 L’ORM qui a été choisi pour fonctionner avec Flask est \textbf{SQLAlchemy}. Il existe en effet un module python flask-
 sqlalchemy qui rend l’intégration simple.
 Les données sont sérialisées à l’aide de \textbf{marshmallow}.
-La gestion de l’authentification se fait à l’aide de token JWT et du module correspondant \textbf{flask-jwt} et \textbf{pyjwt}
-La spécification est écrite à l’aide de swagger, qui propose également une documentation automatique.
+La gestion de l’authentification se fait à l’aide de token JWT et du module correspondant \textbf{flask-jwt-extended}.
+La validation des formulaires a été implémentée à l'aide de \textbf{WTForm}.
+La spécification est écrite à l’aide de \textbf{swagger} et de \textbf{connexion}, qui propose également une documentation automatique.
+
+\section{Sniffing des adresses MAC}
+
+Le sniffing des adresses MAC se fait à l'aide de Scapy.
+Cette librairie permet de traiter programmatiquement les paquets
+reçu par notre antenne. 
+
+Voici le worflow, décrivant le sniffing jusqu'à l'envoi 
+des entités à l'API WiFace. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=12cm]{images/probe/flowchart_scan_probe.png}
+    \caption{Worflow du scan des clients Raspberry}
+	\label{fig:worflow-scan}
+\end{figure}
+
+Quelques explications concernant les processus de ce diagramme.
+
+\begin{itemize}
+    \item \textbf{Sniff sur l'interface monitor}: Dès que scappy reçoit un paquet, un callback est appelé avec ce même paquet en pramaètre.
+    \item \textbf{Probe request capturée}: Afin de déterminer si le paquet est bien une probe request, il suffit s'il s'agit d'un paquet 802.11 et d'une trame de management de sous-type 4
+    \item \textbf{Adresse présente dans le dictionnaire ?}: Un dictionnaire d'adresse MAC avec le timestamp de capture est maintenu à jour afin de n'envoyer qu'une seule probe request par burst à l'API WiFace.
+    \item \textbf{Estimation de la distance}: Une estimation de la distance entre l'appareil et le client est faite à l'aide de la puissance du signal. Cette mesure est très peu fiable et permet seulement de filtrer les probe requests trop lointaines.
+    \item \textbf{Adresse MAC présente dans l'API WiFace}: Avant de poster la probe request et l'adresse MAC, il faut d'abord essayer d'obtenir l'ID d'une potentielle adresse MAC déjà existante afin de l'associer à la probe request
+    \item \textbf{Détection de la randomisation}: À l'aide de diverses heuristiques (cf \ref{ch:probe_req}) l'adresse est déclarée - ou non - randomisée.
+\end{itemize}
 
 \section{La reconnaissance faciale et attribution des identitiés}
 

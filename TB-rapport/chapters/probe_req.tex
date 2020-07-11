@@ -69,6 +69,34 @@ Le processus de randomisation n'étant pas strictement standardisé, l'implémen
 Certaines de ces implémentations sont bonnes (iOS randomise les 6 octets de l'adresse MAC, sauf b1 et b0) alors que d'autres le sont moins (Android possède des OUI fixes pendant la randomisation, ce qui 
 permet déjà la divulgation d'informations sur l'appareil.)
 
+\subsubsection{Problèmes liés à l'implémentation de la randomisation}
+
+Bien que le concept de randomisation soit une bonne avancée dans le domaine de la privacy, quelques
+problèmes d'implémentation ont mitigé cette dernière. 
+
+Parmi les problèmes récurrents, il a été trouvé:
+\begin{itemize}
+	\item Mauvais PRNG (le biais permet de faire des liens logiques entre les adresses)
+	\item Numéros de séquence augmentant de manière monotone, permettant de faire le lien entre deux adresses aléatoires (cf~\ref{fig:seqnumber})
+	\item Les adresses réelles sont parfois divulgées (e.g si l'écran est allumé)
+	\item Les timings de scans des appareils peuvent permettre un rapprochement entre plusieurs adresses
+	\item Fingerprinting possible à l'aide des Informations Elements (IE)
+	\item Beaucoup de méthodes de randomisation ne sont utilisées uniquement lors du scan. Lorsque l'appareil est connecté, ce dernier utilise à nouveau
+	sa vraie adresse physique.
+\end{itemize} 
+
+Tous ces points s'améliorent avec le temps. 
+Par exemple, la nouvelle version d'iOS (14) datant de l'été 2020 permet la randomisation même lorsque l'appareil est connecté.
+Cette feature est d'ailleurs mise en avant par Apple, au travers des notifications. \cite{APPLESUPPPRIVATE} 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=12cm]{images/probe/sn.png}
+	\caption{Le changement d'adresse MAC aux lignes 2 et 3 peut être déduit à cause du séquence number proche.}
+	\source{~\cite{connected:macrandom}}
+	\label{fig:seqnumber}
+\end{figure}
+
 \subsection{Détection passive de la randomisation}
 
 \subsubsection{Le bit Locally Assigned}
