@@ -22,6 +22,16 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   {% endif %}
 </div>
 
+{% set navigation_bar = [
+  ('web_bp.statistics_front', 'statistics', 'fa fa-line-chart fa-fw', 'Statistics'),
+  ('web_bp.identities_front', 'identities', 'fa fa-id-card-o fa-fw', 'Identities'),
+  ('web_bp.macs_front', 'macs', 'fa fa-mobile  fa-fw', 'MAC address'),
+  ('web_bp.register_front', 'register', 'fa fa-user fa-fw', 'Register'),
+  ('web_bp.places_front', 'places', 'fa fa-globe fa-fw', 'Places'),
+
+] -%}
+{% set active_page = active_page|default('statistics') -%}
+
 {% block navbar %}
 <!-- Sidebar/menu -->
 <nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
@@ -29,14 +39,36 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     <h5>Dashboard</h5>
   </div>
   <div class="w3-bar-block">
-    <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-line-chart fa-fw"></i>  Statistics</a>
-    <a href="{{ url_for('web_bp.identities_front') }}" class="w3-bar-item w3-button w3-padding"><i class="fa fa-id-card-o fa-fw"></i>  Identities</a>
-    <a href="{{ url_for('web_bp.macs_front') }}" class="w3-bar-item w3-button w3-padding"><i class="fa fa-mobile  fa-fw"></i>  MAC address</a>
-    <a href="{{ url_for('web_bp.register_front') }}" class="w3-bar-item w3-button w3-padding"><i class="fa fa-user  fa-fw"></i> Register</a>
-
+    {% for route, id, icon, caption in navigation_bar %}
+      <a href="{{ url_for(route)}}" class="w3-bar-item w3-button w3-padding {% if id == active_page %}w3-blue{% endif%}"><i class="{{icon}}"></i> {{caption}}</a>
+    {% endfor %}
   </div>
 </nav>
+
+<script>
+  // Get the Sidebar
+  var mySidebar = document.getElementById("mySidebar");
+  
+  // Get the DIV with overlay effect
+  var overlayBg = document.getElementById("myOverlay");
+  
+  // Toggle between showing and hiding the sidebar, and add overlay effect
+  function w3_open() {
+    if (mySidebar.style.display === 'block') {
+      mySidebar.style.display = 'none';
+      overlayBg.style.display = "none";
+    } else {
+      mySidebar.style.display = 'block';
+      overlayBg.style.display = "block";
+    }
+  }
+  
+  // Close the sidebar with the close button
+  function w3_close() {
+    mySidebar.style.display = "none";
+    overlayBg.style.display = "none";
+  }
+  </script>
 {% endblock %}
 
 
@@ -69,30 +101,6 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 </div>
 
 {% block script %}
-<script>
-// Get the Sidebar
-var mySidebar = document.getElementById("mySidebar");
-
-// Get the DIV with overlay effect
-var overlayBg = document.getElementById("myOverlay");
-
-// Toggle between showing and hiding the sidebar, and add overlay effect
-function w3_open() {
-  if (mySidebar.style.display === 'block') {
-    mySidebar.style.display = 'none';
-    overlayBg.style.display = "none";
-  } else {
-    mySidebar.style.display = 'block';
-    overlayBg.style.display = "block";
-  }
-}
-
-// Close the sidebar with the close button
-function w3_close() {
-  mySidebar.style.display = "none";
-  overlayBg.style.display = "none";
-}
-</script>
 {% endblock %}
 
 </body>
