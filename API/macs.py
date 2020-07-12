@@ -72,6 +72,20 @@ def create(mac):
     # Serialize and return the newly created person in the response
     return schema.dump(new_mac), 201
 
+@jwt_required
+def edit_pp2i(address, pp2i):
+    macDB = MacAddress.query \
+        .filter(MacAddress.address == address) \
+        .one_or_none()
+
+    if macDB is None:
+        abort(404, 'MAC {address} does not exist'.format(address=address))
+
+    macDB.PP2I = pp2i 
+    db.session.commit()
+
+    # Serialize and return the newly created person in the response
+    return 201
 
 @jwt_required
 def read_one(address):

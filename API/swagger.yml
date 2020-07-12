@@ -767,6 +767,8 @@ definitions:
         type: boolean
       fk_vendor:
         type: string
+      PP2I: 
+        type: boolean
   Place:
     properties:
       id:

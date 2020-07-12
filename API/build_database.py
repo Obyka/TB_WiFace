@@ -45,10 +45,10 @@ def main():
     VendorsList = xmldoc.getElementsByTagName('VendorMapping')
 
     MACS = [
-        {"address": "11:11:11:11:11:11", "isRandom": False, "fk_vendor": "DC:F0:90"},
-        {"address": "22:22:22:22:22:22", "isRandom": True, "fk_vendor": "E0:02:A5"},
-        {"address": "33:33:33:33:33:33", "isRandom": False, "fk_vendor": "FC:F8:AE"},
-        {"address": "44:44:44:44:44:44", "isRandom": False, "fk_vendor": "FC:F8:AE"}
+        {"address": "11:11:11:11:11:11", "isRandom": False, "fk_vendor": "DC:F0:90", "PP2I" : False},
+        {"address": "22:22:22:22:22:22", "isRandom": True, "fk_vendor": "E0:02:A5", "PP2I" : True},
+        {"address": "33:33:33:33:33:33", "isRandom": False, "fk_vendor": "FC:F8:AE", "PP2I" : True},
+        {"address": "44:44:44:44:44:44", "isRandom": False, "fk_vendor": "FC:F8:AE", "PP2I" : True}
     ]
 
     PLACES = [
@@ -119,7 +119,7 @@ def main():
 
     for mac in MACS:
         m = MacAddress(
-            address=mac['address'], isRandom=mac['isRandom'], fk_vendor=mac['fk_vendor'])
+            address=mac['address'], isRandom=mac['isRandom'], fk_vendor=mac['fk_vendor'], PP2I=mac['PP2I'])
         db.session.add(m)
     db.session.flush()
 

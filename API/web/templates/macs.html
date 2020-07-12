@@ -9,12 +9,14 @@
 <div class="w3-panel">
   <div class="w3-row-padding" style="margin:0 -16px">
     <div class="w3">
+      <form action="{{ url_for('web_bp.macs_front') }}" method = "POST">
       <table class="w3-table w3-striped w3-white">
           <tr>
               <th>MAC Address</th>
               <th>Vendor name</th>
               <th>Is random</th>
               <th>Number of probes</th>
+              <th>Should be included in PP2I?</th>
           </tr>
         {% for mac in mac_list %}
         <tr>
@@ -22,10 +24,13 @@
           <td><i>{{mac['vendor_name']}}</i></td>
           <td><i>{{mac.isRandom}}</i></td>
           <td><i>{{mac['nb_probes']}}</i></td>
+          <td><i>{{form[mac.address]}}</i></td>
 
         </tr>
         {% endfor %}
       </table>
+      {{form['submit']}}
+    </form>
     </div>
   </div>
 </div>

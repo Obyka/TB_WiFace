@@ -22,6 +22,8 @@ import avatar
 import places
 from .forms.registration_form import RegistrationForm
 from .forms.login_form import LoginForm
+from .forms.mac_addresses_form import MACAddressForm 
+from wtforms import BooleanField
 
 # Blueprint Configuration
 web_bp = Blueprint('web_bp', __name__, template_folder='templates', static_folder='static')
@@ -174,16 +176,28 @@ def identities_front():
 	identitiy_list = identities.read_all()
 	return render_template('identities.html', identitiy_list=identitiy_list)
 
-@web_bp.route('/macs')
+@web_bp.route('/macs', methods=['GET', 'POST'])
 @admin_required
 def macs_front():
 	if 'id' in request.args:
 		mac_data = macs.get_mac_infos(macs.read_one(request.args.get('id')))
 		return render_template('mac_details.html', mac_data=mac_data)
-	mac_list = macs.read_all()
-	for mac in mac_list:
-		mac =  macs.get_mac_infos(mac)
-	return render_template('macs.html', mac_list=mac_list)
+	
+	if request.method == 'POST':
+		form = MACAddressForm(request.form)
+		if form.validate():
+			for field in form:
+				if field.name != 'submit':
+					macs.edit_pp2i(field.name, field.data)
+		return redirect('/web/macs')
+	else:
+		form = MACAddressForm()
+		mac_list = macs.read_all()
+		for mac in mac_list:
+			mac =  macs.get_mac_infos(mac)
+			booleanPP2I = BooleanField(mac['address'], default=mac['PP2I'])
+			setattr(MACAddressForm, mac['address'], booleanPP2I)
+		return render_template('macs.html', mac_list=mac_list, form=form)
 
 @web_bp.route('/pictures')
 @admin_required

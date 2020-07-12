@@ -53,6 +53,7 @@ class MacAddress(db.Model):
     fk_vendor = db.Column(db.String(8), db.ForeignKey('vendors.oui'))
     probes = db.relationship('Probes', backref='mac')
     belongsTo = db.relationship('BelongsTo', backref='mac')
+    PP2I = db.Column(db.Boolean)
 
 class MacAddressSchema(ma.ModelSchema):
     class Meta:
