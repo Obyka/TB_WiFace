@@ -1,214 +1,145 @@
-<!DOCTYPE html>
-<html>
-<title>Register</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
-</style>
-<body class="w3-light-grey">
+{% extends "base.html" %}
 
-<!-- Top container -->
-<div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
-  <button class="w3-bar-item w3-button w3-hide-large w3-hover-none w3-hover-text-light-grey" onclick="w3_open();"><i class="fa fa-bars"></i>  Menu</button>
-  <span class="w3-bar-item w3-right"><i class="fa fa-sign-out" aria-hidden="true"></i> <a href="{{ url_for('web_bp.logout_front') }}" style="text-decoration: none;">TB Wiface - {{current_user}}</a> 
+{% block title %}Register{% endblock %}
+{% block main_center %}w3-center{% endblock %}
+
+{% block header %}Register a new client{% endblock %}
+
+{% block content %}
+<form action="{{ url_for('web_bp.register_front') }}" method = "POST" class="w3-container w3-card-4" style="width: 60%; text-align: center; display: inline-block;">
+  {% if success %}
+  <div class="w3-panel w3-green">
+    <h3>Success</h3>
+    <p>The account was created. You will be redirected in few seconds.</p>
+    <script>    
+      window.setTimeout(function(){
+        window.location.href = "{{ url_for('web_bp.statistics_front')}}";
+        }, 5000);
+ 
+  </script>
   </div>
-
-<!-- Sidebar/menu -->
-<nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
-    <div class="w3-container">
-      <h5>Dashboard</h5>
-    </div>
-    <div class="w3-bar-block">
-      <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
-      <a href="{{ url_for('web_bp.statistics_front') }}" class="w3-bar-item w3-button w3-padding"><i class="fa fa-line-chart fa-fw"></i>  Statistics</a>
-      <a href="{{ url_for('web_bp.identities_front') }}" class="w3-bar-item w3-button w3-padding"><i class="fa fa-id-card-o fa-fw"></i>  Identities</a>
-      <a href="{{ url_for('web_bp.macs_front') }}" class="w3-bar-item w3-button w3-padding"><i class="fa fa-mobile  fa-fw"></i>  MAC address</a>
-      <a href="#" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-user  fa-fw"></i> Register</a>
-    </div>
-  </nav>
-
-<!-- Overlay effect when opening sidebar on small screens -->
-<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
-
-<!-- !PAGE CONTENT! -->
-<div class="w3-main w3-center" style="margin-left:10px;margin-top:43px;">
-
-  <!-- Header -->
-  <header class="w3-container" style="padding-top:22px;">
-    <h5><b><i class="fa fa-id-card-o"></i> Register page</b></h5>
-  </header>
-
-  <form action="{{ url_for('web_bp.register_front') }}" method = "POST" class="w3-container w3-card-4" style="width: 60%; text-align: center; display: inline-block;">
-    {% if success %}
-    <div class="w3-panel w3-green">
-      <h3>Success</h3>
-      <p>The account was created. You will be redirected in few seconds.</p>
-      <script>    
-        window.setTimeout(function(){
-          window.location.href = "{{ url_for('web_bp.statistics_front')}}";
-          }, 5000);
-   
-    </script>
-    </div>
-    {% endif %}
-    {% if error%}
-    <div class="w3-panel w3-red">
-      <h3>Error</h3>
-      <p>{{error}}</p>
+  {% endif %}
+  {% if error%}
+  <div class="w3-panel w3-red">
+    <h3>Error</h3>
+    <p>{{error}}</p>
+  </div> 
+  {% endif %}
+  {% if form_error %}
+  <div class="w3-panel w3-red">
+    <h3>Error</h3>
+    <p>{% for field_name, field_errors in form_error|dictsort if field_errors %}
+      {% for error in field_errors %}
+          {{ register_form[field_name].label }}: {{ error }}<br>
+      {% endfor %}
+  {% endfor %}
+</p>
     </div> 
-    {% endif %}
-    {% if form_error %}
-    <div class="w3-panel w3-red">
-      <h3>Error</h3>
-      <p>{% for field_name, field_errors in form_error|dictsort if field_errors %}
-        {% for error in field_errors %}
-            {{ register_form[field_name].label }}: {{ error }}<br>
-        {% endfor %}
-    {% endfor %}
-  </p>
-      </div> 
-    {% endif %}
+  {% endif %}
+  <p>
+  {{ register_form.email.label(class="w3-label w3-validate") }}</p>
+  {{ register_form.email(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
+  <p>
+  {{ register_form.password.label(class="w3-label w3-validate") }}</p>
+  {{ register_form.password(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
+  <p>
+    {{ register_form.confirm_password.label(class="w3-label w3-validate") }}</p>
+    {{ register_form.confirm_password(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
+  <p>
+    {{ register_form.location.label(class="w3-label w3-validate") }}</p>
+    {{ register_form.location(option_attr=attribute_places, onchange="showPlace()",class="w3-select", style="width: 30%; text-align: center; display: inline-block;") }}
+    <div id="place_name_div" style="display: none;">
+  <p>
+      {{ register_form.new_location_name.label(class="w3-label w3-validate") }}</p>        
+      {{ register_form.new_location_name(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
+    </div>
     <p>
-    {{ register_form.email.label(class="w3-label w3-validate") }}</p>
-    {{ register_form.email(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
-    <p>
-    {{ register_form.password.label(class="w3-label w3-validate") }}</p>
-    {{ register_form.password(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
-    <p>
-      {{ register_form.confirm_password.label(class="w3-label w3-validate") }}</p>
-      {{ register_form.confirm_password(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
-    <p>
-      {{ register_form.location.label(class="w3-label w3-validate") }}</p>
-      {{ register_form.location(option_attr=attribute_places, onchange="showPlace()",class="w3-select", style="width: 30%; text-align: center; display: inline-block;") }}
-      <div id="place_name_div" style="display: none;">
-    <p>
-        {{ register_form.new_location_name.label(class="w3-label w3-validate") }}</p>        
-        {{ register_form.new_location_name(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
+      <div id="containerMap" class="w3-container" style="width:50%;">
+          <div class="w3-center" id="googleMap" style="width:100%;height:400px;"></div>
       </div>
+      {{ register_form.admin.label(class="w3-label w3-validate") }}</p>
+      {{ register_form.admin(class="w3-check") }}
+
+      {{register_form.latitude(type="hidden")}}
+      {{register_form.longitude(type="hidden")}}
       <p>
-        <div id="containerMap" class="w3-container" style="width:50%;">
-            <div class="w3-center" id="googleMap" style="width:100%;height:400px;"></div>
-        </div>
-        {{ register_form.admin.label(class="w3-label w3-validate") }}</p>
-        {{ register_form.admin(class="w3-check") }}
+  <button class="w3-btn w3-section w3-teal w3-ripple"> Register </button></p>
+  
+  </form>
+{% endblock %} 
 
-        {{register_form.latitude(type="hidden")}}
-        {{register_form.longitude(type="hidden")}}
-        <p>
-    <button class="w3-btn w3-section w3-teal w3-ripple"> Register </button></p>
-    
-    </form>
-  <hr>
-
-  <script>
-    var markers=[]
-    function removeMarkers(){
-      markers.forEach(marker => marker.setMap(null));
-      markers.splice(0, markers.length)
-    }
-    function showPlace(){
-        var place_name_div = document.getElementById('place_name_div')
-        var place_name_input = document.getElementById('new_location_name')
-        place_name_div.style.display = "none"
-        var select_form = document.getElementById('location')
-        var latitude = select_form.options[select_form.selectedIndex].getAttribute('latitude');
-        var longitude = select_form.options[select_form.selectedIndex].getAttribute('longitude');
-        var place_name = select_form.options[select_form.selectedIndex].getAttribute('place_name');
-
-        current_pos = new google.maps.LatLng(latitude, longitude)
-        var containerMap = document.getElementById('containerMap')
-        window.map.setZoom(17)
-        placeMarkerAndPanTo(current_pos, window.map)
-    }
-
-    function myMap() {
-      var mapProp= {
-        center:  new google.maps.LatLng(0, 0),
-        zoom:1
-    };
-  window.map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-  window.map.addListener('click', function(e) {
-    placeMarkerAndPanTo(e.latLng, map);
-    var select_form = document.getElementById('location')
-    var opts = select_form.options;
-    for (var opt, j = 0; opt = opts[j]; j++) {
-      if (opt.value == -1) {
-        select_form.selectedIndex = j;
-        opt.setAttribute("latitude", e.latLng.lat());
-        opt.setAttribute("longitude", e.latLng.lng());
-        var place_name_div = document.getElementById('place_name_div')
-        place_name_div.style.display = "block"
-        var place_name_input = document.getElementById('new_location_name')
-        break;
-      }
-    }
-  });
- 
-    }
-    function placeMarkerAndPanTo(latLng, map) {
-      var input_latitude = document.getElementById('latitude')
-      input_latitude.value = latLng.lat()
-      var input_longitude = document.getElementById('longitude')
-      input_longitude.value = latLng.lng()
-    removeMarkers()
-    var marker = new google.maps.Marker({
-    position: latLng,
-    map: map
-  });
-  var contentString = 'Latitude: ' + marker.getPosition().lat() +'<br>Longitude: ' + marker.getPosition().lng() + '<br>';
-
-  google.maps.event.addListener(marker, 'click', function(content) {
-        infowindow = new google.maps.InfoWindow();
-        return function(){
-            infowindow.setContent(content);
-            infowindow.open(window.map,this);
-        }
-        }(contentString));
-  map.panTo(latLng);
-  markers.push(marker)
-  }
-    </script>
- 
- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNgwbDiCLi_-4w3R0vPxRVhtUuqvALti0&callback=myMap"></script>
-
-
-  <!-- Footer -->
-  <footer class="w3-container w3-padding-16 w3-light-grey">
-    <h4>FOOTER</h4>
-    <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
-  </footer>
-
-  <!-- End page content -->
-</div>
-
+{% block script%}
 <script>
-// Get the Sidebar
-var mySidebar = document.getElementById("mySidebar");
-
-// Get the DIV with overlay effect
-var overlayBg = document.getElementById("myOverlay");
-
-// Toggle between showing and hiding the sidebar, and add overlay effect
-function w3_open() {
-  if (mySidebar.style.display === 'block') {
-    mySidebar.style.display = 'none';
-    overlayBg.style.display = "none";
-  } else {
-    mySidebar.style.display = 'block';
-    overlayBg.style.display = "block";
+  var markers=[]
+  function removeMarkers(){
+    markers.forEach(marker => marker.setMap(null));
+    markers.splice(0, markers.length)
   }
-}
+  function showPlace(){
+      var place_name_div = document.getElementById('place_name_div')
+      var place_name_input = document.getElementById('new_location_name')
+      place_name_div.style.display = "none"
+      var select_form = document.getElementById('location')
+      var latitude = select_form.options[select_form.selectedIndex].getAttribute('latitude');
+      var longitude = select_form.options[select_form.selectedIndex].getAttribute('longitude');
+      var place_name = select_form.options[select_form.selectedIndex].getAttribute('place_name');
 
-// Close the sidebar with the close button
-function w3_close() {
-  mySidebar.style.display = "none";
-  overlayBg.style.display = "none";
-}
-</script>
+      current_pos = new google.maps.LatLng(latitude, longitude)
+      var containerMap = document.getElementById('containerMap')
+      window.map.setZoom(17)
+      placeMarkerAndPanTo(current_pos, window.map)
+  }
 
-</body>
-</html>
+  function myMap() {
+    var mapProp= {
+      center:  new google.maps.LatLng(0, 0),
+      zoom:1
+  };
+window.map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+window.map.addListener('click', function(e) {
+  placeMarkerAndPanTo(e.latLng, map);
+  var select_form = document.getElementById('location')
+  var opts = select_form.options;
+  for (var opt, j = 0; opt = opts[j]; j++) {
+    if (opt.value == -1) {
+      select_form.selectedIndex = j;
+      opt.setAttribute("latitude", e.latLng.lat());
+      opt.setAttribute("longitude", e.latLng.lng());
+      var place_name_div = document.getElementById('place_name_div')
+      place_name_div.style.display = "block"
+      var place_name_input = document.getElementById('new_location_name')
+      break;
+    }
+  }
+});
+
+  }
+  function placeMarkerAndPanTo(latLng, map) {
+    var input_latitude = document.getElementById('latitude')
+    input_latitude.value = latLng.lat()
+    var input_longitude = document.getElementById('longitude')
+    input_longitude.value = latLng.lng()
+  removeMarkers()
+  var marker = new google.maps.Marker({
+  position: latLng,
+  map: map
+});
+var contentString = 'Latitude: ' + marker.getPosition().lat() +'<br>Longitude: ' + marker.getPosition().lng() + '<br>';
+
+google.maps.event.addListener(marker, 'click', function(content) {
+      infowindow = new google.maps.InfoWindow();
+      return function(){
+          infowindow.setContent(content);
+          infowindow.open(window.map,this);
+      }
+      }(contentString));
+map.panTo(latLng);
+markers.push(marker)
+}
+  </script>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNgwbDiCLi_-4w3R0vPxRVhtUuqvALti0&callback=myMap"></script>
+
+
+{{ super() }}
+{% endblock %}
