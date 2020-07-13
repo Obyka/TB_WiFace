@@ -36,6 +36,8 @@ app.config['aws_secret_access_key'] = "***REMOVED***"
 
 app.config['JWT_ACCESS_COOKIE_PATH'] = '/'
 app.config['SECRET_KEY'] = '***REMOVED***'
+app.config['CSRF_SECRET_KEY'] = b'***REMOVED***'
+ 
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 app.config['JWT_COOKIE_CSRF_PROTECT'] = False
 app.config['JWT_CSRF_CHECK_FORM'] = False

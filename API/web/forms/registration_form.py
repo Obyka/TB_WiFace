@@ -2,6 +2,9 @@ from wtforms import Form, BooleanField, StringField, PasswordField, SelectField,
 from markupsafe import Markup
 from wtforms.widgets.core import html_params
 from wtforms.validators import ValidationError
+from wtforms.csrf.session import SessionCSRF
+from flask import session
+from config import app
 
 class CustomSelect:
     """
@@ -45,6 +48,14 @@ class RegistrationForm(Form):
     new_location_name = StringField('New location name', [new_place_validator])
     longitude = DecimalField('Longitude',[validators.NumberRange(min=-180, max=180)], places=None)
     latitude = DecimalField('Latitude',[validators.NumberRange(min=-90, max=90)], places=None)
+    class Meta:
+        csrf = True
+        csrf_class = SessionCSRF
+        csrf_secret = app.config['CSRF_SECRET_KEY']
+
+        @property
+        def csrf_context(self):
+            return session
 
 
 

@@ -25,6 +25,7 @@
     </div> 
   {% endif %}
   <p>
+  {{ login_form.csrf_token }}
   {{ login_form.email.label(class="w3-label w3-validate") }}</p>
   {{ login_form.email(class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
   <p>
