@@ -7,7 +7,7 @@ half_window_duration = datetime.timedelta(minutes=5)
 
 
 def pair_init():
-    all_identities = Identities.query.all()
+    all_identities = Identities.query.filter(Identities.PP2I == True).all()
     dict_belongs_to = {}
     BelongsTo.query.delete()
     db.session.commit()
@@ -23,9 +23,8 @@ def pair_init():
                 Probes.timestamp < end).filter(Probes.fk_place == place).all()
             # We create the couple if it does not exist yet or increase its probability
             for one_probe in probes:
-                one_address = MacAddress.query.filter(MacAddress.address == one_probe.fk_mac).one_or_none()
-                # The address must not be included
-                if one_address is None or not one_address.PP2I:
+                one_address = MacAddress.query.filter(MacAddress.address == one_probe.fk_mac).filter(MacAddress.PP2I == True).one_or_none()
+                if one_address is None:
                     continue
                 if (one_probe.fk_mac, one_identity.id) in dict_belongs_to:
                     dict_belongs_to[(one_probe.fk_mac, one_identity.id)] += 1000

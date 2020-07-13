@@ -81,6 +81,7 @@ class Identities(db.Model):
     mail = db.Column(db.String(64))
     represents = db.relationship('Represents', backref='identity')
     belongsTo = db.relationship('BelongsTo', backref='identity')
+    PP2I = db.Column(db.Boolean)
 
 
 class IdentitiesSchema(ma.ModelSchema):

@@ -83,8 +83,6 @@ def edit_pp2i(address, pp2i):
 
     macDB.PP2I = pp2i 
     db.session.commit()
-
-    # Serialize and return the newly created person in the response
     return 201
 
 @jwt_required

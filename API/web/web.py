@@ -155,7 +155,7 @@ def represents_front():
 		r = redirect('/web/identities')
 		return r
 
-@web_bp.route('/identities')
+@web_bp.route('/identities', methods=['GET', 'POST'])
 @admin_required
 def identities_front():
 	if 'id' in request.args:
@@ -171,33 +171,34 @@ def identities_front():
 		mac_datas = []
 		for mac in best_macs:
 			mac_datas.append(macs.get_mac_infos(macs.read_one(mac.get('fk_mac'))))
-		
 		return render_template('identity_details.html',pictures_place=pictures_place, nb_picture=nb_picture, age_range=age_range,identity=identity, best_pic=best_pic, best_macs=best_macs, gender=gender_result, mac_datas=mac_datas,avatar_path=avatar_path)
 	identitiy_list = identities.read_all()
+	if request.method == 'POST':
+		for identity in identitiy_list:
+			new_PP2I = identity['mail'] in request.form
+			if new_PP2I != identity['PP2I']:
+				identities.edit_pp2i(identity['mail'], new_PP2I)
+		return redirect('/web/identities')
 	return render_template('identities.html', identitiy_list=identitiy_list)
 
 @web_bp.route('/macs', methods=['GET', 'POST'])
 @admin_required
 def macs_front():
+	mac_list = macs.read_all()
 	if 'id' in request.args:
 		mac_data = macs.get_mac_infos(macs.read_one(request.args.get('id')))
 		return render_template('mac_details.html', mac_data=mac_data)
 	
 	if request.method == 'POST':
-		form = MACAddressForm(request.form)
-		if form.validate():
-			for field in form:
-				if field.name != 'submit':
-					macs.edit_pp2i(field.name, field.data)
+		for mac in mac_list:
+			new_PP2I = mac['address'] in request.form
+			if new_PP2I != mac['PP2I']:
+				macs.edit_pp2i(mac['address'], new_PP2I)
 		return redirect('/web/macs')
 	else:
-		form = MACAddressForm()
-		mac_list = macs.read_all()
 		for mac in mac_list:
 			mac =  macs.get_mac_infos(mac)
-			booleanPP2I = BooleanField(mac['address'], default=mac['PP2I'])
-			setattr(MACAddressForm, mac['address'], booleanPP2I)
-		return render_template('macs.html', mac_list=mac_list, form=form)
+		return render_template('macs.html', mac_list=mac_list)
 
 @web_bp.route('/pictures')
 @admin_required

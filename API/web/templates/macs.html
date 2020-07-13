@@ -24,12 +24,13 @@
           <td><i>{{mac['vendor_name']}}</i></td>
           <td><i>{{mac.isRandom}}</i></td>
           <td><i>{{mac['nb_probes']}}</i></td>
-          <td><i>{{form[mac.address]}}</i></td>
+          <td><i><input id="{{mac.address}}" name="{{mac.address}}" type="checkbox" value="PP2I" {{ 'checked' if mac.PP2I else '' }}></i></td>
+          
 
         </tr>
         {% endfor %}
       </table>
-      {{form['submit']}}
+      <input type="submit" value="Envoyer le formulaire">
     </form>
     </div>
   </div>

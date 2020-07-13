@@ -63,10 +63,10 @@ def main():
     ]
 
     IDENTITIES = [
-        {"id": 1, "firstname": "Bruce", "lastname": "Wayne", "mail": "batman", "uuid": "f8d9c454-443e-45d0-937f-17b676dd6fde"},
-        {"id": 2, "firstname": "Clark", "lastname": "Kent", "mail": "superman", "uuid": "3cf2fca0-f743-415b-ac3d-728121d64bae"},
-        {"id": 3, "firstname": "Tony", "lastname": "Stark", "mail": "ironman", "uuid": "629fa6e3-4b6b-49d4-abef-29829c1f860e"},
-        {"id": 4, "firstname": "Diana", "lastname": "Prince", "mail": "wonderwoman", "uuid": "729fa6e3-4b6b-49d4-abef-29829c1f860e"}
+        {"id": 1, "firstname": "Bruce", "lastname": "Wayne", "mail": "batman", "uuid": "f8d9c454-443e-45d0-937f-17b676dd6fde", "PP2I" : False},
+        {"id": 2, "firstname": "Clark", "lastname": "Kent", "mail": "superman", "uuid": "3cf2fca0-f743-415b-ac3d-728121d64bae", "PP2I" : True},
+        {"id": 3, "firstname": "Tony", "lastname": "Stark", "mail": "ironman", "uuid": "629fa6e3-4b6b-49d4-abef-29829c1f860e", "PP2I" : False},
+        {"id": 4, "firstname": "Diana", "lastname": "Prince", "mail": "wonderwoman", "uuid": "729fa6e3-4b6b-49d4-abef-29829c1f860e", "PP2I" : False}
     ]
 
     probe_time = timedelta(minutes=(2))
@@ -141,7 +141,7 @@ def main():
 
     for identity in IDENTITIES:
         i = Identities(id=identity['id'], firstname=identity['firstname'],
-                       lastname=identity['lastname'], mail=identity['mail'], uuid=identity['uuid'])
+                       lastname=identity['lastname'], mail=identity['mail'], uuid=identity['uuid'], PP2I=identity['PP2I'])
         db.session.add(i)
     db.session.flush()
 

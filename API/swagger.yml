@@ -791,6 +791,8 @@ definitions:
         type: string
       uuid:
         type: string
+      PP2I: 
+        type: boolean
   Credentials:
     properties:
       email:

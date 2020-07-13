@@ -11,6 +11,18 @@ from models import (Identities, IdentitiesSchema, Pictures, PicturesSchema,
 def count():
     return Identities.query.count()
 
+@jwt_required
+def edit_pp2i(mail, pp2i):
+    identityDB = Identities.query \
+        .filter(Identities.mail == mail) \
+        .one_or_none()
+
+    if identityDB is None:
+        abort(404, 'Identity {mail} does not exist'.format(mail=mail))
+
+    identityDB.PP2I = pp2i 
+    db.session.commit()
+    return 201
 
 @jwt_required
 def read_age_range(id_identity):
