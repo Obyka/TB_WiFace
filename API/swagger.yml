@@ -722,6 +722,17 @@ paths:
             description: Picture successfully uploaded.
           400:
             description: Bad request (No file part, bad extension).
+  /pp2i:
+    put:
+      operationId: mariage.mariage
+      tags:
+        - Mariage
+      summary: RPC to launch the PP2I algorithm
+      description: RPC to launch the PP2I algorithm
+      responses:
+          204: 
+            description: The request was successfully executed.
+
 definitions:
   BelongTo:
     properties:

@@ -104,4 +104,3 @@ def add_to_database(dict_belongs_to):
 def mariage():
     final_values = my_tanh(MAC_but_no_ID(ID_but_no_MAC(pair_init())))
     add_to_database(final_values)
-    return str(final_values)

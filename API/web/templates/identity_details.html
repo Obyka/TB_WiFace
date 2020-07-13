@@ -53,12 +53,50 @@
     <a href="{{ url_for('web_bp.macs_front', id=mac.fk_mac) }}">{{mac.fk_mac}}</a>
     {% endfor %}
     {% endif %}
+
+    <p class="w3-center"><button id="buttonPP2I" class="w3-red w3-btn w3-round-xxlarge">Update data</button></p>
+
   </div>
 </div>
+ 
+ <!-- The Modal -->
+ <div id="id01" class="w3-modal">
+  <div class="w3-modal-content">
+
+    <header class="w3-container w3-blue">
+      <span onclick="document.getElementById('id01').style.display='none'"
+      class="w3-button w3-display-topright">&times;</span>
+      <h2>Updating relationship data</h2>
+    </header>
+
+    <div class="w3-container">
+      <p>You will be redirected soon.</p>
+    </div>
+  </div>
+</div> 
 {% endblock %} 
 
  {% block script%}
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
  <script type="text/javascript" src="{{url_for('web_bp.static', filename='js/switchPicture.js')}}"></script>
+ <script type="text/javascript">
+  $(function () {
+   $('#buttonPP2I').on('click', function () {
+       $.ajax({
+         url: '{{url_for("web_bp.pp2i_front")}}',
+         type: 'PUT',
+         success: function(data) {
+          $("#id01").css("display", "block");
+          setTimeout(
+          function() 
+          {
+            location.reload()
+          }, 3000);        
+   }
+ });
+   });
+ });
+ </script>
  <script>
   function myMap() {
     var mapProp= {

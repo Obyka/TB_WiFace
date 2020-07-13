@@ -65,11 +65,9 @@ def create(mac):
     if macDB is not None:
         abort(409, 'MAC {address} already exist'.format(address=new_mac.address))
 
-    # Add the person to the database
     db.session.add(new_mac)
     db.session.commit()
 
-    # Serialize and return the newly created person in the response
     return schema.dump(new_mac), 201
 
 @jwt_required

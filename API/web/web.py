@@ -134,12 +134,16 @@ def login_front():
 			return render_template('login.html', login_form=login_form, form_error=login_form.errors)
 	return render_template('login.html', login_form=login_form)
 
+@web_bp.route('/pp2i', methods=['PUT'])
+@admin_required
+def pp2i_front():
+	mariage.mariage()
+	return ('', 204)
 @web_bp.route('/statistics')
 @admin_required
 def statistics_front():
-	test = pictures.feed()
-	test = [((verbose_timedelta(datetime.datetime.utcnow() - i[0])), i[1]) for i in test]
-	return render_template('statistics.html', message=mariage.mariage(), test=test)
+	feed = [((verbose_timedelta(datetime.datetime.utcnow() - i[0])), i[1]) for i in pictures.feed()]
+	return render_template('statistics.html', feed=feed)
 
 @web_bp.route('/represents')
 @admin_required
