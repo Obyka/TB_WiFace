@@ -24,6 +24,7 @@ from .forms.registration_form import RegistrationForm
 from .forms.login_form import LoginForm
 from .forms.mac_addresses_form import MACAddressForm 
 from wtforms import BooleanField
+from werkzeug.exceptions import HTTPException
 
 # Blueprint Configuration
 web_bp = Blueprint('web_bp', __name__, template_folder='templates', static_folder='static')
@@ -139,6 +140,7 @@ def login_front():
 def pp2i_front():
 	mariage.mariage()
 	return ('', 204)
+
 @web_bp.route('/statistics')
 @admin_required
 def statistics_front():
@@ -185,9 +187,17 @@ def identities_front():
 		return redirect('/web/identities')
 	return render_template('identities.html', identitiy_list=identitiy_list)
 
-@web_bp.route('/macs', methods=['GET', 'POST'])
+@web_bp.route('/macs', methods=['GET', 'POST', 'DELETE'])
 @admin_required
 def macs_front():
+	if request.method == "DELETE":
+		if 'id' in request.args:
+			try:
+				macs.delete(request.args.get('id'))
+			except HTTPException:
+				return '', 404
+			return '', 204
+
 	mac_list = macs.read_all()
 	if 'id' in request.args:
 		mac_data = macs.get_mac_infos(macs.read_one(request.args.get('id')))

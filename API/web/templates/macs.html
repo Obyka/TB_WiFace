@@ -17,6 +17,7 @@
               <th>Is random</th>
               <th>Number of probes</th>
               <th>Should be included in PP2I?</th>
+              <th>Delete</th>
           </tr>
         {% for mac in mac_list %}
         <tr>
@@ -25,7 +26,7 @@
           <td><i>{{mac.isRandom}}</i></td>
           <td><i>{{mac['nb_probes']}}</i></td>
           <td><i><input id="{{mac.address}}" name="{{mac.address}}" type="checkbox" value="PP2I" {{ 'checked' if mac.PP2I else '' }}></i></td>
-          
+          <td><i class="fa fa-trash-o delete_icon" name="{{mac.address}}" aria-hidden="true"></i></td>
 
         </tr>
         {% endfor %}
@@ -35,4 +36,50 @@
     </div>
   </div>
 </div>
-{% endblock %} 
+
+<!-- The Modal -->
+<div id="id01" class="w3-modal">
+  <div class="w3-modal-content">
+
+    <header class="w3-container w3-blue">
+      <span onclick="document.getElementById('id01').style.display='none'"
+      class="w3-button w3-display-topright">&times;</span>
+      <h2>Updating relationship data</h2>
+    </header>
+
+    <div class="w3-container">
+      <p>Deleting MAC address?
+      <div class="clearfix">
+        <button type="button" id="cancelDelete" class="cancelbtn">Cancel</button>
+        <button type="button" id="confirmDelete" class="deletebtn">Delete</button>
+      </div>
+    </p>
+    </div>
+  </div>
+</div> 
+{% endblock %}
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script type="text/javascript">
+ $(function () {
+  $('.delete_icon').on('click', function () {
+    var i = $(this).attr('name');
+    var trToRemove = $(this).closest('tr');
+    $("#id01").css("display", "block");
+    $("#cancelDelete").on('click', function () {
+      $("#id01").css("display", "none");
+    });
+    $('#confirmDelete').one('click', function () {
+      $.ajax({
+        url: '{{url_for("web_bp.macs_front")}}'+'?id='+i,
+        type: 'DELETE',
+        success: function(data) {
+            trToRemove.remove();
+            $("#id01").css("display", "none");
+          }
+      })  
+    });
+  });
+});
+</script>
+{% endblock %}

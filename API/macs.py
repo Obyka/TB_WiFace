@@ -106,4 +106,4 @@ def delete(address):
         return '', 204
 
     else:
-        abort(404, "MAC Address {address} not found".format(probe_id=id))
+        abort(404, "MAC Address {address} not found".format(address=address))
