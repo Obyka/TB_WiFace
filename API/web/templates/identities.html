@@ -17,6 +17,7 @@
               <th>Mail address</th>
               <th>UUID</th>
               <th>Should be included in PP2I?</th>
+              <th>Delete</th>
           </tr>
         {% for identity in identitiy_list %}
         <tr>
@@ -25,6 +26,7 @@
           <td><i>{{identity.mail}}</i></td>
           <td><i><a href="{{ url_for('web_bp.identities_front', id=identity.id) }}">{{identity.uuid}}</a></i></td>
           <td><i><input id="{{identity.mail}}" name="{{identity.mail}}" type="checkbox" value="PP2I" {{ 'checked' if identity.PP2I else '' }}></i></td>
+          <td><i class="fa fa-trash-o delete_icon" name="{{identity.id}}" aria-hidden="true"></i></td>
         </tr>
         {% endfor %}
       </table>
@@ -33,4 +35,50 @@
     </div>
   </div>
 </div>
-{% endblock %} 
+
+<!-- The Modal -->
+<div id="id01" class="w3-modal">
+  <div class="w3-modal-content">
+
+    <header class="w3-container w3-blue">
+      <span onclick="document.getElementById('id01').style.display='none'"
+      class="w3-button w3-display-topright">&times;</span>
+      <h2>Deleting identity</h2>
+    </header>
+
+    <div class="w3-container">
+      <p>Do you want to delete this item?
+      <div class="clearfix">
+        <button type="button" id="cancelDelete" class="cancelbtn">Cancel</button>
+        <button type="button" id="confirmDelete" class="deletebtn">Delete</button>
+      </div>
+    </p>
+    </div>
+  </div>
+</div> 
+{% endblock %}
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script type="text/javascript">
+ $(function () {
+  $('.delete_icon').on('click', function () {
+    var i = $(this).attr('name');
+    var trToRemove = $(this).closest('tr');
+    $("#id01").css("display", "block");
+    $("#cancelDelete").on('click', function () {
+      $("#id01").css("display", "none");
+    });
+    $('#confirmDelete').one('click', function () {
+      $.ajax({
+        url: '{{url_for("web_bp.identities_front")}}'+'?id='+i,
+        type: 'DELETE',
+        success: function(data) {
+            trToRemove.remove();
+            $("#id01").css("display", "none");
+          }
+      })  
+    });
+  });
+});
+</script>
+{% endblock %}

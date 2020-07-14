@@ -10,7 +10,6 @@ from werkzeug.utils import secure_filename
 
 import config
 import users
-from recognize_face import handle_picture
 from web import web
 
 # Get the application instance

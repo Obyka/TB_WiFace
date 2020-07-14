@@ -10,10 +10,20 @@ from flask_jwt_extended import (jwt_required, get_jwt_claims)
 
 import time
 import uuid
-from identities import read_one_by_uuid
+import identities
 from models import BelongsTo, Identities, Pictures, Places, Represents
 
 aws_rekognition_client=boto_client
+
+def delete_faces_from_collection(collection, faces, client):
+
+    response=client.delete_faces(CollectionId=collection,
+                               FaceIds=faces)
+    
+    print(str(len(response['DeletedFaces'])) + ' faces deleted:') 							
+    for faceId in response['DeletedFaces']:
+         print (faceId)
+    return len(response['DeletedFaces'])
 
 def add_face_collection(collection, image_name, face_identity, client):
     """Index the face contained in an image and add it in a collection
@@ -96,7 +106,7 @@ def print_search_results(matched_faces, face_image_name):
             print("")
 
 
-def constructPictureObject(faceDetails, picture_name, fk_place):
+def constructPictureObject(face_id, faceDetails, picture_name, fk_place):
     booleanAttr = ['Eyeglasses', 'Sunglasses', 'Beard', 'Mustache']
     parsedDict = dict()
     for attribute in booleanAttr:
@@ -107,6 +117,7 @@ def constructPictureObject(faceDetails, picture_name, fk_place):
     parsedDict['brightness'] = faceDetails['Quality']['Brightness']
     parsedDict['sharpness'] = faceDetails['Quality']['Sharpness']
 
+    parsedDict['face_id'] = face_id
     parsedDict['ageMin'] = faceDetails['AgeRange']['Low']
     parsedDict['ageMax'] = faceDetails['AgeRange']['High']
     parsedDict['gender'] = faceDetails['Gender']['Confidence'] if faceDetails['Gender']['Value'] == 'Female' else - \
@@ -169,7 +180,7 @@ def handle_picture(picture_name):
             faceUUID = response_search['FaceMatches'][0]['Face']['ExternalImageId']
             similarity = round(response_search['FaceMatches'][0]['Similarity'], 1)
             try:
-                get_identity = read_one_by_uuid(faceUUID)
+                get_identity = identities.read_one_by_uuid(faceUUID)
             except Exception as e:
                 continue
             face_identity = Identities(id=get_identity['id'], uuid=get_identity['uuid'])
@@ -193,16 +204,13 @@ def handle_picture(picture_name):
             continue
         
         faceDetails = fullFaceResponse['FaceRecords'][0]['FaceDetail']
-
+        face_id = fullFaceResponse['FaceRecords'][0]['Face']['FaceId']
         print(fullFaceResponse)
-        p = constructPictureObject(faceDetails, cropped_face, get_jwt_claims()['fk_place'])
+        p = constructPictureObject(face_id, faceDetails, cropped_face, get_jwt_claims()['fk_place'])
         db.session.add(p)
         db.session.flush()
         r = Represents(probability=confidence, fk_identity=face_identity.id, fk_picture=p.id)
         db.session.add(r)
         db.session.flush()
         db.session.commit()
-
-
-
 

@@ -79,8 +79,8 @@ class Identities(db.Model):
     firstname = db.Column(db.String(32))
     lastname = db.Column(db.String(32))
     mail = db.Column(db.String(64))
-    represents = db.relationship('Represents', backref='identity')
-    belongsTo = db.relationship('BelongsTo', backref='identity')
+    represents = db.relationship('Represents', backref='identity', cascade="save-update, merge, delete")
+    belongsTo = db.relationship('BelongsTo', backref='identity', cascade="save-update, merge, delete")
     PP2I = db.Column(db.Boolean)
 
 
@@ -111,6 +111,7 @@ class Pictures(db.Model):
     disgusted = db.Column(db.Numeric(1,10))
     brightness = db.Column(db.Numeric(1,10))
     sharpness = db.Column(db.Numeric(1,10))
+    face_id = db.Column(db.String(36), unique=True)
 
     fk_place = db.Column(db.Integer, db.ForeignKey('places.id'))
     Represents = db.relationship('Represents', backref='picture')

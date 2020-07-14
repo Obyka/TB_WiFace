@@ -3,9 +3,10 @@ import functools
 from flask import abort, make_response
 from flask_jwt_extended import jwt_required
 
-from config import db
+from config import db, boto_client, app
 from models import (Identities, IdentitiesSchema, Pictures, PicturesSchema,
                     Represents, RepresentsSchema)
+import aws_process
 
 
 def count():
@@ -113,6 +114,15 @@ def read_one(id):
 @jwt_required
 def delete(id):
     identity = Identities.query.filter(Identities.id == id).one_or_none()
+    face_ids = Pictures.query\
+        .with_entities(Pictures.face_id)\
+        .join(Represents, Pictures.id == Represents.fk_picture) \
+        .filter(Represents.fk_identity == id) \
+        .all()
+
+    face_ids_result = [r for (r, ) in face_ids if r is not None]
+    if len(face_ids_result) > 0:
+        aws_process.delete_faces_from_collection(app.config['COLLECTION_NAME'],face_ids_result,boto_client)
 
     if identity is not None:
         db.session.delete(identity)

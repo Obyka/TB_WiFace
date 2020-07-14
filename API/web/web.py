@@ -161,9 +161,16 @@ def represents_front():
 		r = redirect('/web/identities')
 		return r
 
-@web_bp.route('/identities', methods=['GET', 'POST'])
+@web_bp.route('/identities', methods=['GET', 'POST', 'DELETE'])
 @admin_required
 def identities_front():
+	if request.method == "DELETE":
+		if 'id' in request.args:
+			try:
+				identities.delete(request.args.get('id'))
+			except HTTPException:
+				return '', 404
+			return '', 204
 	if 'id' in request.args:
 		identity = identities.read_one(request.args.get('id'))
 		nb_picture = pictures.count_by_id(identity.get('id'))
