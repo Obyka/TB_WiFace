@@ -23,6 +23,7 @@ import places
 from .forms.registration_form import RegistrationForm
 from .forms.login_form import LoginForm
 from .forms.mac_addresses_form import MACAddressForm 
+from .forms.identity_form import IdentityForm 
 from wtforms import BooleanField
 from werkzeug.exceptions import HTTPException
 
@@ -161,6 +162,12 @@ def represents_front():
 		r = redirect('/web/identities')
 		return r
 
+@web_bp.route('/identities/<identity_id>', methods=['POST'])
+def identity_form_front(identity_id):
+	form = IdentityForm(request.form)
+	if form.validate:
+		return jsonify(data={'message': 'hello {}'.format(form.email.data)})
+	return jsonify(data=form.errors)
 @web_bp.route('/identities', methods=['GET', 'POST', 'DELETE'])
 @admin_required
 def identities_front():
@@ -172,19 +179,21 @@ def identities_front():
 				return '', 404
 			return '', 204
 	if 'id' in request.args:
-		identity = identities.read_one(request.args.get('id'))
-		nb_picture = pictures.count_by_id(identity.get('id'))
-		mac_addresses = belongsto.read_by_identity(identity.get('id'))
-		age_range = identities.read_age_range(identity.get('id'))
-		gender_result = identities.read_gender(identity.get('id'))
-		best_pic = pictures.read_best_pic(identity.get('id'))
-		pictures_place = pictures.get_picture_place_by_identity(identity.get('id'))
-		avatar_path = avatar.draw_avatar(best_pic)
-		best_macs = mariage.best_fit(mac_addresses) if mac_addresses else []
-		mac_datas = []
-		for mac in best_macs:
-			mac_datas.append(macs.get_mac_infos(macs.read_one(mac.get('fk_mac'))))
-		return render_template('identity_details.html',pictures_place=pictures_place, nb_picture=nb_picture, age_range=age_range,identity=identity, best_pic=best_pic, best_macs=best_macs, gender=gender_result, mac_datas=mac_datas,avatar_path=avatar_path)
+		if request.method == "GET":
+			identity_form = IdentityForm()
+			identity = identities.read_one(request.args.get('id'))
+			nb_picture = pictures.count_by_id(identity.get('id'))
+			mac_addresses = belongsto.read_by_identity(identity.get('id'))
+			age_range = identities.read_age_range(identity.get('id'))
+			gender_result = identities.read_gender(identity.get('id'))
+			best_pic = pictures.read_best_pic(identity.get('id'))
+			pictures_place = pictures.get_picture_place_by_identity(identity.get('id'))
+			avatar_path = avatar.draw_avatar(best_pic)
+			best_macs = mariage.best_fit(mac_addresses) if mac_addresses else []
+			mac_datas = []
+			for mac in best_macs:
+				mac_datas.append(macs.get_mac_infos(macs.read_one(mac.get('fk_mac'))))
+		return render_template('identity_details.html',identity_form=identity_form, pictures_place=pictures_place, nb_picture=nb_picture, age_range=age_range,identity=identity, best_pic=best_pic, best_macs=best_macs, gender=gender_result, mac_datas=mac_datas,avatar_path=avatar_path)
 	identitiy_list = identities.read_all()
 	if request.method == 'POST':
 		for identity in identitiy_list:
