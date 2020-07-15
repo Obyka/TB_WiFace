@@ -111,7 +111,7 @@ class Pictures(db.Model):
     disgusted = db.Column(db.Numeric(1,10))
     brightness = db.Column(db.Numeric(1,10))
     sharpness = db.Column(db.Numeric(1,10))
-    face_id = db.Column(db.String(36), unique=True)
+    face_id = db.Column(db.String(36), unique=False)
 
     fk_place = db.Column(db.Integer, db.ForeignKey('places.id'))
     Represents = db.relationship('Represents', backref='picture')
