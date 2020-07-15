@@ -50,10 +50,6 @@ def inject_identity():
 	return dict(current_user=get_jwt_identity(), current_role=get_jwt_claims())
 
 @web_bp.context_processor
-def inject_counters():
-	return dict(probe_count=probes.count(), mac_count=macs.count(), id_count=identities.count(), pic_cout=pictures.count(), mac_random=macs.count_random())
-
-@web_bp.context_processor
 def inject_path():
 	return dict(picture_path=config.app.config['UPLOAD_FOLDER'])
 
@@ -117,7 +113,6 @@ def logout_front():
 	return r
 
 @web_bp.route('/login', methods=['GET', 'POST'])
-@jwt_optional
 def login_front():
 	login_form = LoginForm(request.form)
 	identity = get_jwt_identity()
@@ -150,7 +145,7 @@ def pp2i_front():
 @admin_required
 def statistics_front():
 	feed = [((verbose_timedelta(datetime.datetime.utcnow() - i[0])), i[1]) for i in pictures.feed()]
-	return render_template('statistics.html', feed=feed)
+	return render_template('statistics.html', feed=feed, probe_count=probes.count(), mac_count=macs.count(), id_count=identities.count(), pic_cout=pictures.count(), mac_random=macs.count_random())
 
 @web_bp.route('/represents/<represent_id>', methods=['GET'])
 @admin_required

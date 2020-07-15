@@ -46,10 +46,11 @@ def user_identity_lookup(user):
 def unauthorized_loader_handler(error):
     print("unauthorized token" * 1000)
     if request.path.startswith('/api/'):
-        return jsonify(err="missing JWT"), 401
+        resp = make_response(jsonify(err="missing JWT"),401)
     else:
-        return redirect('/web/login')
-
+        resp = make_response(redirect('/web/login'))
+    unset_jwt_cookies(resp)
+    return resp
 
 @config.jwtM.invalid_token_loader
 def invalid_token_callback(callback):
