@@ -21,7 +21,7 @@
           </tr>
         {% for mac in mac_list %}
         <tr>
-          <td><i><a href="{{ url_for('web_bp.macs_front', id=mac.address) }}">{{mac.address}}</a></i></td>
+          <td><i><a href="{{ url_for('web_bp.mac_front', mac_id=mac.address) }}">{{mac.address}}</a></i></td>
           <td><i>{{mac['vendor_name']}}</i></td>
           <td><i>{{mac.isRandom}}</i></td>
           <td><i>{{mac['nb_probes']}}</i></td>
@@ -71,7 +71,7 @@
     });
     $('#confirmDelete').one('click', function () {
       $.ajax({
-        url: '{{url_for("web_bp.macs_front")}}'+'?id='+i,
+        url: '{{url_for("web_bp.mac_front", mac_id="REPLACE_ID")}}'.replace("REPLACE_ID", i),
         type: 'DELETE',
         success: function(data) {
             trToRemove.remove();

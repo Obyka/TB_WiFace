@@ -18,8 +18,8 @@
     <form id="identity_form">
       {{ identity_form.csrf_token }}
    <h4 class="w3-center">{{identity.uuid}}</h4>
-   <p class="w3-center" style="display:none" id="picture"><a href="{{url_for('web_bp.pictures_front', id=best_pic.id)}}"><img src="{{ url_for('web_bp.static', filename='images/'+best_pic.picPath) }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></a></p>
-   <p class="w3-center" id="avatar"><a href="{{url_for('web_bp.pictures_front', id=best_pic.id)}}"><img src="{{ url_for('web_bp.static', filename='images/'+avatar_path) }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></a></p>
+   <p class="w3-center" style="display:none" id="picture"><a href="{{url_for('web_bp.pictures_front', picture_id=best_pic.id)}}"><img src="{{ url_for('web_bp.static', filename='images/'+best_pic.picPath) }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></a></p>
+   <p class="w3-center" id="avatar"><a href="{{url_for('web_bp.pictures_front', picture_id=best_pic.id)}}"><img src="{{ url_for('web_bp.static', filename='images/'+avatar_path) }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></a></p>
   
     <p class="w3-center"><button id="buttonPicture" class="w3-red w3-btn w3-round-xxlarge" onclick="switchPhoto()">Show picture</button></p>
 
@@ -44,7 +44,7 @@
 
   {% if nb_picture %}
   <p class="w3-center w3-xlarge">
-    <i class="fa fa-picture-o fa-fw"></i> <a href="{{url_for('web_bp.represents_front', id=identity.id)}}" >Number of taken pictures: {{nb_picture}}</a>
+    <i class="fa fa-picture-o fa-fw"></i> <a href="{{url_for('web_bp.represents_front', represent_id=identity.id)}}" >Number of taken pictures: {{nb_picture}}</a>
   </p>
   {% endif %}
 
@@ -55,7 +55,7 @@
    {% if best_macs%}
    <p class="w3-center w3-xlarge"><i class="fa fa-mobile  fa-fw"></i> MAC: 
     {% for mac in best_macs %}
-    <a href="{{ url_for('web_bp.macs_front', id=mac.fk_mac) }}">{{mac.fk_mac}}</a>
+    <a href="{{ url_for('web_bp.mac_front', mac_id=mac.fk_mac) }}">{{mac.fk_mac}}</a>
     {% endfor %}
     {% endif %}
 
@@ -92,7 +92,6 @@ $('form').submit(function (e) {
                 url: url,
                 data: $('form').serialize(), // serializes the form's elements.
                 success: function (data) {
-                    console.log(data)  // display the returned data in the console.
                     $(".edit_data").css("display","block");
                     $(".input_data").css("display","none");
                     var icon_name = $("#data_first_last").find('i'); 

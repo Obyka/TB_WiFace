@@ -9,7 +9,7 @@
   <div class="w3-row-padding" style="margin:0 -16px">
     <div class="w3">
       {% for picture in pictures_list %}
-        <a href="{{url_for('web_bp.pictures_front', id=picture.id)}}"><img src="{{ url_for('web_bp.static', filename='images/'+picture.picPath) }}" class="w3-margin" style="height:106px;width:106px" alt="Avatar"></a>
+        <a href="{{url_for('web_bp.pictures_front', picture_id=picture.id)}}"><img src="{{ url_for('web_bp.static', filename='images/'+picture.picPath) }}" class="w3-margin" style="height:106px;width:106px" alt="Avatar"></a>
       {% endfor %}
     </div>
   </div>

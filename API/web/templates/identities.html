@@ -24,7 +24,7 @@
           <td><i>{{identity.firstname}}</i></td>
           <td><i>{{identity.lastname}}</i></td>
           <td><i>{{identity.mail}}</i></td>
-          <td><i><a href="{{ url_for('web_bp.identities_front', id=identity.id) }}">{{identity.uuid}}</a></i></td>
+          <td><i><a href="{{ url_for('web_bp.identity_form_front', identity_id=identity.id) }}">{{identity.uuid}}</a></i></td>
           <td><i><input id="{{identity.mail}}" name="{{identity.mail}}" type="checkbox" value="PP2I" {{ 'checked' if identity.PP2I else '' }}></i></td>
           <td><i class="fa fa-trash-o delete_icon" name="{{identity.id}}" aria-hidden="true"></i></td>
         </tr>
@@ -70,7 +70,7 @@
     });
     $('#confirmDelete').one('click', function () {
       $.ajax({
-        url: '{{url_for("web_bp.identities_front")}}'+'?id='+i,
+        url: '{{url_for("web_bp.identity_form_front", identity_id="REPLACE_ID")}}'.replace("REPLACE_ID", i),
         type: 'DELETE',
         success: function(data) {
             trToRemove.remove();
