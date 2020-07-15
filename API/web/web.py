@@ -2,6 +2,7 @@ import datetime
 import os
 from functools import wraps
 
+from models import (Identities, IdentitiesSchema)
 from dateutil.relativedelta import relativedelta
 from flask import (Blueprint, abort, make_response, redirect, render_template,
                    request, jsonify)
@@ -165,9 +166,18 @@ def represents_front():
 @web_bp.route('/identities/<identity_id>', methods=['POST'])
 def identity_form_front(identity_id):
 	form = IdentityForm(request.form)
-	if form.validate:
-		return jsonify(data={'message': 'hello {}'.format(form.email.data)})
-	return jsonify(data=form.errors)
+	schema = IdentitiesSchema()
+	if form.csrf_token.validate(IdentityForm):
+		old_identity = identities.read_one(identity_id)
+		old_identity = schema.load(old_identity)
+		old_identity.mail=form.email.data if form.email.validate(IdentityForm) else old_identity.mail
+		old_identity.firstname=form.firstname.data if form.firstname.validate(IdentityForm) else old_identity.firstname
+		old_identity.lastname=form.lastname.data if form.lastname.validate(IdentityForm) else old_identity.lastname
+		serialized_identity=schema.dump(old_identity)
+		identities.edit_identity(identity_id, serialized_identity)
+		return jsonify({'firstname': old_identity.firstname, 'lastname':old_identity.lastname, 'mail':old_identity.mail}), 201
+	else:
+		return '', 500
 @web_bp.route('/identities', methods=['GET', 'POST', 'DELETE'])
 @admin_required
 def identities_front():

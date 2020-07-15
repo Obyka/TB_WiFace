@@ -16,6 +16,7 @@
 <div class="w3-card w3-round w3-white w3-rest">
   <div class="w3-container">
     <form id="identity_form">
+      {{ identity_form.csrf_token }}
    <h4 class="w3-center">{{identity.uuid}}</h4>
    <p class="w3-center" style="display:none" id="picture"><a href="{{url_for('web_bp.pictures_front', id=best_pic.id)}}"><img src="{{ url_for('web_bp.static', filename='images/'+best_pic.picPath) }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></a></p>
    <p class="w3-center" id="avatar"><a href="{{url_for('web_bp.pictures_front', id=best_pic.id)}}"><img src="{{ url_for('web_bp.static', filename='images/'+avatar_path) }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></a></p>
@@ -32,14 +33,14 @@
    {% if age_range %}
    <p class="w3-center w3-xlarge"><i class="fa fa-birthday-cake fa-fw"></i> Estimated Age: {{age_range[0]}} - {{age_range[1]}}</p>
    {% endif %}
-
-   {% if identity.firstname or identity.lastname%}
-   <p class="w3-center w3-xlarge edit_data"><i class="fa fa-id-card-o fa-fw"></i>{{identity.firstname}} {{identity.lastname}}</p>
+  
+   {% set firstname = identity.firstname if identity.firstname else 'TBD' %}
+   {% set lastname = identity.lastname if identity.lastname else 'TBD' %}
+   <p class="w3-center w3-xlarge edit_data" id="data_first_last"><i class="fa fa-id-card-o fa-fw"></i>{{firstname}} {{lastname}}</p>
     <p class="w3-center w3-xlarge input_data" style="display:none;"><i class="fa fa-id-card-o fa-fw"></i> 
-      {{ identity_form.firstname(placeholder=identity.firstname, class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
-      {{ identity_form.lastname(placeholder=identity.lastname, class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
+      {{ identity_form.firstname(id="firstname_form",placeholder=identity.firstname, class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
+      {{ identity_form.lastname(id="lastname_form",placeholder=identity.lastname, class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
     </p>
-  {% endif %}
 
   {% if nb_picture %}
   <p class="w3-center w3-xlarge">
@@ -47,11 +48,10 @@
   </p>
   {% endif %}
 
-  {% if identity.mail %}
-   <p class="w3-center w3-xlarge edit_data"><i class="fa fa-envelope fa-fw"></i>{{identity.mail}}</p>
-   <p class="w3-center w3-xlarge input_data" style="display:none;"><i class="fa fa-envelope fa-fw"></i> {{ identity_form.email(placeholder=identity.mail,class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
+  {% set mail = identity.mail if identity.mail else 'TBD' %}
+   <p class="w3-center w3-xlarge edit_data" id="data_email"><i class="fa fa-envelope fa-fw"></i>{{mail}}</p>
+   <p class="w3-center w3-xlarge input_data" style="display:none;"><i class="fa fa-envelope fa-fw"></i> {{ identity_form.email(id="email_form",placeholder=identity.mail,class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
    </p>
-   {% endif %}
    {% if best_macs%}
    <p class="w3-center w3-xlarge"><i class="fa fa-mobile  fa-fw"></i> MAC: 
     {% for mac in best_macs %}
@@ -85,15 +85,7 @@
  <script type="text/javascript" src="{{url_for('web_bp.static', filename='js/switchPicture.js')}}"></script>
  <script type="text/javascript">
 
-  window.onclick = function(event) {
-    var container = $(".input_data");
-    var container2 = $(".edit_data").add($(".edit_data").children());
-
-  // if the target of the click isn't the container nor a descendant of the container
-  if (!container2.is(event.target) && !container.is(event.target) && container.has(event.target).length === 0 && container.css("display") == "block") 
-  {
-    alert('outside')
-    $('form').submit(function (e) {
+$('form').submit(function (e) {
             var url = "{{ url_for('web_bp.identity_form_front', identity_id=identity.id) }}"; // send the form data here.
             $.ajax({
                 type: "POST",
@@ -101,21 +93,25 @@
                 data: $('form').serialize(), // serializes the form's elements.
                 success: function (data) {
                     console.log(data)  // display the returned data in the console.
+                    $(".edit_data").css("display","block");
+                    $(".input_data").css("display","none");
+                    var icon_name = $("#data_first_last").find('i'); 
+                    $("#data_first_last").text(data.firstname + " " + data.lastname).prepend(icon_name)
+                    var icon_email = $("#data_email").find('i'); 
+                    $("#data_email").text($('#email_form').val()).prepend(icon_email);
                 }
             });
             e.preventDefault(); // block the traditional submission of the form.
-        });
+});
 
-        // Inject our CSRF token into our AJAX request.
-        $.ajaxSetup({
-            beforeSend: function(xhr, settings) {
-                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", "{{ identity_form.csrf_token._value() }}")
-                    alert('CSRF TOKEN')
-                }
-            }
-        })
-        $( "form" ).first().submit();
+  window.onclick = function(event) {
+    var container = $(".input_data");
+    var container2 = $(".edit_data").add($(".edit_data").children());
+
+  // if the target of the click isn't the container nor a descendant of the container
+  if (!container2.is(event.target) && !container.is(event.target) && container.has(event.target).length === 0 && container.css("display") == "block") 
+  {
+    $( "form" ).first().submit();
   }
 }
 

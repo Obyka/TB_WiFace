@@ -8,9 +8,22 @@ from models import (Identities, IdentitiesSchema, Pictures, PicturesSchema,
                     Represents, RepresentsSchema)
 import aws_process
 
-
+@jwt_required
 def count():
     return Identities.query.count()
+
+@jwt_required
+def edit_identity(id_to_edit, identity):
+    identity_schema = IdentitiesSchema()
+    new_identity = identity_schema.load(identity)
+    nb_row = db.session.query(Identities) \
+        .filter_by(id = id_to_edit) \
+        .update(dict(mail=new_identity.mail, firstname=new_identity.firstname, lastname=new_identity.lastname))
+
+    if nb_row != 1:
+        abort(500, 'The identity could not be modified.')
+    db.session.commit()
+    return 201
 
 @jwt_required
 def edit_pp2i(mail, pp2i):
