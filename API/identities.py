@@ -26,13 +26,13 @@ def edit_identity(id_to_edit, identity):
     return 201
 
 @jwt_required
-def edit_pp2i(mail, pp2i):
+def edit_pp2i(id, pp2i):
     identityDB = Identities.query \
-        .filter(Identities.mail == mail) \
+        .filter(Identities.id == id) \
         .one_or_none()
 
     if identityDB is None:
-        abort(404, 'Identity {mail} does not exist'.format(mail=mail))
+        abort(404, 'Identity {id} does not exist'.format(id=id))
 
     identityDB.PP2I = pp2i 
     db.session.commit()

@@ -202,9 +202,9 @@ def identities_front():
 	identitiy_list = identities.read_all()
 	if request.method == 'POST':
 		for identity in identitiy_list:
-			new_PP2I = identity['mail'] in request.form
+			new_PP2I = str(identity['id']) in request.form
 			if new_PP2I != identity['PP2I']:
-				identities.edit_pp2i(identity['mail'], new_PP2I)
+				identities.edit_pp2i(identity['id'], new_PP2I)
 		return redirect('/web/identities')
 	return render_template('identities.html', identitiy_list=identitiy_list)
 

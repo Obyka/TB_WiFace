@@ -35,19 +35,25 @@ class CustomSelect:
         html.append("</select>")
         return Markup("".join(html))
 
-def new_place_validator(form, field):
-    if form.location.data == -1:
-        validators.length(min=4, max=25)
-
 class RegistrationForm(Form):
     email = StringField('Email', [validators.InputRequired(), validators.Length(min=4, max=25)])
     password = PasswordField('Password', [validators.EqualTo('confirm_password', message='Passwords must match'), validators.Length(min=4, max=35)])
     confirm_password = PasswordField('Confirm password', [])
     admin = BooleanField('Admin?', [])
     location = SelectField(u'Client location', coerce=int, widget=CustomSelect())
-    new_location_name = StringField('New location name', [new_place_validator])
+    new_location_name = StringField('New location name', [])
     longitude = DecimalField('Longitude',[validators.NumberRange(min=-180, max=180)], places=None)
     latitude = DecimalField('Latitude',[validators.NumberRange(min=-90, max=90)], places=None)
+
+    def validate(self):
+        rv = Form.validate(self)
+        if not rv:
+            return False
+        if self.location.data == -1 and (len(self.new_location_name.data) < 4 or len(self.new_location_name.data) > 40):
+            self.new_location_name.errors.append('The place name must be filled.')
+            return False
+        return True
+
     class Meta:
         csrf = True
         csrf_class = SessionCSRF

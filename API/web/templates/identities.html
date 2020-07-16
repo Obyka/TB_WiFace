@@ -16,7 +16,7 @@
               <th>Last name</th>
               <th>Mail address</th>
               <th>UUID</th>
-              <th>Should be included in PP2I?</th>
+              <th>Should be included in PP2I? <input id="select_all_checkbox" name="select_all_checkbox" type="checkbox"></th>
               <th>Delete</th>
           </tr>
         {% for identity in identitiy_list %}
@@ -25,7 +25,7 @@
           <td><i>{{identity.lastname}}</i></td>
           <td><i>{{identity.mail}}</i></td>
           <td><i><a href="{{ url_for('web_bp.identity_form_front', identity_id=identity.id) }}">{{identity.uuid}}</a></i></td>
-          <td><i><input id="{{identity.mail}}" name="{{identity.mail}}" type="checkbox" value="PP2I" {{ 'checked' if identity.PP2I else '' }}></i></td>
+          <td><i><input id="{{identity.id}}" name="{{identity.id}}" type="checkbox" value="PP2I" {{ 'checked' if identity.PP2I else '' }}></i></td>
           <td><i class="fa fa-trash-o delete_icon" name="{{identity.id}}" aria-hidden="true"></i></td>
         </tr>
         {% endfor %}
@@ -60,6 +60,18 @@
 {% block script %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script type="text/javascript">
+$('#select_all_checkbox').click(function(event) {   
+    if(this.checked) {
+        // Iterate each checkbox
+        $(':checkbox').each(function() {
+            this.checked = true;                        
+        });
+    } else {
+        $(':checkbox').each(function() {
+            this.checked = false;                       
+        });
+    }
+});
  $(function () {
   $('.delete_icon').on('click', function () {
     var i = $(this).attr('name');

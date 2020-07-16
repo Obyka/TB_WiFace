@@ -34,10 +34,12 @@
   <div class="w3-container w3-blue w3-padding-16">
     <div class="w3-left"><i class="fa fa-mobile w3-xxxlarge"></i></div>
     <div class="w3-right">
-      <h3>{{(place['proportion']*100)|int}}%</h3>
+      {% set men_proportion = (place['proportion']*100)|int %}
+      {% set women_proportion = 100 - men_proportion %}
+      <h3>{{men_proportion}} : {{women_proportion}}</h3>
     </div>
     <div class="w3-clear"></div>
-    <h4>Men proportion</h4>
+    <h4>Men : Women proportions</h4>
   </div>
 </div>
 <div class="w3-quarter w3-margin">

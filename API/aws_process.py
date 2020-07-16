@@ -135,7 +135,7 @@ def constructPictureObject(face_id, faceDetails, picture_name, fk_place):
 #This is the part that actually runs the functions to achieve the desired result
 @jwt_required
 def handle_picture(picture_name):
-
+    print("Début de handle_picture")
     # get args
     image_format = 'PNG'
 
@@ -147,11 +147,16 @@ def handle_picture(picture_name):
 
     #Detect and return faces, reads image from S3
     try:
+        print("Début de detect_faces_from_image")
         detected_faces = detect_faces_from_image(picture_name)
     except Exception as e:
         print(e)
         return 0
+    print("Fin de detect_faces_from_image")
+
     #Create cropped images and return list of there names, uses image in same location as script
+    print("Début de create_cropped_images_of_detected_faces")
+
     list_of_cropped_faces = create_cropped_images_of_detected_faces(
             detected_faces,
             picture_name, 
@@ -159,11 +164,13 @@ def handle_picture(picture_name):
             image_format
             )
 
+    print("Fin de create_cropped_images_of_detected_faces")
 
     nb_face_found = len(list_of_cropped_faces)
     for cropped_face in list_of_cropped_faces:
         #Search for each face in your collection of faces
         try:
+            print("Début de search_rekognition_for_matching_faces")
             response_search = search_rekognition_for_matching_faces(
                 cropped_face,
                 collection_id,
@@ -171,9 +178,12 @@ def handle_picture(picture_name):
                 max_number_of_faces, 
                 image_format
                 )
+
         except boto_client.exceptions.InvalidParameterException as e:
             nb_face_found-=1
+            print("Fin de search_rekognition_for_matching_faces")
             continue
+        print("Fin de search_rekognition_for_matching_faces")
 
         if(response_search['FaceMatches']):
             confidence = round(response_search['FaceMatches'][0]['Face']['Confidence'], 2)
@@ -193,7 +203,9 @@ def handle_picture(picture_name):
             db.session.add(face_identity)
             db.session.flush()
         try:
+            print("Début de add_face_collection")
             fullFaceResponse = add_face_collection(collection_id, cropped_face, face_identity, aws_rekognition_client)
+            print("Fin de add_face_collection")
         except Exception as e:
             print(e)
             continue
