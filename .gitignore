@@ -10,6 +10,7 @@ Client-API/faces
 env/
 envAPI/
 envClient/
+envTest/
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
