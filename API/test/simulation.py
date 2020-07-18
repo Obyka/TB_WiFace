@@ -5,6 +5,7 @@ import random
 from uuid import uuid4
 import timeline
 import re
+import numpy as np
 
 @dataclass
 class MAC:
@@ -124,20 +125,21 @@ def int_to_mac(intAddress):
 
 def generate_people(nb_person):
     current_address = "AA:AA:AA:AA:AA:AA"
+    random_duration = np.random.normal(30, 10, nb_person) 
     people = []
     for i in range(nb_person):
         current_MAC = MAC(current_address)
         current_address = int_to_mac(mac_to_int(current_address)+1)
         current_device = Device(current_MAC, [])
         arrival_time = random.randint(0, Simulation.simulation_duration)
-        duration_time = random.randint(0, Simulation.simulation_duration - arrival_time)
+        duration_time = min(int(random_duration[i]), Simulation.simulation_duration - arrival_time)
         current_person = Person(str(uuid4()),current_device,[],duration_time,arrival_time)
         people.append(current_person)
     return people
 
 
 def main():
-    people = generate_people(100)
+    people = generate_people(10)
     simulation = Simulation(people, 1, datetime.now(timezone.utc))
     for i in range(Simulation.simulation_duration):
         simulation.run_one_time_unit()
