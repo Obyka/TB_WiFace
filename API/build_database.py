@@ -1,3 +1,4 @@
+import argparse
 import os
 from datetime import datetime, timedelta
 from xml.dom import minidom
@@ -38,6 +39,12 @@ def delete_collection(collection_id, client):
 
 
 def main():
+    # get args
+    parser = argparse.ArgumentParser(description='Build the WiFace database')
+    parser.add_argument('--nb_person', help='How many people do you want to create in the simulation?', default=50, type=int)
+    parser.add_argument('--duration', help='How long should the simulation last ? (in minutes)', default=600, type=int)
+    args = parser.parse_args()
+
     collection_id = app.config['COLLECTION_NAME']
     delete_collection(collection_id, client)
     create_collection(collection_id, client)
@@ -161,7 +168,7 @@ def main():
     db.session.commit()
 """
 
-    simulation.launch_simulation()
+    simulation.launch_simulation(args.nb_person, args.duration)
 
 
 if __name__ == "__main__":

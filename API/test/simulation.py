@@ -59,12 +59,12 @@ class Person:
 class Simulation:
     probe_probability = 0.6
     picture_probability = 0.05
-    simulation_duration = 1000
-    def __init__(self, people, fk_place, starting_datetime):
+    def __init__(self, people, fk_place, starting_datetime, simulation_duration):
         self.people = people
         self.fk_place = fk_place
         self.starting_datetime = starting_datetime
         self.current_datetime = starting_datetime
+        self.simulation_duration = simulation_duration
         self.events = []
     def run_one_time_unit(self):
         for person in self.people:
@@ -90,7 +90,7 @@ class Simulation:
             dataset.append((timedelta(minutes=person.arrival-1).total_seconds(), person.uuid, "red"))
             dataset.append((timedelta(minutes=person.arrival+person.staying_duration+1).total_seconds(), person.uuid, "red"))
         #title = "Timeline plot - success : " + str(rate[0]) + " failure : " + str(rate[1])
-        plt = timeline.plot_timeline(self.events, len(self.people),Simulation.simulation_duration ,colors=colors, savefig="timeline.svg", wrong_uuid=wrong_uuid)
+        plt = timeline.plot_timeline(self.events, len(self.people),self.simulation_duration ,colors=colors, savefig="timeline.svg", wrong_uuid=wrong_uuid)
 
     def export_to_db(self):
         count_person = 1
@@ -163,7 +163,7 @@ def int_to_mac(intAddress):
                         for a, b
                         in zip(*[iter('{:012X}'.format(intAddress))]*2)])
 
-def generate_people(nb_person):
+def generate_people(nb_person, duration):
     current_address = "AA:AA:AA:AA:AA:AA"
     random_duration = np.random.normal(30, 10, nb_person) 
     people = []
@@ -171,16 +171,16 @@ def generate_people(nb_person):
         current_MAC = MAC(current_address)
         current_address = int_to_mac(mac_to_int(current_address)+1)
         current_device = Device(current_MAC, [])
-        arrival_time = random.randint(0, Simulation.simulation_duration)
-        duration_time = min(int(random_duration[i]), Simulation.simulation_duration - arrival_time)
+        arrival_time = random.randint(0, duration)
+        duration_time = min(int(random_duration[i]), duration - arrival_time)
         current_person = Person(str(uuid4()),current_device,[],duration_time,arrival_time)
         people.append(current_person)
     return people
 
-def launch_simulation():
-    people = generate_people(50)
-    simulation = Simulation(people, 1, datetime.now(timezone.utc))
-    for i in range(Simulation.simulation_duration):
+def launch_simulation(nb_person,duration):
+    people = generate_people(nb_person, duration)
+    simulation = Simulation(people, 1, datetime.now(timezone.utc), duration)
+    for i in range(duration):
         simulation.run_one_time_unit()
 
     for person in simulation.people:
