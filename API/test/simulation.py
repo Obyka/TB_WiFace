@@ -3,9 +3,14 @@ from typing import List
 from datetime import datetime, timedelta, timezone
 import random
 from uuid import uuid4
-import timeline
+from test import timeline
 import re
 import numpy as np
+
+from config import app, db
+from models import (Identities, MacAddress, Pictures, Places,
+                    Probes, Represents, User, Vendors)
+import mariage
 
 @dataclass
 class MAC:
@@ -52,9 +57,9 @@ class Person:
     
 
 class Simulation:
-    probe_probability = 0.8
-    picture_probability = 0.1
-    simulation_duration = 100
+    probe_probability = 0.6
+    picture_probability = 0.05
+    simulation_duration = 1000
     def __init__(self, people, fk_place, starting_datetime):
         self.people = people
         self.fk_place = fk_place
@@ -78,15 +83,50 @@ class Simulation:
         for person in self.people:
             print(str(person.device.mac.address)+" "+str(person.arrival) + " " + str(person.staying_duration) + " " + str(len(person.pictures)) + " " + str(len(person.device.probes)))
 
-    def plot_graph(self):
+    def plot_graph(self, wrong_uuid):
         colors = {'blue': 'b', 'green': 'g', 'red': 'r'}
         dataset = self.events
         for person in self.people:
             dataset.append((timedelta(minutes=person.arrival-1).total_seconds(), person.uuid, "red"))
             dataset.append((timedelta(minutes=person.arrival+person.staying_duration+1).total_seconds(), person.uuid, "red"))
+        #title = "Timeline plot - success : " + str(rate[0]) + " failure : " + str(rate[1])
+        plt = timeline.plot_timeline(self.events, len(self.people),Simulation.simulation_duration ,colors=colors, savefig="timeline.svg", wrong_uuid=wrong_uuid)
 
-        plt = timeline.plot_timeline(self.events, colors=colors, savefig="timeline.svg")
-            
+    def export_to_db(self):
+        count_person = 1
+        count_picture = 1
+        IDENTITY = []
+        MACS = []
+        PROBES = []
+        PICTURES = []
+        REPRESENTS = []
+
+        dict_real_couple = {}
+        for person in self.people:
+            if len(person.pictures) > 0:
+                dict_real_couple[count_person] = person.device.mac.address
+                IDENTITY.append(Identities(id=count_person, firstname=str(count_person) + person.device.mac.address,lastname=None, mail=str(count_person) + person.device.mac.address, uuid=person.uuid, PP2I=True))
+            MACS.append(MacAddress(address=person.device.mac.address, isRandom=False, fk_vendor="UNDEF", PP2I=True))
+            for taken_picture in person.pictures:
+                PICTURES.append(Pictures(id=count_picture, picPath="default_avatar.png",timestamp=taken_picture.timestamp, fk_place=1))
+                REPRESENTS.append(Represents(probability=100,fk_identity=count_person, fk_picture=count_picture))
+                count_picture+=1
+            for sniffed_probe in person.device.probes:
+                PROBES.append(Probes(ssid=sniffed_probe.ssid, timestamp=sniffed_probe.timestamp,fk_mac=person.device.mac.address, fk_place=1))
+            count_person+=1
+
+        db.session.bulk_save_objects(MACS)
+        db.session.bulk_save_objects(PROBES)
+        db.session.bulk_save_objects(IDENTITY)
+        db.session.bulk_save_objects(PICTURES)
+        db.session.bulk_save_objects(REPRESENTS)
+        db.session.commit()
+
+        mariage.mariage()
+        wrong_identities = mariage.compute_success_rate(dict_real_couple)
+        wrong_uuid = [one_identity.uuid for one_identity in IDENTITY if one_identity.id in wrong_identities]
+        return wrong_uuid
+
 
 def mac_to_int(address):
     """Convert a string mac address to its hex representation
@@ -137,16 +177,21 @@ def generate_people(nb_person):
         people.append(current_person)
     return people
 
-
-def main():
-    people = generate_people(10)
+def launch_simulation():
+    people = generate_people(50)
     simulation = Simulation(people, 1, datetime.now(timezone.utc))
     for i in range(Simulation.simulation_duration):
         simulation.run_one_time_unit()
-    
-    simulation.plot_graph()
-    simulation.display_result()
+
+    for person in simulation.people:
+        if len(person.pictures) == 0:
+            for event in simulation.events:
+                simulation.events = [event for event in simulation.events if event[1] != person.uuid]
+            simulation.people.remove(person)
+
+    wrong_uuid = simulation.export_to_db()
+    simulation.plot_graph(wrong_uuid)
 
 if __name__ == "__main__":
     # execute only if run as a script
-    main()
+    launch_simulation()

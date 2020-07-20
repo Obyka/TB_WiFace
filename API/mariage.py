@@ -2,6 +2,7 @@ import datetime
 
 from config import db
 from models import BelongsTo, Identities, Pictures, Probes, Represents, MacAddress
+import belongsto
 
 half_window_duration = datetime.timedelta(minutes=5)
 
@@ -71,7 +72,7 @@ def MAC_but_no_ID(dict_belongs_to):
                 Pictures.timestamp > begining).filter(Pictures.timestamp < end).filter(Pictures.fk_place == place).all()
             all_identities = list(set([r.fk_identity for r in all_represent]))
             if one_identity not in all_identities:
-                dict_belongs_to[(one_mac, one_identity)] -= 100
+                dict_belongs_to[(one_mac, one_identity)] -= 50
     return dict_belongs_to
 
 
@@ -87,6 +88,21 @@ def my_tanh(dict_belongs_to):
             dict_mac[k] = 1. if maxP-minP == 0 else (dict_mac[k] - minP) / float(maxP - minP)
             new_dict_belongs_to[(k, one_identity)] = dict_mac[k]
     return new_dict_belongs_to
+
+def compute_success_rate(dict_real_couple):
+    success = 0
+    failure = 0
+    wrong_identities = []
+    for id_identity, mac_address in dict_real_couple.items():
+        dict_one_identity = belongsto.read_by_identity(id_identity)
+        best_fit_identity = best_fit(dict_one_identity)
+        if mac_address in [best_fit_entry['fk_mac'] for best_fit_entry in best_fit_identity]:
+            success+=1
+        else:
+            failure+=1
+            wrong_identities.append(id_identity)
+    return wrong_identities
+
 
 
 def best_fit(dict_one_identity):

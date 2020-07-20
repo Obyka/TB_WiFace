@@ -166,7 +166,7 @@ def identity_form_front(identity_id):
 		mac_addresses = belongsto.read_by_identity(identity.get('id'))
 		age_range = identities.read_age_range(identity.get('id'))
 		gender_result = identities.read_gender(identity.get('id'))
-		best_pic = pictures.read_best_pic(identity.get('id'))
+		best_pic = pictures.read_best_pic(identity.get('id'))[0]
 		pictures_place = pictures.get_picture_place_by_identity(identity.get('id'))
 		avatar_path = avatar.draw_avatar(best_pic)
 		best_macs = mariage.best_fit(mac_addresses) if mac_addresses else []

@@ -8,6 +8,8 @@ from config import app, db, boto_client
 from models import (Identities, MacAddress, Pictures, Places,
                     Probes, Represents, User, Vendors)
 
+from test import simulation
+
 
 def create_collection(collection_id, client):
     # Create a collection
@@ -108,7 +110,6 @@ def main():
     # Create the database
     db.create_all()
 
-    # Iterate over the PEOPLE structure and populate the database
 
     for vendor in VendorsList:
         v = Vendors(name=vendor.attributes['vendor_name'].value,
@@ -117,26 +118,27 @@ def main():
         db.session.add(v)
     db.session.flush()
 
-    for mac in MACS:
-        m = MacAddress(
-            address=mac['address'], isRandom=mac['isRandom'], fk_vendor=mac['fk_vendor'], PP2I=mac['PP2I'])
-        db.session.add(m)
-    db.session.flush()
-
     for place in PLACES:
         p = Places(id=place['id'], name=place['name'], latitude=place['latitude'], longitude=place['longitude'])
-        db.session.add(p)
-    db.session.flush()
-
-    for probe in PROBES:
-        p = Probes(ssid=probe['ssid'], timestamp=probe['timestamp'],
-                   fk_mac=probe['fk_mac'], fk_place=probe['fk_place'])
         db.session.add(p)
     db.session.flush()
 
     for user in USERS:
         u = User(email=user['email'], password=user['password'], admin=user['admin'], fk_place=user['fk_place'])
         db.session.add(u)
+    db.session.flush()
+
+    
+    """ for mac in MACS:
+        m = MacAddress(
+            address=mac['address'], isRandom=mac['isRandom'], fk_vendor=mac['fk_vendor'], PP2I=mac['PP2I'])
+        db.session.add(m)
+    db.session.flush()
+
+    for probe in PROBES:
+        p = Probes(ssid=probe['ssid'], timestamp=probe['timestamp'],
+                   fk_mac=probe['fk_mac'], fk_place=probe['fk_place'])
+        db.session.add(p)
     db.session.flush()
 
     for identity in IDENTITIES:
@@ -155,9 +157,11 @@ def main():
         r = Represents(probability=represents['probability'],
                        fk_identity=represents['fk_identity'], fk_picture=represents['fk_picture'])
         db.session.add(r)
-    db.session.flush()
-
+    db.session.flush() 
     db.session.commit()
+"""
+
+    simulation.launch_simulation()
 
 
 if __name__ == "__main__":

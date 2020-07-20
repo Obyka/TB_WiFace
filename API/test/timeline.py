@@ -5,7 +5,7 @@ from operator import itemgetter
 from collections import defaultdict
 
 
-def plot_timeline(dataset, **kwargs):
+def plot_timeline(dataset, nb_person, simulation_duration, **kwargs):
     """
     Plots a timeline of events from different sources to visualize a relative
     sequence or density of events. Expects data in the form of:
@@ -13,6 +13,7 @@ def plot_timeline(dataset, **kwargs):
     Though this can be easily modified if needed. Expects sorted input.
     """
     outpath = kwargs.pop('savefig', None)  # Save the figure as an SVG
+    wrong_uuid = kwargs.pop('wrong_uuid', [])  # Save the figure as an SVG
     colors  = kwargs.pop('colors', {})     # Plot the colors for the series.
     series  = set([])                      # Figure out the unique series
 
@@ -44,13 +45,16 @@ def plot_timeline(dataset, **kwargs):
     arrival_patch = mpatches.Patch(color='red', label='Arrival and departure')
 
 
-    plt.figure(figsize=(14,4))
-    plt.title(kwargs.get('title', "Timeline Plot"))
+    plt.figure(figsize=(14*simulation_duration / 500,3 * nb_person/6))
+    success_rate = (1 - len(wrong_uuid) / nb_person) *100
+    plt.title(kwargs.get('title', "Timeline Plot - success rate: " + str(success_rate)+"%"))
     plt.xlabel('Time in seconds')
     plt.ylabel('Identities UUID')
     plt.ylim((-1,len(series)))
     plt.xlim((0, dataset[-1][0]+1000))
     plt.yticks(range(len(series)), series)
+    [i.set_color("red") for i in plt.gca().get_yticklabels() if i.get_text() in wrong_uuid]
+    print(wrong_uuid)    
     plt.scatter(x, y, color=c, alpha=0.85, s=10)
     plt.legend(loc='upper center', bbox_to_anchor=(0.1, -0.1), handles=[probe_patch, pricture_patch, arrival_patch])
     plt.subplots_adjust(bottom=.25, left=.25)

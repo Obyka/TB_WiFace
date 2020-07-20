@@ -18,10 +18,13 @@
     <form id="identity_form">
       {{ identity_form.csrf_token }}
    <h4 class="w3-center">{{identity.uuid}}</h4>
+   {% if best_pic %}
    <p class="w3-center" style="display:none" id="picture"><a href="{{url_for('web_bp.pictures_front', picture_id=best_pic.id)}}"><img src="{{ url_for('web_bp.static', filename='images/'+best_pic.picPath) }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></a></p>
    <p class="w3-center" id="avatar"><a href="{{url_for('web_bp.pictures_front', picture_id=best_pic.id)}}"><img src="{{ url_for('web_bp.static', filename='images/'+avatar_path) }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></a></p>
   
     <p class="w3-center"><button id="buttonPicture" class="w3-red w3-btn w3-round-xxlarge" onclick="switchPhoto()">Show picture</button></p>
+   {% endif %}
+   
 
    <hr>
    {% if gender and gender < 0 %}

@@ -100,9 +100,9 @@ def read_best_pic(id_identity):
 
     if picture is not None:
         picture_schema = PicturesSchema()
-        return picture_schema.dump(picture)
+        return picture_schema.dump(picture), 200
     else:
-        abort(404, 'Best picture for {id_identity} not found'.format(id_identity=id_identity))
+        return None, 404
 
 
 @jwt_required

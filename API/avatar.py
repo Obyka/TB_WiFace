@@ -13,8 +13,7 @@ def check_if_defined(base_picture):
     return True
 
 def draw_avatar(base_picture):
-    print(base_picture)
-    if(not check_if_defined(base_picture)):
+    if base_picture is None or not check_if_defined(base_picture):
         return 'default_avatar.png'
     name, ext = os.path.splitext(base_picture['picPath'])
     avatar_name = "{name}_avatar.png".format(name=name)
