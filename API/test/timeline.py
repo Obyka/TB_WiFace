@@ -45,7 +45,7 @@ def plot_timeline(dataset, nb_person, simulation_duration, **kwargs):
     arrival_patch = mpatches.Patch(color='red', label='Arrival and departure')
 
 
-    plt.figure(figsize=(14*simulation_duration / 500,3 * nb_person/6))
+    plt.figure(figsize=(0.005*simulation_duration+4, 3+0.5 * nb_person))
     success_rate = (1 - len(wrong_uuid) / nb_person) *100
     plt.title(kwargs.get('title', "Timeline Plot - success rate: " + str(success_rate)+"%"))
     plt.xlabel('Time in seconds')
@@ -54,7 +54,6 @@ def plot_timeline(dataset, nb_person, simulation_duration, **kwargs):
     plt.xlim((0, dataset[-1][0]+1000))
     plt.yticks(range(len(series)), series)
     [i.set_color("red") for i in plt.gca().get_yticklabels() if i.get_text() in wrong_uuid]
-    print(wrong_uuid)    
     plt.scatter(x, y, color=c, alpha=0.85, s=10)
     plt.legend(loc='upper center', bbox_to_anchor=(0.1, -0.1), handles=[probe_patch, pricture_patch, arrival_patch])
     plt.subplots_adjust(bottom=.25, left=.25)

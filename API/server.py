@@ -44,7 +44,6 @@ def user_identity_lookup(user):
 
 @config.jwtM.unauthorized_loader
 def unauthorized_loader_handler(error):
-    print("unauthorized token" * 1000)
     if request.path.startswith('/api/'):
         resp = make_response(jsonify(err="missing JWT"),401)
     else:
@@ -54,7 +53,6 @@ def unauthorized_loader_handler(error):
 
 @config.jwtM.invalid_token_loader
 def invalid_token_callback(callback):
-    print("invalid token" * 1000)
     # Invalid Fresh/Non-Fresh Access token in auth header
     if request.path.startswith('/api/'):
         resp = make_response(jsonify(err="invalid JWT"))
@@ -67,7 +65,6 @@ def invalid_token_callback(callback):
 @config.jwtM.expired_token_loader
 def expired_token_callback(callback):
     # Expired auth header
-    print("expired token" * 10)
     response = users.refresh()
     resp = make_response(redirect(request.url))
     unset_access_cookies(resp)

@@ -31,6 +31,11 @@ class Probe:
         return self.timestamp.strftime("%H:%M:%S") + "\nSSID: "+self.ssid+"\nMAC: "+self.fk_mac.address
 
 @dataclass
+class Visit:
+    arrival: int
+    staying_duration: int
+
+@dataclass
 class Device:
     mac: MAC
     probes: List[Probe]
@@ -48,6 +53,7 @@ class Person:
     pictures: List[Picture]
     staying_duration: int
     arrival: int
+    visits: List[Visit]
     def emit_picture(self, timestamp):
         picture = Picture(timestamp)
         self.pictures.append(picture)
@@ -66,17 +72,19 @@ class Simulation:
         self.current_datetime = starting_datetime
         self.simulation_duration = simulation_duration
         self.events = []
+    
     def run_one_time_unit(self):
         for person in self.people:
-            if self.current_datetime < self.starting_datetime + timedelta(minutes=person.arrival) or timedelta(minutes=person.staying_duration) < self.current_datetime - self.starting_datetime -timedelta(minutes=person.arrival):
-                continue
-            random_sample = random.random()
-            if random_sample <= Simulation.probe_probability:
-                probe = person.device.emit_probe_request(self.current_datetime)
-                self.events.append((probe.timestamp.timestamp() - self.starting_datetime.timestamp(), person.uuid, "green"))
-            if random_sample <= Simulation.picture_probability:
-                picture = person.emit_picture(self.current_datetime)
-                self.events.append((picture.timestamp.timestamp() - self.starting_datetime.timestamp(), person.uuid, "blue"))
+            for visit in person.visits:
+                if self.current_datetime < self.starting_datetime + timedelta(minutes=visit.arrival) or timedelta(minutes=visit.staying_duration) < self.current_datetime - self.starting_datetime -timedelta(minutes=visit.arrival):
+                    continue
+                random_sample = random.random()
+                if random_sample <= Simulation.probe_probability:
+                    probe = person.device.emit_probe_request(self.current_datetime)
+                    self.events.append((probe.timestamp.timestamp() - self.starting_datetime.timestamp(), person.uuid, "green"))
+                if random_sample <= Simulation.picture_probability:
+                    picture = person.emit_picture(self.current_datetime)
+                    self.events.append((picture.timestamp.timestamp() - self.starting_datetime.timestamp(), person.uuid, "blue"))
         self.current_datetime += timedelta(minutes=(1))
 
     def display_result(self):
@@ -87,8 +95,9 @@ class Simulation:
         colors = {'blue': 'b', 'green': 'g', 'red': 'r'}
         dataset = self.events
         for person in self.people:
-            dataset.append((timedelta(minutes=person.arrival-1).total_seconds(), person.uuid, "red"))
-            dataset.append((timedelta(minutes=person.arrival+person.staying_duration+1).total_seconds(), person.uuid, "red"))
+            for visit in person.visits:
+                dataset.append((timedelta(minutes=visit.arrival-1).total_seconds(), person.uuid, "red"))
+                dataset.append((timedelta(minutes=visit.arrival+visit.staying_duration+1).total_seconds(), person.uuid, "red"))
         #title = "Timeline plot - success : " + str(rate[0]) + " failure : " + str(rate[1])
         plt = timeline.plot_timeline(self.events, len(self.people),self.simulation_duration ,colors=colors, savefig="timeline.svg", wrong_uuid=wrong_uuid)
 
@@ -165,15 +174,22 @@ def int_to_mac(intAddress):
 
 def generate_people(nb_person, duration):
     current_address = "AA:AA:AA:AA:AA:AA"
-    random_duration = np.random.normal(30, 10, nb_person) 
+    random_duration = np.random.normal(20, 5, nb_person) 
     people = []
     for i in range(nb_person):
+        probs = np.exp(range(4,0, -1))
+        probs /= probs.sum()
+        sample = np.random.choice(range(1,5), p=probs, size=1)[0]
+        visit_list = []
         current_MAC = MAC(current_address)
         current_address = int_to_mac(mac_to_int(current_address)+1)
         current_device = Device(current_MAC, [])
-        arrival_time = random.randint(0, duration)
-        duration_time = min(int(random_duration[i]), duration - arrival_time)
-        current_person = Person(str(uuid4()),current_device,[],duration_time,arrival_time)
+        for j in range(sample):
+            arrival_time = random.randint(0, duration)
+            duration_time = min(int(random_duration[i]), duration - arrival_time)
+            visit = Visit(arrival_time, duration_time)
+            visit_list.append(visit)
+        current_person = Person(str(uuid4())[:12],current_device,[],duration_time,arrival_time, visit_list)
         people.append(current_person)
     return people
 
@@ -185,13 +201,8 @@ def launch_simulation(nb_person,duration):
 
     for person in simulation.people:
         if len(person.pictures) == 0:
-            for event in simulation.events:
-                simulation.events = [event for event in simulation.events if event[1] != person.uuid]
+            simulation.events = [event for event in simulation.events if event[1] != person.uuid]
             simulation.people.remove(person)
 
     wrong_uuid = simulation.export_to_db()
     simulation.plot_graph(wrong_uuid)
-
-if __name__ == "__main__":
-    # execute only if run as a script
-    launch_simulation()

@@ -26,7 +26,7 @@ log.disabled = False
 sqlite_url = "sqlite:////" + os.path.join(basedir, "probes.db")
 
 # Configure the SqlAlchemy part of the app instance
-app.config["SQLALCHEMY_ECHO"] = True
+app.config["SQLALCHEMY_ECHO"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = sqlite_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['UPLOAD_FOLDER'] = "web/static/images"
