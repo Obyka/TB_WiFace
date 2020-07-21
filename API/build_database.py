@@ -43,6 +43,8 @@ def main():
     parser = argparse.ArgumentParser(description='Build the WiFace database')
     parser.add_argument('--nb_person', help='How many people do you want to create in the simulation?', default=50, type=int)
     parser.add_argument('--duration', help='How long should the simulation last ? (in minutes)', default=600, type=int)
+    parser.add_argument('--simulation', help='Boolean if you want to include a simulation', action='store_true')
+
     args = parser.parse_args()
 
     collection_id = app.config['COLLECTION_NAME']
@@ -135,40 +137,41 @@ def main():
         db.session.add(u)
     db.session.flush()
 
-    
-    """ for mac in MACS:
-        m = MacAddress(
-            address=mac['address'], isRandom=mac['isRandom'], fk_vendor=mac['fk_vendor'], PP2I=mac['PP2I'])
-        db.session.add(m)
-    db.session.flush()
+    if args.simulation:
+        simulation.launch_simulation(args.nb_person, args.duration)
+    else:
+        for mac in MACS:
+            m = MacAddress(
+                address=mac['address'], isRandom=mac['isRandom'], fk_vendor=mac['fk_vendor'], PP2I=mac['PP2I'])
+            db.session.add(m)
+        db.session.flush()
 
-    for probe in PROBES:
-        p = Probes(ssid=probe['ssid'], timestamp=probe['timestamp'],
-                   fk_mac=probe['fk_mac'], fk_place=probe['fk_place'])
-        db.session.add(p)
-    db.session.flush()
+        for probe in PROBES:
+            p = Probes(ssid=probe['ssid'], timestamp=probe['timestamp'],
+                    fk_mac=probe['fk_mac'], fk_place=probe['fk_place'])
+            db.session.add(p)
+        db.session.flush()
 
-    for identity in IDENTITIES:
-        i = Identities(id=identity['id'], firstname=identity['firstname'],
-                       lastname=identity['lastname'], mail=identity['mail'], uuid=identity['uuid'], PP2I=identity['PP2I'])
-        db.session.add(i)
-    db.session.flush()
+        for identity in IDENTITIES:
+            i = Identities(id=identity['id'], firstname=identity['firstname'],
+                        lastname=identity['lastname'], mail=identity['mail'], uuid=identity['uuid'], PP2I=identity['PP2I'])
+            db.session.add(i)
+        db.session.flush()
 
-    for picture in PICTURES:
-        p = Pictures(id=picture['id'], picPath=picture['picPath'],
-                     timestamp=picture['timestamp'], fk_place=picture['fk_place'])
-        db.session.add(p)
-    db.session.flush()
+        for picture in PICTURES:
+            p = Pictures(id=picture['id'], picPath=picture['picPath'],
+                        timestamp=picture['timestamp'], fk_place=picture['fk_place'])
+            db.session.add(p)
+        db.session.flush()
 
-    for represents in REPRENSENTS:
-        r = Represents(probability=represents['probability'],
-                       fk_identity=represents['fk_identity'], fk_picture=represents['fk_picture'])
-        db.session.add(r)
-    db.session.flush() 
-    db.session.commit()
-"""
+        for represents in REPRENSENTS:
+            r = Represents(probability=represents['probability'],
+                        fk_identity=represents['fk_identity'], fk_picture=represents['fk_picture'])
+            db.session.add(r)
+        db.session.flush() 
+        db.session.commit()
 
-    simulation.launch_simulation(args.nb_person, args.duration)
+
 
 
 if __name__ == "__main__":

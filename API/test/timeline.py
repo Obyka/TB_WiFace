@@ -54,7 +54,7 @@ def plot_timeline(dataset, nb_person, simulation_duration, **kwargs):
     plt.xlim((0, dataset[-1][0]+1000))
     plt.yticks(range(len(series)), series)
     [i.set_color("red") for i in plt.gca().get_yticklabels() if i.get_text() in wrong_uuid]
-    plt.scatter(x, y, color=c, alpha=0.85, s=10)
+    plt.scatter(x, y, color=c, alpha=0.85, s=5)
     plt.legend(loc='upper center', bbox_to_anchor=(0.1, -0.1), handles=[probe_patch, pricture_patch, arrival_patch])
     plt.subplots_adjust(bottom=.25, left=.25)
 
