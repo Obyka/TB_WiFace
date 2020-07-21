@@ -1,0 +1,74 @@
+\chapter{Guides d'installation}
+\label{ch:guide_installation}
+
+Ce chapitre traitera de l'installation de tous les composants de l'architecture comprenant notamment: 
+\begin{itemize}
+    \item Le serveur Flask
+    \item La base de données SQLite partiellement peuplée
+    \item Le(s) client(s) Raspberry Pi avec leurs modules (PiCaméra et antenne 802.11)
+\end{itemize}
+Toutes ces étapes seront séparées en deux parties: un guide pour le client, et un guide pour le serveur 
+\section{Installation du serveur WiFace}
+Pour rappel, le serveur WiFace ou "WiFace API" (cf \ref{fig:diag_archi}) endosse les responsabilités
+suivantes: 
+\begin{itemize}
+    \item Récolte, persiste, et traite les données envoyées par les clients (Raspberry ou utilisateur front-end)
+    \item Fourni de l'authentification
+    \item Offre une API
+    \item Offre une interface web pour les opérateurs humains
+    \item Interagit avec les systèmes externes nécessaire au traitement des données (e.g AWS Rekognition)
+\end{itemize}
+
+\subsection{Prérequis software}
+\begin{itemize}
+    \item Docker : Le serveur est dockerisé afin de faciliter l'installation
+    \item git: Les fichiers nécessaires se trouve sur github
+\end{itemize}
+
+\subsection{Marche à suivre}
+La marche à suivre pour exécuter le serveur est la suivante:
+\begin{enumerate}
+    \item Clôner le repository \textbf{TB WiFace}
+    \begin{listingsbox}{console}{Clônage du dépôt sur github}
+git clone https://github.com/Obyka/TB_WiFace.git
+    \end{listingsbox}
+    \item{Se déplacer dans le sous-dossier API}
+    \item{Configurer le script de démarrage start.sh}
+\end{enumerate}
+    Il existe deux modes pour la création de la base de donnée. Le premier
+    consiste à inclure quatres identités inscrites dans le script build\_database.py.
+    Le deuxième consiste à lancer une simulation pour l'algorithme PP2I et d'y inscrire les résultats.
+    Les paramètres de la simulation peuvent être ajusté dans le script start.sh
+    
+\begin{listingsbox}{console}{Exemple de configuration de start.sh}
+#!/bin/bash
+simulation=0
+nb_person=10
+duration=1000
+
+if [[ $simulation -eq 1 ]];
+then
+    python build_database.py --nb_person $nb_person \
+    --duration $duration --simulation && python3 server.py
+else
+    python3 build_database.py && python3 server.py
+fi    
+\end{listingsbox}
+    
+\begin{enumerate}[resume]
+    \item Modifier le fichier API/config.py. Plusieurs constantes relatives à la sécurité doivent être modifiées (credentials Amazon, JWT et CSRF secrets)
+    \item Modifier l'utilisateur par défaut dans le fichier API/build\_database.py et s'assurer qu'il soit bien admin.
+\end{enumerate}
+
+\begin{enumerate}[resume]
+    \item Construire l'image docker correspondante et la démarrer.
+\end{enumerate}
+
+Le build peut prendre quelques minutes afin d'obtenir les dépendances python.
+Ici, le port 5555 sera exposé.
+\begin{listingsbox}{console}{Création et démarrage de l'image docker}
+docker build -t wiface-api .
+docker run -p 5555:5000 wiface-api
+\end{listingsbox}
+
+Le serveur est maintenant disponible aus adresses api/ et web/.
