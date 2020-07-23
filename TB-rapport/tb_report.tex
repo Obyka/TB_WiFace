@@ -17,6 +17,7 @@
 \usepackage{caption}
 \usepackage{enumitem}
 \usepackage{rotating}
+\usepackage{pgfplots}
 \usepackage[algo2e, ruled, vlined]{algorithm2e}
 \usepackage{svg}
 \def\UrlBreaks{\do\.\do\@\do\\\do\/\do\!\do\_\do\|\do\;\do\>%
@@ -68,6 +69,10 @@ Dans ce travail... Ceci est le résumé publiable...
 \usepackage{template/TB-template}
 %\graphicspath{images/}
 
+
+\pgfmathdeclarefunction{gauss}{2}{%
+  \pgfmathparse{1/(#2*sqrt(2*pi))*exp(-((x-#1)^2)/(2*#2^2))}%
+}
 
 \begin{document}
 

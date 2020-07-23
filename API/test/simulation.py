@@ -99,7 +99,7 @@ class Simulation:
                 dataset.append((timedelta(minutes=visit.arrival-1).total_seconds(), person.uuid, "red"))
                 dataset.append((timedelta(minutes=visit.arrival+visit.staying_duration+1).total_seconds(), person.uuid, "red"))
         #title = "Timeline plot - success : " + str(rate[0]) + " failure : " + str(rate[1])
-        plt = timeline.plot_timeline(self.events, len(self.people),self.simulation_duration ,colors=colors, savefig="timeline.svg", wrong_uuid=wrong_uuid)
+        plt = timeline.plot_timeline(self.events, len(self.people),self.simulation_duration ,colors=colors, wrong_uuid=wrong_uuid)
 
     def export_to_db(self):
         count_person = 1
@@ -179,6 +179,7 @@ def generate_people(nb_person, duration):
     for i in range(nb_person):
         probs = np.exp(range(4,0, -1))
         probs /= probs.sum()
+        print(probs)
         sample = np.random.choice(range(1,5), p=probs, size=1)[0]
         visit_list = []
         current_MAC = MAC(current_address)

@@ -1,7 +1,7 @@
 #!/bin/bash
-simulation=0
-nb_person=10
-duration=1000
+simulation=1
+nb_person=12
+duration=10000
 
 if [[ $simulation -eq 1 ]];
 then

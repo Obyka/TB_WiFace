@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from operator import itemgetter
 from collections import defaultdict
+from time import time 
 
 
 def plot_timeline(dataset, nb_person, simulation_duration, **kwargs):
@@ -12,7 +13,7 @@ def plot_timeline(dataset, nb_person, simulation_duration, **kwargs):
         (timestamp, source, category)
     Though this can be easily modified if needed. Expects sorted input.
     """
-    outpath = kwargs.pop('savefig', None)  # Save the figure as an SVG
+    outpath = kwargs.pop('savefig', "../TB-rapport/images/tests/simulation_150_"+str(simulation_duration)+"_"+str(int(time()))+".svg")  # Save the figure as an SVG
     wrong_uuid = kwargs.pop('wrong_uuid', [])  # Save the figure as an SVG
     colors  = kwargs.pop('colors', {})     # Plot the colors for the series.
     series  = set([])                      # Figure out the unique series
@@ -45,7 +46,7 @@ def plot_timeline(dataset, nb_person, simulation_duration, **kwargs):
     arrival_patch = mpatches.Patch(color='red', label='Arrival and departure')
 
 
-    plt.figure(figsize=(0.005*simulation_duration+4, 3+0.5 * nb_person))
+    plt.figure(figsize=(0.01*simulation_duration+4, 3+0.5 * nb_person))
     success_rate = (1 - len(wrong_uuid) / nb_person) *100
     plt.title(kwargs.get('title', "Timeline Plot - success rate: " + str(success_rate)+"%"))
     plt.xlabel('Time in seconds')
