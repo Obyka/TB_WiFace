@@ -12,7 +12,7 @@ Explorons ces deux concepts.
 
 \section{Adresse MAC, un identifiant pas si unique}
 
-\subsection{Définition~\cite{wiki:mac}:}
+\subsection{Définition:}~\cite{wiki:mac}
 
 "Une adresse MAC (Media Access Control1), parfois nommée adresse physique, est un identifiant physique 
 stocké dans une carte réseau ou une interface réseau similaire. À moins qu'elle n'ait été modifiée par l'utilisateur, elle est unique au monde. 
@@ -51,7 +51,7 @@ monitorer les déplacements d'individus.~\cite{hackernews:snowdan}
 Le sujet de ce travail de bachelor soulève les même problématiques. Par conséquent, certaines marques
 ont mis en place la \textbf{MAC Address randomization}.
 
-\subsection{Randomisation des adresses MAC~\cite{connected:macrandom}}
+\subsection{Randomisation des adresses MAC}~\cite{connected:macrandom}
 
 Depuis 2014, de plus en plus de constructeurs ont adopté des mesures
 afin de protéger la véritable adresse MAC de l'appareil. 
@@ -105,14 +105,23 @@ La première consiste simplement à contrôler le bit \textbf{b1}, si ce dernier
 dire avec de grandes chances que l'adresse est aléatoire. Cependant, ce n'est pas totalement vrai, c'est pourquoi
 d'autres techniques sont employées en concert avec celle-ci. 
 
-Dans un corpus datant de fin 2015, l'étude ~\cite{ASMARMD} a demontré les statistiques visibles sur la figure~\ref{fig:locally_stats}: 
+Dans un corpus datant de fin 2015, l'étude ~\cite{ASMARMD} a demontré les statistiques visibles dans le tableau~\ref{tab:locally_stats}: 
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=10cm]{images/probe/stats_locally_assigned.png}
+\begin{table}[H]
+	\resizebox{\textwidth}{!}{%
+	\begin{tabular}{@{}lll@{}}
+	\toprule
+	\textbf{Category} & \textbf{Subcategory} & \textbf{Number of MACs} \\ \midrule
+	\multirow{5}{*}{Locally Assigned} & Total & 1400753 \\
+	 & Randomized & 1388656 \\
+	 & Service & 4371 \\
+	 & Malformed & 6895 \\
+	 & Unknown & 831 \\ \bottomrule
+	\end{tabular}%
+	}
 	\caption{Statistiques sur la randomisation - Locally Assigned bit}
-	\label{fig:locally_stats}
-\end{figure}
+	\label{tab:locally_stats}
+	\end{table}
 
 Près de 99\% des adresses assignées localement étaient également aléatoires. La consultation
 du bit b1 est donc une bonne estimation heuristique. Il est tout de fois intéressant de pouvoir afiner

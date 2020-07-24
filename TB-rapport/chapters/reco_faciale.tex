@@ -6,7 +6,7 @@ caméra. La reconnaissance faciale étant un sujet d’étude très complexe, il
 clés en main afin de pouvoir l’incorporer dans l’ensemble du projet. Il peut toutefois être intéressant de
 comprendre les bases et les implications de cette technologie.
 
-\subsection{Une petite touche de théorie}
+\section{Une petite touche de théorie}
 La reconnaissance faciale utilise la technologie du Machine Learning, et plus précisement du Deep Learning.
 Le principe consite à l’extraction de données intéressantes d’une image (les caractérstiques) afin de créer ou lier une
 « empreinte biométrique » à un visage. Ce processus est exemplifié dans la figure ~\ref{fig:reco-process} . Par exemple en mesurant l’écartement des yeux, la longeur du nez, la
@@ -67,39 +67,43 @@ contextes pour les trois solutions. Voici les résultats principaux.
 \end{itemize}
 
 \begin{table}[H]
-\small
-\begin{tabular}{|m{2cm} | m{2cm} | m{2cm} | m{2cm} |m{2cm} |m{2cm} |m{2cm}|}
-\hline
-{\color[HTML]{000000} \textbf{Provider}}              & {\color[HTML]{000000} \textbf{TP}} & {\color[HTML]{000000} \textbf{FP}} & {\color[HTML]{000000} \textbf{TN}} & {\color[HTML]{000000} \textbf{FN}} & {\color[HTML]{000000} \textbf{Precision}} & {\color[HTML]{000000} \textbf{Recall}} \\ \hline
-{\color[HTML]{000000} AWS rekognition}                & {\color[HTML]{000000} 149}                    & {\color[HTML]{000000} 0}                       & {\color[HTML]{000000} 150}                    & {\color[HTML]{000000} 1}                       & {\color[HTML]{000000} 100\%}                            & {\color[HTML]{000000} 99.3\%}                        \\ \hline
-{\color[HTML]{000000} Microsoft cognitive   services} & {\color[HTML]{000000} 131}                    & {\color[HTML]{000000} 0}                       & {\color[HTML]{000000} 150}                    & {\color[HTML]{000000} 19}                      & {\color[HTML]{000000} 100\%}                            & {\color[HTML]{000000} 87.3\%}                        \\ \hline
-{\color[HTML]{000000} Kairos}                         & {\color[HTML]{000000} 108}                    & {\color[HTML]{000000} 0}                       & {\color[HTML]{000000} 150}                    & {\color[HTML]{000000} 42}                      & {\color[HTML]{000000} 100\%}                            & {\color[HTML]{000000} 72\%}                          \\ \hline
-\end{tabular}
-\caption{Seuil de confiance AWS rekognition: 95\% Microsoft: 80\% Kairos: 95\%}
-\end{table}
+	\resizebox{\textwidth}{!}{%
+	\begin{tabular}{@{}lllllll@{}}
+	\toprule
+	\textbf{Provider} & \textbf{TP} & \textbf{FP} & \textbf{TN} & \textbf{FN} & \textbf{Precision} & \textbf{Recall} \\ \midrule
+	Kairos & 108 & 0 & 150 & 42 & 100\% & 72\% \\
+	Microsoft cognitive services & 131 & 0 & 150 & 19 & 100\% & 87.3\% \\
+	AWS rekognition & 149 & 0 & 150 & 1 & 100\% & 99.3\% \\ \bottomrule
+	\end{tabular}%
+	}
+	\caption{Seuil de confiance AWS rekognition: 95\% Microsoft: 80\% Kairos: 95\%}
+	\end{table}
 
 \begin{table}[H]
-\begin{tabular}{|m{2cm} | m{2cm} | m{2cm} | m{2cm} |m{2cm} |m{2cm} |m{2cm}|}
-\hline
-{\color[HTML]{000000} \textbf{Provider}}              & {\color[HTML]{000000} \textbf{TP}} & {\color[HTML]{000000} \textbf{FP}} & {\color[HTML]{000000} \textbf{TN}} & {\color[HTML]{000000} \textbf{FN}} & {\color[HTML]{000000} \textbf{Precision}} & {\color[HTML]{000000} \textbf{Recall}} \\ \hline
-{\color[HTML]{000000} AWS rekognition}                & {\color[HTML]{000000} 150}                    & {\color[HTML]{000000} 2}                       & {\color[HTML]{000000} 148}                    & {\color[HTML]{000000} 0}                       & {\color[HTML]{000000} 98.7\%}                          & {\color[HTML]{000000} 100\%}                        \\ \hline
-{\color[HTML]{000000} Microsoft cognitive   services} & {\color[HTML]{000000} 137}                    & {\color[HTML]{000000} 0}                       & {\color[HTML]{000000} 150}                    & {\color[HTML]{000000} 13}                      & {\color[HTML]{000000} 100\%}                           & {\color[HTML]{000000} 91.3\%}                       \\ \hline
-{\color[HTML]{000000} Kairos}                         & {\color[HTML]{000000} 148}                    & {\color[HTML]{000000} 0}                       & {\color[HTML]{000000} 150}                    & {\color[HTML]{000000} 2}                       & {\color[HTML]{000000} 100\%}                           & {\color[HTML]{000000} 98.7\%}                       \\ \hline
-\end{tabular}
-\caption{Seuil de confiance AWS rekognition 70\% Microsoft: 50\% Kairos: 70\%}
-\end{table}
+	\resizebox{\textwidth}{!}{%
+	\begin{tabular}{@{}lllllll@{}}
+	\toprule
+	\textbf{Provider} & \textbf{TP} & \textbf{FP} & \textbf{TN} & \textbf{FN} & \textbf{Precision} & \textbf{Recall} \\ \midrule
+	Kairos & 148 & 0 & 150 & 2 & 100\% & 98.7\% \\
+	Microsoft cognitive services & 137 & 0 & 150 & 13 & 100\% & 91.3\% \\
+	AWS rekognition & 150 & 2 & 148 & 0 & 98.7\% & 100\% \\ \bottomrule
+	\end{tabular}%
+	}
+	\caption{Seuil de confiance AWS rekognition 70\% Microsoft: 50\% Kairos: 70\%}
+	\end{table}
 
 \begin{table}[H]
-\begin{tabular}{|m{2cm} | m{2cm} | m{2cm} | m{2cm} |m{2cm} |m{2cm} |m{2cm}|}
-\hline
-{\color[HTML]{000000} \textbf{Provider}}              & {\color[HTML]{000000} \textbf{TP}} & {\color[HTML]{000000} \textbf{FP}} & {\color[HTML]{000000} \textbf{TN}} & {\color[HTML]{000000} \textbf{FN}} & {\color[HTML]{000000} \textbf{Precision}} & {\color[HTML]{000000} \textbf{Recall}} \\ \hline
-{\color[HTML]{000000} AWS rekognition}                & {\color[HTML]{000000} 150}                    & {\color[HTML]{000000} 2}                       & {\color[HTML]{000000} 148}                    & {\color[HTML]{000000} 0}                       & {\color[HTML]{000000} 98.7\%}                          & {\color[HTML]{000000} 100\%}                        \\ \hline
-{\color[HTML]{000000} Microsoft cognitive   services} & {\color[HTML]{000000} 137}                    & {\color[HTML]{000000} 10}                      & {\color[HTML]{000000} 140}                    & {\color[HTML]{000000} 13}                      & {\color[HTML]{000000} 93.2\%}                          & {\color[HTML]{000000} 91.3\%}                       \\ \hline
-{\color[HTML]{000000} Kairos}                         & {\color[HTML]{000000} 150}                    & {\color[HTML]{000000} 19}                      & {\color[HTML]{000000} 131}                    & {\color[HTML]{000000} 0}                       & {\color[HTML]{000000} 88.7\%}                          & {\color[HTML]{000000} 100\%}                        \\ \hline
-\end{tabular}
-\caption{Seuil de confiance AWS rekognition: 50\% Microsoft: 30\% Kairos: 50\%}
-\end{table}
-
+	\resizebox{\textwidth}{!}{%
+	\begin{tabular}{@{}lllllll@{}}
+	\toprule
+	\textbf{Provider} & \textbf{TP} & \textbf{FP} & \textbf{TN} & \textbf{FN} & \textbf{Precision} & \textbf{Recall} \\ \midrule
+	Kairos & 150 & 19 & 131 & 0 & 88.7\% & 100\% \\
+	Microsoft cognitive services & 137 & 10 & 140 & 13 & 93.2\% & 91.3\% \\
+	AWS rekognition & 150 & 2 & 148 & 0 & 98.7\% & 100\% \\ \bottomrule
+	\end{tabular}%
+	}
+	\caption{Seuil de confiance AWS rekognition: 50\% Microsoft: 30\% Kairos: 50\%}
+	\end{table}
 Parmi ces résultats, nous pouvons voir que rekognition se démarque par son absence presque totale de FN et un
 taux faible de faux positifs, même avec un seuil de confiance bas (ce qui est un avantage dans un environnement
 moyennement précis tel que la raspberry).
@@ -120,35 +124,35 @@ Microsoft propose deux solutions : « Free - Web/Container » et « Standard - W
 tier gratuit ne comprend pas le « Face Storage » et que l’entraînement est compté dans les transactions (1
 transaction / 1000 images utilisées pendant l’entrainement)
 
-\begin{table}[]
-\small
-\begin{tabular}{|
->{\columncolor[HTML]{FFFFFF}}m{2cm} |
->{\columncolor[HTML]{FFFFFF}}m{2cm} |
->{\columncolor[HTML]{FFFFFF}}m{3cm} |
->{\columncolor[HTML]{FFFFFF}}m{8cm} |}
-\hline
-{\color[HTML]{000000} \textbf{Instance}}                                                  & {\color[HTML]{000000} \textbf{Transactions Per Second    (TPS) *}}      & {\color[HTML]{000000} \textbf{Features}}                                                                                                                                  & {\color[HTML]{000000} \textbf{Price}}                                                                                                                                                                                                                                                 \\ \hline
-{\color[HTML]{000000} Free}                                               & {\color[HTML]{000000} 20 transactions per   minute}                     & {\color[HTML]{000000} \begin{tabular}[c]{@{}l@{}}Face Detection\\    Face Verification\\    Face Identification\\    Face Grouping\\    Similar Face Search\end{tabular}} & {\color[HTML]{000000} 30,000 transactions free   per month}                                                                                                                                                                                                                           \\ \hline
-\cellcolor[HTML]{FFFFFF}{\color[HTML]{000000} }                                           & \cellcolor[HTML]{FFFFFF}{\color[HTML]{000000} }                         & {\color[HTML]{000000} \begin{tabular}[c]{@{}l@{}}Face Detection\\    Face Verification\\    Face Identification\\    Face Grouping\\    Similar Face Search\end{tabular}} & {\color[HTML]{000000} \begin{tabular}[c]{@{}l@{}}0-1M transactions - \$1   per 1,000 transactions\\    1M-5M transactions - \$0.80 per 1,000 transactions\\    5M-100M transactions - \$0.60 per 1,000 transactions\\    100M+ transactions - \$0.40 per 1,000 transactions\end{tabular}} \\ \cline{3-4} 
-\multirow{-2}{*}{\cellcolor[HTML]{FFFFFF}{\color[HTML]{000000} Standard}} & \multirow{-2}{*}{\cellcolor[HTML]{FFFFFF}{\color[HTML]{000000} 10 TPS}} & {\color[HTML]{000000} Face Storage}                                                                                                                                       & {\color[HTML]{000000} \$0.01 per 1,000 faces per   month}                                                                                                                                                                                                                             \\ \hline
-\end{tabular}
-\end{table}
+
+\begin{table}[H]
+	\resizebox{\textwidth}{!}{%
+	\begin{tabular}{@{}llll@{}}
+	\toprule
+	Instance & Transactions Per Second (TPS) & Features & Price \\ \midrule
+	Free & 20 TPM & \begin{tabular}[c]{@{}l@{}}Face Detection\\ Face Verification\\ Face Identification\\ Face Grouping\\ Similar Face Search\end{tabular} & 30K transactions fer per month \\[2cm]
+	\multirow{2}{*}{Standard} & \multirow{2}{*}{10 TPS} & \begin{tabular}[c]{@{}l@{}}Face Detection\\ Face Verification\\ Face Identification\\ Face Grouping\\ Similar Face Search\end{tabular} & \begin{tabular}[c]{@{}l@{}}0-1M transactions : 1 USD per 1,000 transactions\\ 1M-5M transactions : 0.80 USD per 1,000 transactions\\ 5M-100M transactions : 0.60 USD per 1,000 transactions\\ 100M+ transactions : 0.40 USD per 1,000 transactions\end{tabular} \\
+	 &  & Face Storage & 0.01 USD per 1,000 faces per month \\ \bottomrule
+	\end{tabular}%
+	}
+	\end{table}
 
 \subsubsection{Amazon AWS rekognition}
 Rekognizion est compris dans l’offre gratuite d’AWS durant les 12 premiers mois d’utilisation et ce pour 5'000
 transaction ainsi que 1'000 métadonnées par mois.
 
 \begin{table}[]
-\small
-\begin{tabular}{|m{6cm}|m{3cm}|m{4cm}|l}
-\cline{1-3}
-{\color[HTML]{000000} \textbf{Type de coût}}                           & {\color[HTML]{000000} \textbf{Tarification}} & {\color[HTML]{000000} \textbf{Prix pour    1 000 images}} &  \\ \cline{1-3}
-{\color[HTML]{000000} Premier million d'images traitées par mois}      & {\color[HTML]{000000} 0,001 USD par image}   & {\color[HTML]{000000} 1,00 USD}                           &  \\ \cline{1-3}
-{\color[HTML]{000000} 9 millions d'images traitées suivants par mois}  & {\color[HTML]{000000} 0,0008 USD par image}  & {\color[HTML]{000000} 0,80 USD}                           &  \\ \cline{1-3}
-{\color[HTML]{000000} 90 millions d'images traitées suivants par mois} & {\color[HTML]{000000} 0,0006 USD par image}  & {\color[HTML]{000000} 0,60 USD}                           &  \\ \cline{1-3}
-{\color[HTML]{000000} Plus de 100 millions d'images traitées par mois} & {\color[HTML]{000000} 0,0004 USD par image}  & {\color[HTML]{000000} 0,40 USD}                           &  \\ \cline{1-3}
-\end{tabular}
+	\resizebox{\textwidth}{!}{%
+	\begin{tabular}{@{}lll@{}}
+	\toprule
+	\textbf{Type de coût} & \textbf{Tarification} & \textbf{Prix pour 1000 images} \\ \midrule
+	Premier million d’images traitées par mois & 0,001 \$ / image & 1 USD \\
+	9 millions d’images traitées suivants par mois & 0,0008 \$ / image & 0,8 USD \\
+	90 millions d’images traitées suivants par mois & 0,0006 \$ / image & 0,6 USD \\
+	Plus de 100 millions d’images traitées par mois & 0,0004 \$ / image & 0,4 USD \\ \bottomrule
+	\end{tabular}%
+	}
+	\caption{Tarification d'Amazon Rekognition}
 \end{table}
 
 \subsection{Facilité d’utilisation}

@@ -93,19 +93,28 @@ Les nouveaux champs ont été ajoutés sur la figure ~\ref{fig:model-ea-4}
 	\label{fig:model-ea-4}
 \end{figure}
 
-\section{API rest}
+\subsubsection{Version finale}
 
-Pour des raisons d’évolutivité, de sécurité et de workflow, il a été décidé de développer une API pour interroger la
-base de donnée depuis les clients. Ainsi, la responsabilité d’effectuer la grande partie de la logique métier pourra
-être distribuée au serveur.
+La figure~\ref{fig:model-ea-5} est la version finale du modèle. 
+Une entité User a été ajoutée, afin de pouvoir permettre aux clients Raspberry de se localiser.
+Un booléean "PP2I" a été ajouté comme attribut de l'entité Identities et MAC Address. Cela permet
+d'indiquer si ladite entité doit être inclue dans l'algorithme de mariage PP2I. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=12cm]{images/database_finale.png}
+	\caption{Version finale entité-association}
+	\label{fig:model-ea-5}
+\end{figure}
 
 \section{L'API WiFace}
 
 Afin de développer un projet plus évolutif, sécurisé, et scalable, il a été décidé d'implémenter une API rest permettant les opérations CRUD et d'autres
-traitement sur les entités présentée dans la section ~\ref{sec:database}.
+traitement sur les entités présentée dans la section~\ref{sec:database}.
+Ainsi, la responsabilité d’effectuer la grande partie de la logique métier pourra
+être distribuée au serveur.
 
-La liste des routes est donnée en annexe de ce document.
-
+Une documentation interactive de toutes les routes est disponible à l'adresse relative \textbf{api/ui} après avoir lancé le serveur~\ref{ch:guide_installation}. 
 \section{Le client Raspberry}
 Les différents clients Raspberry auront la responsabilité de collecter les informations, et de les envoyer
 au serveur principal via l'API. 
@@ -141,7 +150,7 @@ Le \textbf{client front-end} peut consulter et gérer les différentes données 
 Le point d'entrée de \textbf{l'API WiFace} est \textbf{l'application Flask}. Cette dernière traitera les requêtes
 et interagira avec la base de donnée ou le service Amazon Rekognition si nécessaire.
 
-La\textbf{base de donnée} permet la persistance des différents éléments (Identités, Utilisateurs, Probe requests récoltées..)
+La \textbf{base de donnée} permet la persistance des différents éléments (Identités, Utilisateurs, Probe requests récoltées..)
 
 Le \textbf{client "boto"} facilite grandement la communication avec l'API d'Amazon Rekognition, utilisée pour la reconnaissance faciale.
 
@@ -164,8 +173,8 @@ Le processus va se dérouler en quatre étapes.
 \end{enumerate}
 
 \subsection{Initialisation}
-Dans cette phase de l'algorithme, toutes les identités sont parcourues.
-Pour chaque identité, toutes les photos correspondantes sont mises en relation avec probes requests.
+Dans cette phase de l'algorithme, toutes les identités inclues dans l'algorithme (ayant l'attribut PP2I valant True) sont parcourues.
+Pour chaque identité, toutes les photos correspondantes sont mises en relation avec probes requests dont l'adresse MAC est inclue dans l'agorithme.
 Si un couple (photo, probe request) se trouve dans la même fenêtre, alors on initialise le couple et on l'ajoute au dictionnaire.
 
 \begin{algorithm2e}[H]
@@ -174,15 +183,20 @@ Si un couple (photo, probe request) se trouve dans la même fenêtre, alors on i
 	\KwResult{Dictionnary containing (adress, identity) tuple as key and probability as value}
 	$dict\_couple  \gets \emptyset $\;
 	\ForEach(){Identity \textbf{in} AllIdentities}{
+		\If(){\textbf{not} Identity.PP2I}{
+			$continue$
+		}
 		 \ForEach(){Picture \textbf{in} Identity}{
 			 $beginning \gets Picture.timestamp - half\_window\_duration$\;
 			 $end \gets Picture.timestamp + half\_window\_duration$\;
 			 $place \gets Picture.place$\;
 			 \ForEach(){Probe \textbf{taken at} $place$ \textbf{between} beginning \textbf{and} end \textbf{in} allProbes}{
-				$dict\_couple.add(key=(address, identity), value=init\_score)$
-			 }
+				\If(){Probe.mac.PP2I}{
+			 		$dict\_couple.add(key=(address, identity), value=init\_score)$
+			 	}
 			}
 		}
+	}
 	\Return{$dict\_couple$}
 	\caption{Initialisation et création de couples}
 \end{algorithm2e}
@@ -244,7 +258,7 @@ l'adresse MAC (une probe request) sans l'identité (une photo). Comme c'est un c
 	\caption{Décrémentation mineure dûe à l'absence de la photo}
 \end{algorithm2e}
 
-\subsection{Normalisation~\cite{SKLEARNMINMAX}}
+\subsection{Normalisation}~\cite{SKLEARNMINMAX}
 Afin de faciliter le traitement, les scores seront normalisés dans une intervalle [0;1].
 Pour ce faire, toutes les adresses candidates à une identités sont sélectionnées et mises à l'échelle entre elles à l'aide de la formule: suivante
 

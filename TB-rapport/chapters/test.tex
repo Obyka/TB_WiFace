@@ -43,6 +43,7 @@ Pour simuler au mieux les tests qui auraient pu être effectués en condition r�
 Chaque visite d'une personne est modélisée selon une distribution normale (comme le temps de visite moyen dans un centre commercial par exemple) selon la fonction
 \[f(x)=\frac{1}{\sqrt{2\pi \sigma^2}} e^{-\frac{1}{2\sigma^2}(x-\mu)^2}\]
 
+\begin{figure}[H]
 \begin{tikzpicture}
 \begin{axis}[every axis plot post/.append style={
   mark=none,domain=0:40,samples=50,smooth},
@@ -56,6 +57,8 @@ Chaque visite d'une personne est modélisée selon une distribution normale (com
   \addlegendentry{$\sigma$ = 5 et $\mu$ = 20}
 \end{axis}
 \end{tikzpicture}
+\caption{Distrubtion continue du temps de visite dans la simulation}
+\end{figure}
 
 Une personne peut faire entre une et quatre visite par simulation.
 La distribution discrète de probabilité diminue exponentiellement, puisqu'il est peu probable que quelqu'un décide de revenir:
@@ -66,6 +69,7 @@ La distribution discrète de probabilité diminue exponentiellement, puisqu'il e
     \fill (-.1,0) rectangle (.1,#1) (0,#1) node[above,scale=1/2]{$#1$};
   }
 }
+\begin{figure}[H]
   \begin{tikzpicture}[y=5cm]
     \draw
       % the main axis
@@ -75,6 +79,8 @@ La distribution discrète de probabilité diminue exponentiellement, puisqu'il e
         (\i,0) pic[red]{bar=~} node[below]{$\i$}
       };
   \end{tikzpicture}
+  \caption{Distrubtion discrète du nombre de visite par visiteur lors de la simulation}
+\end{figure}
 
 La probabilité à chaque minute de sniffer une probe request est de 60\%, et de 5\% pour les photos. (Il est bien plus difficile de prendre une photo du visage que de 
 capter une paquet à distance.) Il est à noté qu'il s'agit d'une estimation.
@@ -185,6 +191,34 @@ Le tableau \ref{tab:synthese_pp2i} résume les résultats obtenus lors des tests
 \label{tab:synthese_pp2i}
 \end{table}
 
+\begin{figure}[H]
+\begin{tikzpicture}
+  \begin{axis}
+  [
+    title    = Évolution du taux de réussite selon les variables de 
+              simulation,
+    xbar,
+    y axis line style = { opacity = 0 },
+    axis x line       = none,
+    tickwidth         = 0pt,
+    ytick distance=1,
+    enlarge y limits  = 0.2,
+    enlarge x limits  = 0.02,
+    nodes near coords={\pgfmathprintnumber\pgfplotspointmeta\%},
+    symbolic y coords = {Faible, Moyenne, Forte},
+    xmin=0,
+    legend style={at={(0.5,-0.15)},
+		anchor=north,legend columns=-1},
+  ]
+  \addplot coordinates { (83.85,Faible) (61.25,Moyenne)
+  (41.18,Forte)};
+  \addplot coordinates { (96.25,Faible) (84.43,Moyenne) (74.58,Forte)};
+  \legend{Courte Durée, Longue Durée}
+  \end{axis}
+  \end{tikzpicture}
+  \caption{Évolution du taux de réussite selon les variables de simulation}
+\end{figure}
+  
 Pour conclure, nous pouvons affirmer que les résultats sont satisfaisants et démontre une valeur ajoutée de l'algorithme PP2I. 
 Il existe toutefois divers problèmes qui n'ont pas pu être résolu et qui baisse les performances. Parmi ces problèmes, il y a notamment:
 \begin{itemize}
