@@ -72,3 +72,102 @@ docker run -p 5555:5000 wiface-api
 \end{listingsbox}
 
 Le serveur est maintenant disponible aus adresses api/ et web/.
+
+\section{Installation d'un client Raspberry Pi}
+Cette section détaille l'installation, la configuration et l'utilisation d'un client Raspberry Pi.
+
+\subsection{Prérequis}
+
+\subsubsection{Prérequis hardware}
+\begin{itemize}
+    \item Une Raspberry Pi 4 Model B avec 4GB de RAM
+    \item Un module Pi Camera v2
+    \item Une antenne 802.11 compatible avec le mode Monitor
+\end{itemize}
+
+\subsubsection{Prérequis software}
+\begin{itemize}
+    \item Raspbian 10 (Buster)
+    \item Python 3.7.3
+\end{itemize}
+
+\subsection{Création du compte local}
+Afin de réduire la surface d'attaque, un compte va être créé pour ne pas utiliser
+le profil par défaut (pi).
+La commande sudo sera aussi configurée pour demander systèmatiquement un mot de passe.
+Ce compte sera ensuite ajouté au groupe sudo, ce qui est nécessaire pour utiliser Scapy.
+Pour des raisons pratiques, le mot de passe utilisé sera inscrit dans ce rapport. En cas d'utilisation de WiFace, merci de changer ce dernier.
+
+Le compte par défaut ne devrait pas être supprimé, pour des raisons
+de dépendances. Son mot de passe doit toutefois être modifié.
+
+\begin{listingsbox}{console}{Création d'un compte local}
+# Changer le mot de passe de l'utilisateur pi
+passwd
+
+sudo adduser wiface-user
+New password: Mu7%0&J#0!X^&t6OHHQ@z&
+sudo usermod -a -G adm,dialout,cdrom,sudo,audio\
+,video,plugdev,games,users,input,netdev,gpio,i2c,spi wiface-user
+
+# Changer les lignes correspondantes à Pi et wiface-user par 
+# pi ALL=(ALL) PASSWD: ALL
+sudo visudo /etc/sudoers.d/010_pi-nopasswd
+\end{listingsbox}
+
+Pour faciliter la gestion du client, une paire de clé ssh va être créée pour permettre la connexion distante.
+Pour cela, il faut activer le serveur ssh sur le client et copier la clé publique dessus.
+
+\begin{listingsbox}{console}{Ajout d'une clé SSH}
+    # Activer SSH sous "Interfacing options"
+    sudo raspi-config
+
+    # Sur le PC qui va se connecter au client
+    ssh-keygen
+    ssh-copy-id wiface-user@<IP-ADDRESS>
+    ssh wiface-user@<IP-ADDRESS>
+
+    # Il faut désactiver la connexion par mot de passe pour
+    # profiter de la sécurité offerte par les clés ssh.
+    sudo nano /etc/ssh/sshd_config
+    ChallengeResponseAuthentication no
+    PasswordAuthentication no
+    UsePAM no
+
+    # Relancer le service
+    sudo service ssh reload
+\end{listingsbox}
+
+\subsection{Installation des dépendances}
+Maintenant que la configuration est faite, il faut installer les dépendances
+nécessaires à l'exécution du client. 
+
+\begin{listingsbox}{console}{Installation des dépendances du client}
+    sudo pip3 install --pre scapy[basic]
+    
+\end{listingsbox}
+
+
+\subsection{Installation de l'antenne 802.11}
+Pour faire fonctionner l'antenne en mode "Monitor", nous allons utiliser Aircrack-ng.\footnote{Aircrack-ng est une suite de logiciel permettant des opérations sur les périphériques, protocoles, et réseau WiFi.}
+\begin{listingsbox}{console}{Installation de aircrack-ng}
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install aircrack-ng
+
+# Si le programme a été installé correctement, la commande
+# devrait retourner les différentes interfaces réseaux.
+sudo airmon-ng
+\end{listingsbox}
+
+Une fois l'antenne connectée, la dernière commande devrait retourner une ligne supplémentaire. 
+Cela veut dire que le périphérique a bien été détecté, nous pouvons donc le passer en mode Monitor.
+
+\begin{listingsbox}{console}{Passage de l'interface en mode Monitor}
+sudo airmon-ng start <Interface-Name>
+\end{listingsbox}
+
+L'interface est maintenant prête pour le scan.
+    
+
+

@@ -773,7 +773,7 @@ definitions:
   MACAddress:
     properties:
       address:
-        type: integer
+        type: string
       isRandom:
         type: boolean
       fk_vendor:
