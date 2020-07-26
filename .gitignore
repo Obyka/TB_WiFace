@@ -4,8 +4,6 @@
 .pylintrc
 .vscode/
 *.db
-Client-API/faces
-**/face*
 **/*Zone.Identifier*
 env/
 envAPI/

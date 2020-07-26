@@ -1,3 +1,4 @@
+# coding: utf-8
 import argparse
 import datetime
 import json
@@ -5,7 +6,7 @@ import math
 import os
 import time
 from json import JSONEncoder
-
+import urllib3
 from scapy.all import *
 
 from API import *
@@ -14,6 +15,7 @@ from MAC import MAC
 from Place import Place
 from Probe import Probe
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 parser = argparse.ArgumentParser(description="Scan for probes request")
 parser.add_argument('-i', help="interface wifi en monitor")
 parser.add_argument('--api', help='Base address for the API')
@@ -27,8 +29,6 @@ MyAPI = API(creds, args.api)
 mac_dic = dict()
 
 # source : https://pdfs.semanticscholar.org/f690/3910e7256946b138bf50b8dff8e9c8e73526.pdf
-
-
 def estimateDistance(RSSI, txPower):
     """Estimate the distance of the device based on the RSSI
 
@@ -39,7 +39,6 @@ def estimateDistance(RSSI, txPower):
     Returns:
         number: distance estimation
     """
-    # [1.5;5] grandit avec le nombre d'obstacles
     n = 2.4
     return math.pow(10, (txPower - RSSI) / (10 * n))
 
@@ -50,12 +49,8 @@ def analyzePacket(packet):
     Args:
         packet : sniffed packet
     """
-    # Le paquet possede-t-il la couche 802.11
     if packet.haslayer(Dot11) or packet.haslayer(Dot11FCS):
-        # print(packet.show())
-        # Le paquet est-il un paquet de management et est une probe request
         if packet.type == 0 and packet.subtype == 4:
-            # Puissance de la probe request
             address = packet.addr2
             if address not in mac_dic or (datetime.utcnow() - mac_dic[address]) / timedelta(seconds=1) > 60 and estimateDistance(packet.dBm_AntSignal, -30) < 20:
                 mac_dic[address] = datetime.utcnow()
