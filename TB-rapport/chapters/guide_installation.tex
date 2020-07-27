@@ -247,5 +247,57 @@ $ sudo ldconfig
 # Ne pas oublier de reset le SWAP.
 \end{listingsbox}
     
+\subsection{Lancement des scripts de récolte de données}
+Maintenant que les dépendances sont installées, il est temps de lancer les deux scripts
+permettant de récolter les données : les probes request et les photographies.
 
+Pour lancer les scripts en parallèle et pouvoir se déconnecter de la session SSH sans les arrêter,
+le programme "screen"\cite{SCREENTUTO} sera utilisé. Ce dernier permet de créer des instances de terminal, de les détacher et de s'y reconencter à volonté.
 
+Voici les commandes à connaître: 
+
+\begin{listingsbox}{language=bash}{Installation et utilisation de screen}
+# Installation de l'outil
+sudo apt-get install screen
+
+# Création d'une instance
+screen bash
+
+# Pour détacher le terminal, appuyez sur CTRL + A puis D
+# Pour terminer une instance, appuyez sur CTRL + D
+
+# Lister les instances existantes
+screen -list
+
+# Se reconencter à une instance (préciser le nom s'il en existe plusieurs)
+screen -r
+
+\end{listingsbox}
+
+Nous allons donc créer une instance par script. 
+
+\begin{listingsbox}{console}{Lancement du script scanProbe}
+$ cd Client-API/
+# Les deux variables d'environnement permettent de se connecter à l'API
+$ export wiface_username=<CLIENT-USERNAME>
+$ export wiface_password=<CLIENT-PASSWORD>
+# Création de l'instance screen
+$ screen bash
+$ sudo -E python3 scanProb.py -i <MONITOR-INTERFACE> \ 
+    --api <API-IP-ADRESS>/api/
+CTRL A + D
+\end{listingsbox}
+
+\begin{listingsbox}{console}{Lancement du script recognizeFace}
+$ cd Client-API/
+# Les deux variables d'environnement permettent de se connecter à l'API
+$ export wiface_username=<CLIENT-USERNAME>
+$ export wiface_password=<CLIENT-PASSWORD>
+# Création de l'instance screen
+$ screen bash
+$ sudo -E python3 recognize_face.py --api <API-IP-ADRESS>/api/
+CTRL A + D
+\end{listingsbox}
+
+Le client est maintenant prêt à être installé physiquement. 
+En exécutant \textbf{screen -list} il devrait y avoir deux instances en mode *detached".
