@@ -40,7 +40,7 @@ git clone https://github.com/Obyka/TB_WiFace.git
     Le deuxième consiste à lancer une simulation pour l'algorithme PP2I et d'y inscrire les résultats.
     Les paramètres de la simulation peuvent être ajusté dans le script start.sh
     
-\begin{listingsbox}{console}{Exemple de configuration de start.sh}
+\begin{listingsbox}{bash}{Exemple de configuration de start.sh}
 #!/bin/bash
 simulation=0
 nb_person=10
@@ -67,8 +67,8 @@ fi
 Le build peut prendre quelques minutes afin d'obtenir les dépendances python.
 Ici, le port 5555 sera exposé.
 \begin{listingsbox}{console}{Création et démarrage de l'image docker}
-docker build -t wiface-api .
-docker run -p 5555:5000 wiface-api
+$ docker build -t wiface-api .
+$ docker run -p 5555:5000 wiface-api
 \end{listingsbox}
 
 Le serveur est maintenant disponible aus adresses api/ et web/.
@@ -103,39 +103,39 @@ de dépendances. Son mot de passe doit toutefois être modifié.
 
 \begin{listingsbox}{console}{Création d'un compte local}
 # Changer le mot de passe de l'utilisateur pi
-passwd
+$ passwd
 
-sudo adduser wiface-user
+$ sudo adduser wiface-user
 New password: Mu7%0&J#0!X^&t6OHHQ@z&
-sudo usermod -a -G adm,dialout,cdrom,sudo,audio\
+$ sudo usermod -a -G adm,dialout,cdrom,sudo,audio\
 ,video,plugdev,games,users,input,netdev,gpio,i2c,spi wiface-user
 
 # Changer les lignes correspondantes à Pi et wiface-user par 
 # pi ALL=(ALL) PASSWD: ALL
-sudo visudo /etc/sudoers.d/010_pi-nopasswd
+$ sudo visudo /etc/sudoers.d/010_pi-nopasswd
 \end{listingsbox}
 
 Pour faciliter la gestion du client, une paire de clé ssh va être créée pour permettre la connexion distante.
 Pour cela, il faut activer le serveur ssh sur le client et copier la clé publique dessus.
 
 \begin{listingsbox}{console}{Ajout d'une clé SSH}
-    # Activer SSH sous "Interfacing options"
-    sudo raspi-config
+# Activer SSH sous "Interfacing options"
+$ sudo raspi-config
 
-    # Sur le PC qui va se connecter au client
-    ssh-keygen
-    ssh-copy-id wiface-user@<IP-ADDRESS>
-    ssh wiface-user@<IP-ADDRESS>
+# Sur le PC qui va se connecter au client
+$ ssh-keygen
+$ ssh-copy-id wiface-user@<IP-ADDRESS>
+$ ssh wiface-user@<IP-ADDRESS>
 
-    # Il faut désactiver la connexion par mot de passe pour
-    # profiter de la sécurité offerte par les clés ssh.
-    sudo nano /etc/ssh/sshd_config
-    ChallengeResponseAuthentication no
-    PasswordAuthentication no
-    UsePAM no
+# Il faut désactiver la connexion par mot de passe pour
+# profiter de la sécurité offerte par les clés ssh.
+$ sudo nano /etc/ssh/sshd_config
+ChallengeResponseAuthentication no
+PasswordAuthentication no
+UsePAM no
 
-    # Relancer le service
-    sudo service ssh reload
+# Relancer le service
+$ sudo service ssh reload
 \end{listingsbox}
 
 \subsection{Installation des dépendances}
@@ -143,28 +143,28 @@ Maintenant que la configuration est faite, il faut installer les dépendances
 nécessaires à l'exécution du client. 
 
 \begin{listingsbox}{console}{Installation des dépendances du client}
-    sudo pip3 install --pre scapy[basic]
-    sudo pip3 install requests
+$ sudo pip3 install --pre scapy[basic]
+$ sudo pip3 install requests
 \end{listingsbox}
 
 
 \subsection{Installation de l'antenne 802.11}
 Pour faire fonctionner l'antenne en mode "Monitor", nous allons utiliser Aircrack-ng.\footnote{Aircrack-ng est une suite de logiciel permettant des opérations sur les périphériques, protocoles, et réseau WiFi.}
 \begin{listingsbox}{console}{Installation de aircrack-ng}
-sudo apt-get update
-sudo apt-get upgrade
-sudo apt-get install aircrack-ng
+$sudo apt-get update
+$sudo apt-get upgrade
+$ sudo apt-get install aircrack-ng
 
 # Si le programme a été installé correctement, la commande
 # devrait retourner les différentes interfaces réseaux.
-sudo airmon-ng
+$ sudo airmon-ng
 \end{listingsbox}
 
 Une fois l'antenne connectée, la dernière commande devrait retourner une ligne supplémentaire. 
 Cela veut dire que le périphérique a bien été détecté, nous pouvons donc le passer en mode Monitor.
 
 \begin{listingsbox}{console}{Passage de l'interface en mode Monitor}
-sudo airmon-ng start <Interface-Name>
+$ sudo airmon-ng start <Interface-Name>
 \end{listingsbox}
 
 L'interface est maintenant prête pour le scan.
@@ -173,11 +173,11 @@ L'interface est maintenant prête pour le scan.
 Après avoir connecté le module caméra, quelques installations et configurations sont nécessaires.
 
 \begin{listingsbox}{console}{Installation de la picamera}
-    # Installation du module python
-    sudo apt-get install python-picamera python3-picamera
+# Installation du module python
+$ sudo apt-get install python-picamera python3-picamera
 
-    # Activer Camera sous "Interfacing options" et accepter le reboot
-    sudo raspi-config 
+# Activer Camera sous "Interfacing options" et accepter le reboot
+$ sudo raspi-config 
 \end{listingsbox}
 
 Afin de reconnaître les visages, OpenCV est utilisé sur le client.
@@ -258,19 +258,19 @@ Voici les commandes à connaître:
 
 \begin{listingsbox}{language=bash}{Installation et utilisation de screen}
 # Installation de l'outil
-sudo apt-get install screen
+$ sudo apt-get install screen
 
 # Création d'une instance
-screen bash
+$ screen bash
 
 # Pour détacher le terminal, appuyez sur CTRL + A puis D
 # Pour terminer une instance, appuyez sur CTRL + D
 
 # Lister les instances existantes
-screen -list
+$ screen -list
 
 # Se reconencter à une instance (préciser le nom s'il en existe plusieurs)
-screen -r
+$ screen -r
 
 \end{listingsbox}
 
