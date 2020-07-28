@@ -30,7 +30,6 @@ paths:
             description: Successfully read one vendor
             schema:
               $ref: '#/definitions/Vendor'
-  /identities/{id_identity}/pictures:
   /represents/identities/{id_picture}:
     get:
       operationId: represents.read_identities_from_picture

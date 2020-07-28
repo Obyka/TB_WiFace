@@ -144,7 +144,7 @@ def pp2i_front():
 @web_bp.route('/statistics')
 @admin_required
 def statistics_front():
-	feed = [((verbose_timedelta(datetime.datetime.utcnow() - i[0])), i[1]) for i in pictures.feed()]
+	feed = [((verbose_timedelta(datetime.datetime.now() - i[0])), i[1]) for i in pictures.feed()]
 	return render_template('statistics.html', feed=feed, probe_count=probes.count(), mac_count=macs.count(), id_count=identities.count(), pic_cout=pictures.count(), mac_random=macs.count_random())
 
 @web_bp.route('/represents/<represent_id>', methods=['GET'])

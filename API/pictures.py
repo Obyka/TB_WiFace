@@ -26,7 +26,7 @@ def feed():
     pictures = db.session.query(Pictures.timestamp.label('timestamp'), literal("Picture").label('Type')).limit(10).all()
     probes = db.session.query(Probes.timestamp.label('timestamp'), literal("Probe").label('Type')).limit(10).all()
     pictures.extend(probes)
-    pictures.sort(key=first)
+    pictures.sort(key=first, reverse=True)
     return pictures
 
 def get_picture_place_by_identity(identity_id):

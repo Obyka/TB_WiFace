@@ -81,9 +81,9 @@ def main():
     ]
 
     probe_time = timedelta(minutes=(2))
-    batman_time = datetime.utcnow()
-    superman_time = batman_time + timedelta(minutes=(20))
-    ironman_time = batman_time + timedelta(minutes=(25))
+    batman_time = datetime.now() - timedelta(minutes=(5))
+    superman_time = batman_time - timedelta(minutes=(20))
+    ironman_time = batman_time - timedelta(minutes=(25))
     wonderwoman = ironman_time
 
     PICTURES = [
@@ -91,7 +91,7 @@ def main():
         {"id": 2, "picPath": "superman.jpg", "timestamp": superman_time, "fk_place": 1},
         {"id": 3, "picPath": "ironman.jpg", "timestamp": ironman_time, "fk_place": 1},
         {"id": 4, "picPath": "wonderwoman.jpg", "timestamp": wonderwoman, "fk_place": 2},
-        {"id": 5, "picPath": "batman_no_mac.jpg", "timestamp": batman_time + timedelta(hours=1), "fk_place": 1},
+        {"id": 5, "picPath": "batman_no_mac.jpg", "timestamp": batman_time - timedelta(hours=1), "fk_place": 1},
     ]
 
     PROBES = [
