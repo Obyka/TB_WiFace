@@ -195,7 +195,7 @@ def generate_people(nb_person, duration):
 
 def launch_simulation(nb_person,duration):
     people = generate_people(nb_person, duration)
-    simulation = Simulation(people, 1, datetime.now(timezone.utc), duration)
+    simulation = Simulation(people, 1, datetime.now()-timedelta(minutes=duration), duration)
     for i in range(duration):
         simulation.run_one_time_unit()
 

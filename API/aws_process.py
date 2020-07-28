@@ -122,7 +122,7 @@ def constructPictureObject(face_id, faceDetails, picture_name, fk_place):
 
     parsedDict['fk_place'] = fk_place
     parsedDict['picPath'] = picture_name
-    parsedDict['timestamp'] = datetime.utcnow()
+    parsedDict['timestamp'] = datetime.now()
 
     return Pictures(**parsedDict)
 

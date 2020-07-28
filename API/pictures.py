@@ -23,8 +23,8 @@ def first(elem):
 
 
 def feed():
-    pictures = db.session.query(Pictures.timestamp.label('timestamp'), literal("Picture").label('Type')).limit(10).all()
-    probes = db.session.query(Probes.timestamp.label('timestamp'), literal("Probe").label('Type')).limit(10).all()
+    pictures = db.session.query(Pictures.timestamp.label('timestamp'), literal("Picture").label('Type')).order_by(Pictures.timestamp.desc()).limit(10).all()
+    probes = db.session.query(Probes.timestamp.label('timestamp'), literal("Probe").label('Type')).order_by(Probes.timestamp.desc()).limit(10).all()
     pictures.extend(probes)
     pictures.sort(key=first, reverse=True)
     return pictures
