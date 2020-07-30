@@ -1,0 +1,303 @@
+\chapter{Guides d'installation}
+\label{ch:guide_installation}
+
+Ce chapitre traitera de l'installation de tous les composants de l'architecture comprenant notamment: 
+\begin{itemize}
+    \item le serveur Flask,
+    \item la base de données SQLite partiellement peuplée,
+    \item le(s) client(s) Raspberry Pi avec leurs modules (PiCaméra et antenne 802.11).
+\end{itemize}
+Toutes ces étapes seront séparées en deux parties: un guide pour le client, et un guide pour le serveur. 
+\section{Installation du serveur WiFace}
+Pour rappel, le serveur WiFace ou "WiFace API" (cf \ref{fig:diag_archi}) endosse les responsabilités
+suivantes: 
+\begin{itemize}
+    \item récolte, persiste, et traite les données envoyées par les clients (Raspberry ou utilisateur front-end) ;
+    \item fourni de l'authentification ;
+    \item offre une API ;
+    \item offre une interface web pour les opérateurs humains ;
+    \item interagit avec les systèmes externes nécessaires au traitement des données (e.g AWS Rekognition).
+\end{itemize}
+
+\subsection{Prérequis software}
+\begin{itemize}
+    \item Docker : Le serveur est dockerisé afin de faciliter l'installation
+    \item git: Les fichiers nécessaires se trouvemt sur github
+\end{itemize}
+
+\subsection{Marche à suivre}
+La marche à suivre pour exécuter le serveur est la suivante:
+\begin{enumerate}
+    \item Clôner le repository \textbf{TB WiFace}
+    \begin{listingsbox}{console}{Clônage du dépôt sur github}
+git clone https://github.com/Obyka/TB_WiFace.git
+    \end{listingsbox}
+    \item{Se déplacer dans le sous-dossier API}
+    \item{Configurer le script de démarrage start.sh}
+\end{enumerate}
+    Il existe deux modes pour la création de la base de données. Le premier
+    consiste à inclure quatres identités inscrites dans le script build\_database.py.
+    Le deuxième consiste à lancer une simulation pour l'algorithme PP2I et d'y inscrire les résultats.
+    Les paramètres de la simulation peuvent être ajustés dans le script start.sh
+    
+\begin{listingsbox}{bash}{Exemple de configuration de start.sh}
+#!/bin/bash
+simulation=0
+nb_person=10
+duration=1000
+
+if [[ $simulation -eq 1 ]];
+then
+    python build_database.py --nb_person $nb_person \
+    --duration $duration --simulation && python3 server.py
+else
+    python3 build_database.py && python3 server.py
+fi    
+\end{listingsbox}
+    
+\begin{enumerate}[resume]
+    \item Modifier le fichier API/config.py. Plusieurs constantes relatives à la sécurité doivent être modifiées (credentials Amazon, JWT et CSRF secrets)
+    \item Modifier l'utilisateur par défaut dans le fichier API/build\_database.py et s'assurer qu'il soit bien admin.
+\end{enumerate}
+
+\begin{enumerate}[resume]
+    \item Construire l'image docker correspondante et la démarrer.
+\end{enumerate}
+
+Le build peut prendre quelques minutes afin d'obtenir les dépendances python.
+Ici, le port 5555 sera exposé.
+\begin{listingsbox}{console}{Création et démarrage de l'image docker}
+$ docker build -t wiface-api .
+$ docker run -p 5555:5000 wiface-api
+\end{listingsbox}
+
+Le serveur est maintenant disponible aux adresses api/ et web/.
+
+\section{Installation d'un client Raspberry Pi}
+Cette section détaille l'installation, la configuration et l'utilisation d'un client Raspberry Pi.
+
+\subsection{Prérequis}
+
+\subsubsection{Prérequis hardware}
+\begin{itemize}
+    \item Une Raspberry Pi 4 Model B avec 4GB de RAM
+    \item Un module Pi Camera v2
+    \item Une antenne 802.11 compatible avec le mode Monitor
+\end{itemize}
+
+\subsubsection{Prérequis software}
+\begin{itemize}
+    \item Raspbian 10 (Buster)
+    \item Python 3.7.3
+\end{itemize}
+
+\subsection{Création du compte local}
+Afin de réduire la surface d'attaque, un compte va être créé pour ne pas utiliser
+le profil par défaut (pi).
+La commande sudo sera aussi configurée pour demander systèmatiquement un mot de passe.
+Ce compte sera ensuite ajouté au groupe sudo, ce qui est nécessaire pour utiliser Scapy.
+Pour des raisons pratiques, le mot de passe utilisé sera inscrit dans ce rapport. En cas d'utilisation de WiFace, merci de changer ce dernier.
+
+Le compte par défaut ne devrait pas être supprimé, pour des raisons
+de dépendances. Son mot de passe doit toutefois être modifié.
+
+\begin{listingsbox}{console}{Création d'un compte local}
+# Changer le mot de passe de l'utilisateur pi
+$ passwd
+
+$ sudo adduser wiface-user
+New password: Mu7%0&J#0!X^&t6OHHQ@z&
+$ sudo usermod -a -G adm,dialout,cdrom,sudo,audio\
+,video,plugdev,games,users,input,netdev,gpio,i2c,spi wiface-user
+
+# Changer les lignes correspondantes à Pi et wiface-user par 
+# pi ALL=(ALL) PASSWD: ALL
+$ sudo visudo /etc/sudoers.d/010_pi-nopasswd
+\end{listingsbox}
+
+Pour faciliter la gestion du client, une paire de clés ssh va être créée pour permettre la connexion distante.
+Pour cela, il faut activer le serveur ssh sur le client et copier la clé publique dessus.
+
+\begin{listingsbox}{console}{Ajout d'une clé SSH}
+# Activer SSH sous "Interfacing options"
+$ sudo raspi-config
+
+# Sur le PC qui va se connecter au client
+$ ssh-keygen
+$ ssh-copy-id wiface-user@<IP-ADDRESS>
+$ ssh wiface-user@<IP-ADDRESS>
+
+# Il faut désactiver la connexion par mot de passe pour
+# profiter de la sécurité offerte par les clés ssh.
+$ sudo nano /etc/ssh/sshd_config
+ChallengeResponseAuthentication no
+PasswordAuthentication no
+UsePAM no
+
+# Relancer le service
+$ sudo service ssh reload
+\end{listingsbox}
+
+\subsection{Installation des dépendances}
+Maintenant que la configuration est faite, il faut installer les dépendances
+nécessaires à l'exécution du client. 
+
+\begin{listingsbox}{console}{Installation des dépendances du client}
+$ sudo pip3 install --pre scapy[basic]
+$ sudo pip3 install requests
+\end{listingsbox}
+
+
+\subsection{Installation de l'antenne 802.11}
+Pour faire fonctionner l'antenne en mode "Monitor", nous allons utiliser Aircrack-ng.\footnote{Aircrack-ng est une suite de logiciel permettant des opérations sur les périphériques, protocoles, et réseau WiFi.}
+\begin{listingsbox}{console}{Installation de aircrack-ng}
+$ sudo apt-get update
+$ sudo apt-get upgrade
+$ sudo apt-get install aircrack-ng
+
+# Si le programme a été installé correctement, la commande
+# devrait retourner les différentes interfaces réseaux.
+$ sudo airmon-ng
+\end{listingsbox}
+
+Une fois l'antenne connectée, la dernière commande devrait retourner une ligne supplémentaire. 
+Cela veut dire que le périphérique a bien été détecté, nous pouvons donc le passer en mode Monitor.
+
+\begin{listingsbox}{console}{Passage de l'interface en mode Monitor}
+$ sudo airmon-ng start <Interface-Name>
+\end{listingsbox}
+
+L'interface est maintenant prête pour le scan.
+
+\subsection{Installation du module PiCamera}
+Après avoir connecté le module caméra, quelques installations et configurations sont nécessaires.
+
+\begin{listingsbox}{console}{Installation de la picamera}
+# Installation du module python
+$ sudo apt-get install python-picamera python3-picamera
+
+# Activer Camera sous "Interfacing options" et accepter le reboot
+$ sudo raspi-config 
+\end{listingsbox}
+
+Afin de reconnaître les visages, OpenCV est utilisé sur le client.
+Voici son installation\cite{OPENCVINSTA}. Nous compilons les sources car cela permet d'avoir
+toutes les fonctionnalités. 
+\begin{listingsbox}{console}{Installation d'OpenCV}
+# Nettoyage de paquets inutiles afin de gagner de l'espace de stockage
+
+$ sudo apt-get purge wolfram-engine
+$ sudo apt-get purge libreoffice*
+$ sudo apt-get clean
+$ sudo apt-get autoremove
+
+$ sudo apt-get update && sudo apt-get upgrade
+
+$ sudo apt-get install build-essential cmake pkg-config
+
+$ sudo apt-get install libjpeg-dev libtiff5-dev \
+    libjasper-dev libpng-dev libqt4-test
+$ sudo apt-get install libavcodec-dev libavformat-dev \ 
+    libswscale-dev libv4l-dev
+$ sudo apt-get install libxvidcore-dev libx264-dev
+$ sudo apt-get install libfontconfig1-dev libcairo2-dev
+$ sudo apt-get install libgdk-pixbuf2.0-dev libpango1.0-dev
+$ sudo apt-get install libgtk2.0-dev libgtk-3-dev
+$ sudo apt-get install libatlas-base-dev gfortran
+$ sudo apt-get install libhdf5-dev libhdf5-serial-dev libhdf5-103
+$ sudo apt-get install libqtgui4 libqtwebkit4 libqt4-test python3-pyqt5
+$ sudo apt-get install python3-dev
+
+$ cd ~
+$ wget -O opencv.zip https://github.com/opencv/opencv/archive/4.1.1.zip
+$ wget -O opencv_contrib.zip \ 
+    https://github.com/opencv/opencv_contrib/archive/4.1.1.zip
+$ unzip opencv.zip
+$ unzip opencv_contrib.zip
+$ mv opencv-4.1.1 opencv
+$ mv opencv_contrib-4.1.1 opencv_contrib
+
+# Augmenter le SWAP pour accélerer l'installation. 
+# CONF_SWAPSIZE=2048
+$ sudo nano /etc/dphys-swapfile
+# Redémarrage du service
+$ sudo /etc/init.d/dphys-swapfile stop
+$ sudo /etc/init.d/dphys-swapfile start
+
+$ pip install numpy
+
+$ cd ~/opencv
+$ mkdir build
+$ cd build
+$ cmake -D CMAKE_BUILD_TYPE=RELEASE \
+    -D CMAKE_INSTALL_PREFIX=/usr/local \
+    -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules \
+    -D ENABLE_NEON=ON \
+    -D ENABLE_VFPV3=ON \
+    -D BUILD_TESTS=OFF \
+    -D INSTALL_PYTHON_EXAMPLES=OFF \
+    -D OPENCV_ENABLE_NONFREE=ON \
+    -D CMAKE_SHARED_LINKER_FLAGS=-latomic \
+    -D BUILD_EXAMPLES=OFF ..
+
+$ make -j4
+$ sudo make install
+$ sudo ldconfig
+
+# Ne pas oublier de reset le SWAP.
+\end{listingsbox}
+    
+\subsection{Lancement des scripts de récolte de données}
+Maintenant que les dépendances sont installées, il est temps de lancer les deux scripts
+permettant de récolter les données : les probes request et les photographies.
+
+Pour lancer les scripts en parallèle et pouvoir se déconnecter de la session SSH sans les arrêter,
+le programme "screen"\cite{SCREENTUTO} sera utilisé. Ce dernier permet de créer des instances de terminal, de les détacher et de s'y reconencter à volonté.
+
+Voici les commandes à connaître: 
+
+\begin{listingsbox}{language=bash}{Installation et utilisation de screen}
+# Installation de l'outil
+$ sudo apt-get install screen
+
+# Création d'une instance
+$ screen bash
+
+# Pour détacher le terminal, appuyez sur CTRL + A puis D
+# Pour terminer une instance, appuyez sur CTRL + D
+
+# Lister les instances existantes
+$ screen -list
+
+# Se reconencter à une instance (préciser le nom s'il en existe plusieurs)
+$ screen -r
+
+\end{listingsbox}
+
+Nous allons donc créer une instance par script. 
+
+\begin{listingsbox}{console}{Lancement du script scanProbe}
+$ cd Client-API/
+# Les deux variables d'environnement permettent de se connecter à l'API
+$ export wiface_username=<CLIENT-USERNAME>
+$ export wiface_password=<CLIENT-PASSWORD>
+# Création de l'instance screen
+$ screen bash
+$ sudo -E python3 scanProb.py -i <MONITOR-INTERFACE> \ 
+    --api <API-IP-ADRESS>/api/
+CTRL A + D
+\end{listingsbox}
+
+\begin{listingsbox}{console}{Lancement du script recognizeFace}
+$ cd Client-API/
+# Les deux variables d'environnement permettent de se connecter à l'API
+$ export wiface_username=<CLIENT-USERNAME>
+$ export wiface_password=<CLIENT-PASSWORD>
+# Création de l'instance screen
+$ screen bash
+$ sudo -E python3 recognize_face.py --api <API-IP-ADRESS>/api/
+CTRL A + D
+\end{listingsbox}
+
+Le client est maintenant prêt à être installé physiquement. 
+En exécutant \textbf{screen -list} il devrait y avoir deux instances en mode *detached".
