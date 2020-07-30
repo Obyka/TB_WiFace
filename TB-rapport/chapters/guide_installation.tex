@@ -56,7 +56,7 @@ fi
 \end{listingsbox}
     
 \begin{enumerate}[resume]
-    \item Modifier le fichier API/config.py. Plusieurs constantes relatives à la sécurité doivent être modifiées (credentials Amazon, JWT et CSRF secrets)
+    \item Modifier le fichier API/config.py. Plusieurs constantes relatives à la sécurité doivent être modifiées (il s'agit des secrets JWT, CSRF et des informations de connexion Amazon. Ces derniers sont identifiables par la valeur ***REMOVED***)
     \item Modifier l'utilisateur par défaut dans le fichier API/build\_database.py et s'assurer qu'il soit bien admin.
 \end{enumerate}
 
@@ -71,7 +71,7 @@ $ docker build -t wiface-api .
 $ docker run -p 5555:5000 wiface-api
 \end{listingsbox}
 
-Le serveur est maintenant disponible aux adresses api/ et web/.
+Le serveur est maintenant disponible aux adresses api/ et web/login.
 
 \section{Installation d'un client Raspberry Pi}
 Cette section détaille l'installation, la configuration et l'utilisation d'un client Raspberry Pi.
@@ -256,7 +256,7 @@ le programme "screen"\cite{SCREENTUTO} sera utilisé. Ce dernier permet de crée
 
 Voici les commandes à connaître: 
 
-\begin{listingsbox}{language=bash}{Installation et utilisation de screen}
+\begin{listingsbox}{console}{Installation et utilisation de screen}
 # Installation de l'outil
 $ sudo apt-get install screen
 
