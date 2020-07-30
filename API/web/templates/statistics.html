@@ -9,7 +9,7 @@
 <div class="w3-row-padding w3-margin-bottom">
   <div class="w3-quarter">
     <div class="w3-container w3-red w3-padding-16">
-      <div class="w3-left"><i class="fa fa-paper-plane w3-xxxlarge"></i></div>
+      <div class="w3-left"><em class="fa fa-paper-plane w3-xxxlarge"></em></div>
       <div class="w3-right">
         <h3>{{probe_count}}</h3>
       </div>
@@ -19,7 +19,7 @@
   </div>
   <div class="w3-quarter">
     <div class="w3-container w3-blue w3-padding-16">
-      <div class="w3-left"><i class="fa fa-mobile w3-xxxlarge"></i></div>
+      <div class="w3-left"><em class="fa fa-mobile w3-xxxlarge"></em></div>
       <div class="w3-right">
         <h3>{{mac_count}}</h3>
       </div>
@@ -29,7 +29,7 @@
   </div>
   <div class="w3-quarter">
     <div class="w3-container w3-teal w3-padding-16">
-      <div class="w3-left"><i class="fa fa-id-card-o w3-xxxlarge"></i></div>
+      <div class="w3-left"><em class="fa fa-id-card-o w3-xxxlarge"></em></div>
       <div class="w3-right">
         <h3>{{id_count}}</h3>
       </div>
@@ -39,7 +39,7 @@
   </div>
   <div class="w3-quarter">
     <div class="w3-container w3-orange w3-text-white w3-padding-16">
-      <div class="w3-left"><i class="fa fa-picture-o w3-xxxlarge"></i></div>
+      <div class="w3-left"><em class="fa fa-picture-o w3-xxxlarge"></em></div>
       <div class="w3-right">
         <h3>{{pic_cout}}</h3>
       </div>
@@ -57,13 +57,13 @@
         {% for item in feed %}
         <tr>
           {% if "Picture" in item[1] %}
-          <td><i class="fa fa-picture-o w3-text-blue w3-large"></i></td>
+          <td><em class="fa fa-picture-o w3-text-blue w3-large"></em></td>
           <td>Picture taken</td>
           {% elif "Probe" in item[1] %}
-          <td><i class="fa fa-paper-plane w3-text-red w3-large"></i></td>
+          <td><em class="fa fa-paper-plane w3-text-red w3-large"></em></td>
           <td>Probe captured</td>
           {% endif %}
-          <td><i>{{item[0]}} ago</i></td>
+          <td><em>{{item[0]}} ago</em></td>
         </tr>
         {% endfor %}
       </table>

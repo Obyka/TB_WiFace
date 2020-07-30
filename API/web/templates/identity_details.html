@@ -28,35 +28,35 @@
 
    <hr>
    {% if gender and gender < 0 %}
-   <p class="w3-center w3-xlarge"><i class="fa fa-mars fa-fw"></i> Male</p>
+   <p class="w3-center w3-xlarge"><em class="fa fa-mars fa-fw"></em > Male</p>
    {% elif gender%}
-   <p class="w3-center w3-xlarge"><i class="fa fa-venus fa-fw"></i> Female</p>
+   <p class="w3-center w3-xlarge"><em class="fa fa-venus fa-fw"></em > Female</p>
    {% endif %}
 
    {% if age_range %}
-   <p class="w3-center w3-xlarge"><i class="fa fa-birthday-cake fa-fw"></i> Estimated Age: {{age_range[0]}} - {{age_range[1]}}</p>
+   <p class="w3-center w3-xlarge"><em class="fa fa-birthday-cake fa-fw"></em > Estimated Age: {{age_range[0]}} - {{age_range[1]}}</p>
    {% endif %}
   
    {% set firstname = identity.firstname if identity.firstname else 'TBD' %}
    {% set lastname = identity.lastname if identity.lastname else 'TBD' %}
-   <p class="w3-center w3-xlarge edit_data" id="data_first_last"><i class="fa fa-id-card-o fa-fw"></i>{{firstname}} {{lastname}}</p>
-    <p class="w3-center w3-xlarge input_data" style="display:none;"><i class="fa fa-id-card-o fa-fw"></i> 
+   <p class="w3-center w3-xlarge edit_data" id="data_first_last"><em class="fa fa-id-card-o fa-fw"></em >{{firstname}} {{lastname}}</p>
+    <p class="w3-center w3-xlarge input_data" style="display:none;"><em class="fa fa-id-card-o fa-fw"></em > 
       {{ identity_form.firstname(id="firstname_form",placeholder=identity.firstname, class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
       {{ identity_form.lastname(id="lastname_form",placeholder=identity.lastname, class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
     </p>
 
   {% if nb_picture %}
   <p class="w3-center w3-xlarge">
-    <i class="fa fa-picture-o fa-fw"></i> <a href="{{url_for('web_bp.represents_front', represent_id=identity.id)}}" >Number of taken pictures: {{nb_picture}}</a>
+    <em class="fa fa-picture-o fa-fw"></em > <a href="{{url_for('web_bp.represents_front', represent_id=identity.id)}}" >Number of taken pictures: {{nb_picture}}</a>
   </p>
   {% endif %}
 
   {% set mail = identity.mail if identity.mail else 'TBD' %}
-   <p class="w3-center w3-xlarge edit_data" id="data_email"><i class="fa fa-envelope fa-fw"></i>{{mail}}</p>
-   <p class="w3-center w3-xlarge input_data" style="display:none;"><i class="fa fa-envelope fa-fw"></i> {{ identity_form.email(id="email_form",placeholder=identity.mail,class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
+   <p class="w3-center w3-xlarge edit_data" id="data_email"><em class="fa fa-envelope fa-fw"></em >{{mail}}</p>
+   <p class="w3-center w3-xlarge input_data" style="display:none;"><em class="fa fa-envelope fa-fw"></em > {{ identity_form.email(id="email_form",placeholder=identity.mail,class="w3-input", style="width: 30%; text-align: center; display: inline-block;") }}
    </p>
    {% if best_macs%}
-   <p class="w3-center w3-xlarge"><i class="fa fa-mobile  fa-fw"></i> MAC: 
+   <p class="w3-center w3-xlarge"><em class="fa fa-mobile  fa-fw"></em > MAC: 
     {% for mac in best_macs %}
     <a href="{{ url_for('web_bp.mac_front', mac_id=mac.fk_mac) }}">{{mac.fk_mac}}</a>
     {% endfor %}

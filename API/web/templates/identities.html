@@ -21,12 +21,12 @@
           </tr>
         {% for identity in identitiy_list %}
         <tr>
-          <td><i>{{identity.firstname}}</i></td>
-          <td><i>{{identity.lastname}}</i></td>
-          <td><i>{{identity.mail}}</i></td>
-          <td><i><a href="{{ url_for('web_bp.identity_form_front', identity_id=identity.id) }}">{{identity.uuid}}</a></i></td>
-          <td><i><input id="{{identity.id}}" name="{{identity.id}}" type="checkbox" value="PP2I" {{ 'checked' if identity.PP2I else '' }}></i></td>
-          <td><i class="fa fa-trash-o delete_icon" name="{{identity.id}}" aria-hidden="true"></i></td>
+          <td><em>{{identity.firstname}}</em></td>
+          <td><em>{{identity.lastname}}</em></td>
+          <td><em>{{identity.mail}}</em></td>
+          <td><em><a href="{{ url_for('web_bp.identity_form_front', identity_id=identity.id) }}">{{identity.uuid}}</a></em></td>
+          <td><em><input id="{{identity.id}}" name="{{identity.id}}" type="checkbox" value="PP2I" {{ 'checked' if identity.PP2I else '' }}></em></td>
+          <td><em class="fa fa-trash-o delete_icon" name="{{identity.id}}" aria-hidden="true"></em></td>
         </tr>
         {% endfor %}
       </table>

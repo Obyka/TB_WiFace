@@ -21,7 +21,7 @@
 <div class="w3-quarter w3-margin">
     {% if place.age_mean %}
   <div class="w3-container w3-red w3-padding-16">
-    <div class="w3-left"><i class="fa fa-calendar w3-xxxlarge"></i></div>
+    <div class="w3-left"><em class="fa fa-calendar w3-xxxlarge"></em></div>
     <div class="w3-right">
       <h3>{{place.age_mean}} years old</h3>
     </div>
@@ -32,7 +32,7 @@
 <div class="w3-quarter w3-margin">
   {%endif%}
   <div class="w3-container w3-blue w3-padding-16">
-    <div class="w3-left"><i class="fa fa-mobile w3-xxxlarge"></i></div>
+    <div class="w3-left"><em class="fa fa-mobile w3-xxxlarge"></em></div>
     <div class="w3-right">
       {% set men_proportion = (place['proportion']*100)|int %}
       {% set women_proportion = 100 - men_proportion %}
@@ -44,7 +44,7 @@
 </div>
 <div class="w3-quarter w3-margin">
   <div class="w3-container w3-teal w3-padding-16">
-    <div class="w3-left"><i class="fa fa-id-card-o w3-xxxlarge"></i></div>
+    <div class="w3-left"><em class="fa fa-id-card-o w3-xxxlarge"></em></div>
     <div class="w3-right">
       <h3>{{place.nb_identity}}</h3>
     </div>
@@ -54,7 +54,7 @@
 </div>
 <div class="w3-quarter w3-margin">
   <div class="w3-container w3-orange w3-text-white w3-padding-16">
-    <div class="w3-left"><i class="fa fa-picture-o w3-xxxlarge"></i></div>
+    <div class="w3-left"><em class="fa fa-picture-o w3-xxxlarge"></em></div>
     <div class="w3-right">
       <h3>{{place.nb_probes}}</h3>
     </div>

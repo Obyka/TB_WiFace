@@ -13,9 +13,9 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
 <!-- Top container -->
 <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
-  <button class="w3-bar-item w3-button w3-hide-large w3-hover-none w3-hover-text-light-grey" onclick="w3_open();"><i class="fa fa-bars"></i>  Menu</button>
+  <button class="w3-bar-item w3-button w3-hide-large w3-hover-none w3-hover-text-light-grey" onclick="w3_open();"><em class="fa fa-bars"></em>  Menu</button>
   {% if current_user %}
-  <span class="w3-bar-item w3-right"><i class="fa fa-sign-out" aria-hidden="true"></i> <a href="{{ url_for('web_bp.logout_front') }}" style="text-decoration: none;">TB Wiface - {{current_user}}</a> 
+  <span class="w3-bar-item w3-right"><em class="fa fa-sign-out" aria-hidden="true"></em> <a href="{{ url_for('web_bp.logout_front') }}" style="text-decoration: none;">TB Wiface - {{current_user}}</a> 
   </span>
   {% else %}
   <span class="w3-bar-item w3-right">TB Wiface</span>
@@ -40,7 +40,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   </div>
   <div class="w3-bar-block">
     {% for route, id, icon, caption in navigation_bar %}
-      <a href="{{ url_for(route)}}" class="w3-bar-item w3-button w3-padding {% if id == active_page %}w3-blue{% endif%}"><i class="{{icon}}"></i> {{caption}}</a>
+      <a href="{{ url_for(route)}}" class="w3-bar-item w3-button w3-padding {% if id == active_page %}w3-blue{% endif%}"><em class="{{icon}}"></em> {{caption}}</a>
     {% endfor %}
   </div>
 </nav>
@@ -81,7 +81,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   <!-- Header -->
    
   <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-dashboard"></i> {% block header %}{% endblock %}</b></h5>
+    <h5><b><em class="fa fa-dashboard"></em> {% block header %}{% endblock %}</b></h5>
   </header>
 
   {% block content %}
@@ -93,7 +93,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   <!-- Footer -->
   <footer class="w3-container w3-padding-16 w3-light-grey">
     <h4>FOOTER</h4>
-    <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+    <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank" rel="noopener noreferrer">w3.css</a></p>
   </footer>
   {% endblock %}  
 

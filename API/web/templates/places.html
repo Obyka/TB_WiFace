@@ -17,9 +17,9 @@
           </tr>
         {% for place in places_list %}
         <tr>
-          <td><i><a href="{{ url_for('web_bp.place_front', place_id=place.id) }}">{{place.name}}</a></i></td>
-          <td><i>{{place.longitude}}</i></td>
-          <td><i>{{place.latitude}}</i></td>
+          <td><em><a href="{{ url_for('web_bp.place_front', place_id=place.id) }}">{{place.name}}</a></em></td>
+          <td><em>{{place.longitude}}</em></td>
+          <td><em>{{place.latitude}}</em></td>
 
         </tr>
         {% endfor %}
