@@ -84,19 +84,20 @@ def search_rekognition_for_matching_faces(face_to_search_for, collectionId, face
 
 #This function prints the results of from a SearchByImage API call
 def print_search_results(matched_faces, face_image_name):
-    print("#----------------------------------------------#")
+    separator = "#----------------------------------------------#"
+    print(separator)
     if matched_faces:
             print ('MATCH FOUND for ' + face_image_name + ', with ATTRIBUTES: ' )
             for match in matched_faces:
                     print ('FaceId: ' + match['Face']['FaceId'])
                     print ('Confidence: '+ str(match['Face']['Confidence']))
                     print ('Similarity: ' + "{:.2f}".format(match['Similarity']) + "%")
-                    print("#----------------------------------------------#")
+                    print(separator)
                     print("")
     else:
             
             print(" NO MATCH FOUND for " + face_image_name)
-            print("#----------------------------------------------#")
+            print(separator)
             print("")
 
 

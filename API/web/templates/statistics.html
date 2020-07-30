@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% set active_page = "statistics" %}
+{% block custom_css %}<link rel="stylesheet" href="{{ url_for('web_bp.static', filename='css/custom.css')}}">{% endblock %}
 
 {% block title %}Statistics{% endblock %}
 
@@ -54,6 +55,15 @@
     <div class="w3">
       <h5>Feeds</h5>
       <table class="w3-table w3-striped w3-white">
+        <caption>Feed of new events</caption>
+        <thead> 
+        <tr class="hideme">          
+          <th scope="col" class="noborder"><span class="offscreen">icon</span></th>
+          <th scope="col" class="noborder"><span class="offscreen">event description</span></th>
+          <th scope="col" class="noborder"><span class="offscreen">timestamp when the event happened</span></th>
+      </tr>
+    </thead>
+    <tbody>
         {% for item in feed %}
         <tr>
           {% if "Picture" in item[1] %}
@@ -65,6 +75,7 @@
           {% endif %}
           <td><em>{{item[0]}} ago</em></td>
         </tr>
+      </tbody>
         {% endfor %}
       </table>
     </div>

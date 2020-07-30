@@ -11,13 +11,14 @@
     <div class="w3">
       <form action="{{ url_for('web_bp.macs_front') }}" method = "POST">
       <table class="w3-table w3-striped w3-white">
+        <caption>List of MAC Addresses</caption>
           <tr>
-              <th>MAC Address</th>
-              <th>Vendor name</th>
-              <th>Is random</th>
-              <th>Number of probes</th>
-              <th>Should be included in PP2I? <input id="select_all_checkbox" name="select_all_checkbox" type="checkbox"></th>
-              <th>Delete</th>
+              <th scope="col">MAC Address</th>
+              <th scope="col">Vendor name</th>
+              <th scope="col">Is random</th>
+              <th scope="col">Number of probes</th>
+              <th scope="col">Should be included in PP2I? <input id="select_all_checkbox" name="select_all_checkbox" type="checkbox"></th>
+              <th scope="col">Delete</th>
           </tr>
         {% for mac in mac_list %}
         <tr>

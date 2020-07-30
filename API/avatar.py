@@ -1,7 +1,6 @@
 import py_avataaars as pa
 import pictures
 import config
-from decimal import *
 import os
 
 # Tous les choix dependant du genre sont arbitraires et ont uniquement une valeur de différentiation statistique.
@@ -22,8 +21,6 @@ def draw_avatar(base_picture):
     if(os.path.exists(avatar_path)):
         return avatar_name
     emotions = ['happy', 'surprised', 'fear', 'confused', 'sad', 'calm', 'disgusted', 'angry']
-    options_accessory = ['eyeglasses', 'sunglasses']
-    options_facial_hair = ['beard', 'mustache']
     main_emotion = sorted([(emotion, base_picture.get(emotion)) for count, emotion in enumerate(emotions) if base_picture.get(emotion) and abs(base_picture.get(emotion)) >= 1], key=lambda emotion: emotion[1], reverse=True)[0]
 
     top = pa.TopType.LONG_HAIR_STRAIGHT if base_picture['gender'] > 0 else pa.TopType.SHORT_HAIR_SHORT_FLAT

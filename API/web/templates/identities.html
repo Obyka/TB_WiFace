@@ -11,13 +11,14 @@
     <div class="w3">
       <form action="{{ url_for('web_bp.identities_front') }}" method = "POST">
       <table class="w3-table w3-striped w3-white">
+        <caption>List of identities</caption>
           <tr>
-              <th>First name</th>
-              <th>Last name</th>
-              <th>Mail address</th>
-              <th>UUID</th>
-              <th>Should be included in PP2I? <input id="select_all_checkbox" name="select_all_checkbox" type="checkbox"></th>
-              <th>Delete</th>
+              <th scope="col">First name</th>
+              <th scope="col">Last name</th>
+              <th scope="col">Mail address</th>
+              <th scope="col">UUID</th>
+              <th scope="col">Should be included in PP2I? <input id="select_all_checkbox" name="select_all_checkbox" type="checkbox"></th>
+              <th scope="col">Delete</th>
           </tr>
         {% for identity in identitiy_list %}
         <tr>
