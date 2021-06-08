@@ -33,7 +33,7 @@ marshmallow-sqlalchemy==0.22.3
 mccabe==0.6.1
 openapi-spec-validator==0.2.8
 passlib==1.7.2
-Pillow==8.1.1
+Pillow==8.2.0
 py-avataaars==0.1.14
 pycparser==2.20
 PyJWT==1.7.1
